@@ -53,13 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('image-preview').style.display = 'none';
     });
 
-    // Image preview helpers
-    function showPreview(src) {
-        const preview = document.getElementById('image-preview');
-        preview.querySelector('img').src = src;
-        preview.style.display = 'block';
-    }
-
     document.getElementById('product-image')?.addEventListener('input', (e) => {
         let url = e.target.value;
         if (url && url.startsWith('http://')) {
@@ -191,6 +184,14 @@ function loadProducts() {
             </td>
         </tr>
     `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen pwodui</td></tr>';
+}
+
+function showPreview(src) {
+    const preview = document.getElementById('image-preview');
+    if (!preview) return;
+    const img = preview.querySelector('img');
+    if (img) img.src = src;
+    preview.style.display = 'block';
 }
 
 function editProduct(id) {
