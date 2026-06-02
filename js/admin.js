@@ -64,16 +64,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.value) showPreview(e.target.value);
     });
 
+    function compressImage(file, maxW, quality, cb) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let w = img.width, h = img.height;
+                if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+                canvas.width = w; canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                cb(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
     document.getElementById('product-image-file')?.addEventListener('change', (e) => {
         const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                document.getElementById('product-image').value = ev.target.result;
-                showPreview(ev.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
+        if (!file) return;
+        compressImage(file, 800, 0.7, (compressed) => {
+            document.getElementById('product-image').value = compressed;
+            showPreview(compressed);
+        });
     });
 
     document.getElementById('product-form')?.addEventListener('submit', (e) => {
