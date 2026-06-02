@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 480" width="1440" height="480">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5F0E6"/>
+      <stop offset="100%" stop-color="#FFFFFF"/>
+    </linearGradient>
+    <linearGradient id="wave1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1E90FF" stop-opacity=".15"/>
+      <stop offset="100%" stop-color="#0056B3" stop-opacity=".08"/>
+    </linearGradient>
+    <linearGradient id="wave2" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0056B3" stop-opacity=".12"/>
+      <stop offset="100%" stop-color="#1E90FF" stop-opacity=".05"/>
+    </linearGradient>
+    <linearGradient id="wave3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1E90FF" stop-opacity=".10"/>
+      <stop offset="100%" stop-color="#0056B3" stop-opacity=".03"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFA500" stop-opacity=".08"/>
+      <stop offset="100%" stop-color="#FFA500" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fond -->
+  <rect width="1440" height="480" fill="url(#bg)"/>
+
+  <!-- Ligne orange subtile -->
+  <rect x="0" y="0" width="1440" height="3" fill="#FFA500" opacity=".2"/>
+
+  <!-- Vagues gauche -->
+  <path d="M0 480 C100 400 200 420 300 380 C400 340 350 300 450 280 C550 260 500 240 600 220 C650 210 600 200 700 180 C750 170 700 160 800 140 C850 130 800 120 900 100 C950 90 900 80 1000 60 L1000 480 Z" fill="url(#wave1)"/>
+  <path d="M0 480 C80 420 180 440 250 400 C350 360 300 320 400 300 C500 280 450 260 550 240 C600 230 550 220 650 200 C700 190 650 180 750 160 L750 480 Z" fill="url(#wave3)"/>
+
+  <!-- Vagues droite -->
+  <path d="M1440 480 C1340 380 1240 400 1140 360 C1040 320 1090 280 990 260 C890 240 940 220 840 200 C790 190 840 180 740 160 C690 150 740 140 640 120 C590 110 640 100 540 80 L540 480 Z" fill="url(#wave2)"/>
+  <path d="M1440 480 C1360 400 1260 420 1190 380 C1090 340 1140 300 1040 280 C940 260 990 240 890 220 C840 210 890 200 790 180 C740 170 790 160 690 140 L690 480 Z" fill="url(#wave3)"/>
+
+  <!-- Accent lumineux -->
+  <ellipse cx="720" cy="240" rx="500" ry="200" fill="url(#accent)"/>
+
+  <!-- Particules subtiles -->
+  <circle cx="200" cy="150" r="3" fill="#1E90FF" opacity=".06"/>
+  <circle cx="350" cy="100" r="2" fill="#0056B3" opacity=".08"/>
+  <circle cx="1100" cy="130" r="3" fill="#1E90FF" opacity=".05"/>
+  <circle cx="1250" cy="180" r="2" fill="#0056B3" opacity=".07"/>
+  <circle cx="720" cy="80" r="2" fill="#FFA500" opacity=".06"/>
+  <circle cx="150" cy="300" r="2" fill="#1E90FF" opacity=".05"/>
+  <circle cx="1300" cy="300" r="2" fill="#1E90FF" opacity=".04"/>
+</svg>

@@ -1,0 +1,9 @@
+# OS
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]

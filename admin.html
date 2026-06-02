@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-boutik — Administrasyon</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">e<span>-boutik</span></a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links" id="nav-links">
+            <a href="catalog.html">Katalòg</a>
+            <a href="cart.html">Demann <span class="cart-badge" id="cart-count">0</span></a>
+            <a href="admin.html">Admin</a>
+        </div>
+        <div class="mobile-overlay" id="mobile-overlay"></div>
+    </nav>
+
+    <div class="hero-banner" style="height:220px;">
+        <div class="hero-overlay">
+            <h1>Administrasyon</h1>
+            <p>Jere boutik ou fasilman.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="login-section" class="admin-login">
+            <div class="login-card">
+                <h1>Administrasyon</h1>
+                <p>Konekte pou jere boutik ou.</p>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Idantifyan</label>
+                        <input type="text" id="login-user" required placeholder="admin">
+                    </div>
+                    <div class="form-group">
+                        <label>Modpas</label>
+                        <input type="password" id="login-pass" required placeholder="admin">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Konekte</button>
+                    <p class="admin-login-error" id="login-error"></p>
+                </form>
+            </div>
+        </div>
+
+        <div id="dashboard-section" class="admin-dashboard" style="display:none;">
+            <div class="admin-header">
+                <h2>Tablo debò</h2>
+                <button class="btn btn-outline btn-sm" id="logout-btn">Dekonekte</button>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="active" data-tab="products">Pwodui</button>
+                <button data-tab="categories">Kategori</button>
+                <button data-tab="orders">Kòmand</button>
+            </div>
+
+            <div class="admin-tab-content" id="tab-products">
+                <div class="admin-card">
+                    <h3>Jesyon pwodui yo</h3>
+                    <div class="admin-actions">
+                        <button class="btn btn-primary btn-sm" id="show-add-form-btn">+ Ajoute yon pwodui</button>
+                    </div>
+
+                    <form id="product-form" style="display:none; margin-bottom:1.5rem;">
+                        <input type="hidden" id="product-id">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label>Non</label>
+                                <input type="text" id="product-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Pri (G)</label>
+                                <input type="number" step="0.01" id="product-price" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsyon</label>
+                            <textarea id="product-description" rows="3"></textarea>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label>Kategori</label>
+                                <select id="product-category"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Stòk</label>
+                                <input type="number" id="product-stock" value="10">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Gwosè (separe pa vigil)</label>
+                            <input type="text" id="product-sizes" placeholder="S, M, L, XL">
+                        </div>
+                        <div class="form-group">
+                            <label>Imaj</label>
+                            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+                                <input type="text" id="product-image" placeholder="https://..." style="flex:1;min-width:180px;">
+                                <span style="color:var(--text-light);font-size:.75rem;line-height:2.5;">oubyen</span>
+                                <input type="file" id="product-image-file" accept="image/jpeg,image/png,image/webp,image/gif" style="flex:1;min-width:150px;padding:.5rem 0;">
+                            </div>
+                            <div id="image-preview" style="margin-top:.5rem;display:none;">
+                                <img src="" alt="preview" style="max-width:120px;max-height:120px;border-radius:4px;border:1px solid var(--border);">
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:.5rem;">
+                            <button type="submit" class="btn btn-primary btn-sm" id="product-form-submit">Ajoute</button>
+                            <button type="button" class="btn btn-outline btn-sm" id="product-form-cancel" style="display:none;">Anile</button>
+                        </div>
+                    </form>
+
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Non</th>
+                                    <th>Pri</th>
+                                    <th>Kat.</th>
+                                    <th>Stòk</th>
+                                    <th>Aksyon</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-tab-content" id="tab-categories" style="display:none;">
+                <div class="admin-card">
+                    <h3>Jesyon kategori yo</h3>
+                    <div class="admin-actions">
+                        <button class="btn btn-primary btn-sm" id="show-add-cat-btn">+ Ajoute yon kategori</button>
+                    </div>
+
+                    <form id="category-form" style="display:none; max-width:400px; margin-bottom:1.5rem;">
+                        <input type="hidden" id="category-id">
+                        <div class="form-group">
+                            <label>Non kategori a</label>
+                            <input type="text" id="category-name" required placeholder="Ex: Timoun">
+                        </div>
+                        <div style="display:flex; gap:.5rem;">
+                            <button type="submit" class="btn btn-primary btn-sm" id="category-form-submit">Ajoute</button>
+                            <button type="button" class="btn btn-outline btn-sm" id="category-form-cancel" style="display:none;">Anile</button>
+                        </div>
+                    </form>
+
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Non</th>
+                                    <th>Aksyon</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categories-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-tab-content" id="tab-orders" style="display:none;">
+                <div class="admin-card">
+                    <h3>Kòmand yo</h3>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Kliyan</th>
+                                    <th>Total</th>
+                                    <th>Estati</th>
+                                    <th>Dat</th>
+                                    <th>Aksyon</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>e-boutik — 2026</footer>
+
+    <script src="js/nav.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

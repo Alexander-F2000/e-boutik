@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="1440" height="900">
+  <defs>
+    <linearGradient id="waveL" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1E90FF" stop-opacity=".08"/>
+      <stop offset="100%" stop-color="#0056B3" stop-opacity=".03"/>
+    </linearGradient>
+    <linearGradient id="waveR" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0056B3" stop-opacity=".06"/>
+      <stop offset="100%" stop-color="#1E90FF" stop-opacity=".02"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFA500" stop-opacity=".05"/>
+      <stop offset="100%" stop-color="#FFA500" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Vagues gauches -->
+  <path d="M0 900 C100 750 250 780 350 700 C450 620 400 580 500 500 C600 420 550 400 650 320 C700 280 650 260 750 200 C800 180 750 160 850 120 C900 100 850 80 950 60 L950 900 Z" fill="url(#waveL)"/>
+  <path d="M0 900 C80 800 200 820 280 750 C380 680 330 640 430 560 C530 480 480 450 580 380 C630 350 580 330 680 270 C720 250 680 230 780 180 L780 900 Z" fill="url(#waveL)" opacity=".5"/>
+
+  <!-- Vagues droites -->
+  <path d="M1440 900 C1340 730 1190 760 1090 680 C990 600 1040 560 940 480 C840 400 890 370 790 300 C740 270 790 250 690 190 C640 170 690 150 590 110 C540 90 590 70 490 40 L490 900 Z" fill="url(#waveR)"/>
+  <path d="M1440 900 C1360 770 1240 790 1160 720 C1060 640 1110 600 1010 520 C910 440 960 410 860 340 C810 310 860 290 760 230 C710 210 760 190 660 150 L660 900 Z" fill="url(#waveR)" opacity=".5"/>
+
+  <!-- Accent orange central -->
+  <ellipse cx="720" cy="450" rx="600" ry="300" fill="url(#accent)"/>
+
+  <!-- Particules -->
+  <circle cx="200" cy="200" r="3" fill="#1E90FF" opacity=".04"/>
+  <circle cx="400" cy="150" r="2" fill="#0056B3" opacity=".05"/>
+  <circle cx="1100" cy="180" r="3" fill="#1E90FF" opacity=".03"/>
+  <circle cx="1250" cy="250" r="2" fill="#0056B3" opacity=".04"/>
+  <circle cx="720" cy="120" r="2" fill="#FFA500" opacity=".04"/>
+  <circle cx="150" cy="500" r="2" fill="#1E90FF" opacity=".03"/>
+  <circle cx="1300" cy="550" r="2" fill="#1E90FF" opacity=".02"/>
+  <circle cx="600" cy="700" r="2" fill="#FFA500" opacity=".03"/>
+  <circle cx="850" cy="650" r="2" fill="#1E90FF" opacity=".03"/>
+</svg>

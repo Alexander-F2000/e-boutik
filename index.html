@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-boutik — Nouvo</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">e<span>-boutik</span></a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links" id="nav-links">
+            <a href="catalog.html">Katalòg</a>
+            <a href="cart.html">Demann <span class="cart-badge" id="cart-count">0</span></a>
+        </div>
+        <div class="mobile-overlay" id="mobile-overlay"></div>
+    </nav>
+
+    <div class="hero-banner">
+        <div class="hero-overlay">
+            <h1>Nouvo</h1>
+            <p>Dekouvri dènye moso sezon an sou e-boutik.</p>
+            <button class="hero-btn" onclick="window.location.href='catalog.html'">Eksplore</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">Endikezab yo</h2>
+        <div class="product-grid" id="featured-products"></div>
+
+        <h2 class="section-title" style="margin-top:3.5rem;">Kategori</h2>
+        <div class="brands" id="home-categories"></div>
+    </div>
+
+    <footer>e-boutik — 2026</footer>
+
+    <script src="js/nav.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartBadge();
+
+            const products = getProducts();
+            const grid = document.getElementById('featured-products');
+            grid.innerHTML = products.slice(0, 4).map(p => renderProductCard(p)).join('');
+
+            const categories = getCategories();
+            const catContainer = document.getElementById('home-categories');
+            catContainer.innerHTML = categories.map(c =>
+                `<span onclick="window.location.href='catalog.html'" style="cursor:pointer;">${c.name}</span>`
+            ).join('');
+        });
+    </script>
+</body>
+</html>
