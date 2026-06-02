@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.drawImage(img, 0, 0, w, h);
                 cb(canvas.toDataURL('image/jpeg', quality));
             };
+            img.onerror = () => { alert('Imaj la pa ka chaje. Tcheke fichye a.'); };
             img.src = ev.target.result;
         };
         reader.readAsDataURL(file);
@@ -188,13 +189,17 @@ function loadProducts() {
 
 function showPreview(src) {
     const preview = document.getElementById('image-preview');
-    if (!preview) return;
+    if (!preview) { console.error('showPreview: pa jwenn image-preview'); return; }
     const img = preview.querySelector('img');
     if (img) {
-        img.onerror = function() { this.src = 'img/placeholder.svg'; this.onerror = null; };
+        img.onerror = function() { console.error('Imaj la pa ka chaje:', this.src.substring(0,100)); this.src = 'img/placeholder.svg'; this.onerror = null; };
         img.src = src;
+        console.log('showPreview: mete imaj ->', src.substring(0,80));
+    } else {
+        console.error('showPreview: pa jwenn img anndan preview');
     }
     preview.style.display = 'block';
+    console.log('showPreview: preview visible');
 }
 
 function editProduct(id) {
