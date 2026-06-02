@@ -190,7 +190,10 @@ function showPreview(src) {
     const preview = document.getElementById('image-preview');
     if (!preview) return;
     const img = preview.querySelector('img');
-    if (img) img.src = src;
+    if (img) {
+        img.onerror = function() { this.src = 'img/placeholder.svg'; this.onerror = null; };
+        img.src = src;
+    }
     preview.style.display = 'block';
 }
 
@@ -208,9 +211,11 @@ function editProduct(id) {
         document.getElementById('product-category').value = p.category || '';
         document.getElementById('product-sizes').value = p.sizes || '';
         document.getElementById('product-stock').value = p.stock || 0;
-        document.getElementById('product-image').value = p.image || '';
+        let imgVal = p.image || '';
+        if (imgVal.startsWith('http://')) imgVal = imgVal.replace('http://', 'https://');
+        document.getElementById('product-image').value = imgVal;
         document.getElementById('image-preview').style.display = 'none';
-        if (p.image) showPreview(p.image);
+        if (imgVal) showPreview(imgVal);
         document.getElementById('product-form-submit').textContent = 'Modifye';
         document.getElementById('product-form-cancel').style.display = 'inline-block';
     } catch(e) {
