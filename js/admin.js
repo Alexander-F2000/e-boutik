@@ -78,30 +78,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('product-form')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        const id = document.getElementById('product-id').value;
-        const products = getProducts();
+        try {
+            const id = document.getElementById('product-id').value;
+            const products = getProducts();
 
-        const data = {
-            name: document.getElementById('product-name').value,
-            price: parseFloat(document.getElementById('product-price').value),
-            description: document.getElementById('product-description').value,
-            category: document.getElementById('product-category').value,
-            sizes: document.getElementById('product-sizes').value,
-            stock: parseInt(document.getElementById('product-stock').value) || 0,
-            image: document.getElementById('product-image').value || 'img/placeholder.svg'
-        };
+            const data = {
+                name: document.getElementById('product-name').value.trim(),
+                price: parseFloat(document.getElementById('product-price').value) || 0,
+                description: document.getElementById('product-description').value.trim(),
+                category: document.getElementById('product-category').value,
+                sizes: document.getElementById('product-sizes').value.trim(),
+                stock: parseInt(document.getElementById('product-stock').value) || 0,
+                image: document.getElementById('product-image').value || 'img/placeholder.svg'
+            };
 
-        if (id) {
-            const idx = products.findIndex(p => p.id == id);
-            if (idx !== -1) { products[idx] = { ...products[idx], ...data }; }
-        } else {
-            data.id = Date.now();
-            products.push(data);
+            if (!data.name) { alert('Tanpri antre non pwodui a.'); return; }
+            if (!data.price) { alert('Tanpri antre pri a.'); return; }
+
+            if (id) {
+                const idx = products.findIndex(p => String(p.id) === String(id));
+                if (idx !== -1) { products[idx] = { ...products[idx], ...data }; }
+            } else {
+                data.id = Date.now();
+                products.push(data);
+            }
+
+            saveProducts(products);
+            document.getElementById('product-form').style.display = 'none';
+            loadProducts();
+        } catch(e) {
+            console.error('Form submit erè:', e);
+            alert('Yon erè rive lè sove pwodui a.');
         }
-
-        saveProducts(products);
-        document.getElementById('product-form').style.display = 'none';
-        loadProducts();
     });
 
     // Categories
@@ -166,22 +174,28 @@ function loadProducts() {
 }
 
 function editProduct(id) {
-    const products = getProducts();
-    const p = products.find(x => x.id == id);
-    if (!p) return;
-    loadCategorySelect(p.category);
-    document.getElementById('product-id').value = p.id;
-    document.getElementById('product-name').value = p.name;
-    document.getElementById('product-price').value = p.price;
-    document.getElementById('product-description').value = p.description || '';
-    document.getElementById('product-category').value = p.category || '';
-    document.getElementById('product-sizes').value = p.sizes || '';
-    document.getElementById('product-stock').value = p.stock || 0;
-    document.getElementById('product-image').value = p.image || '';
-    if (p.image) showPreview(p.image);
-    document.getElementById('product-form-submit').textContent = 'Modifye';
-    document.getElementById('product-form-cancel').style.display = 'inline-block';
-    document.getElementById('product-form').style.display = 'block';
+    try {
+        const products = getProducts();
+        const p = products.find(x => x.id == id);
+        if (!p) { console.error('EditProduct: pa jwenn pwodui #', id); return; }
+        document.getElementById('product-form').style.display = 'block';
+        loadCategorySelect(p.category);
+        document.getElementById('product-id').value = p.id;
+        document.getElementById('product-name').value = p.name;
+        document.getElementById('product-price').value = p.price;
+        document.getElementById('product-description').value = p.description || '';
+        document.getElementById('product-category').value = p.category || '';
+        document.getElementById('product-sizes').value = p.sizes || '';
+        document.getElementById('product-stock').value = p.stock || 0;
+        document.getElementById('product-image').value = p.image || '';
+        document.getElementById('image-preview').style.display = 'none';
+        if (p.image) showPreview(p.image);
+        document.getElementById('product-form-submit').textContent = 'Modifye';
+        document.getElementById('product-form-cancel').style.display = 'inline-block';
+    } catch(e) {
+        console.error('EditProduct erè:', e);
+        alert('Yon erè rive lè modifye pwodui a. Kontrole console a.');
+    }
 }
 
 function deleteProduct(id) {

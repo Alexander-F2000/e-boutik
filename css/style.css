@@ -581,7 +581,7 @@ nav .nav-links a:hover::after { width: 100%; }
     margin-bottom: 1.5rem;
 }
 .admin-login .login-card form { max-width: 100%; }
-.admin-login .login-error {
+.admin-login .login-error, .admin-login-error {
     color: #d32f2f;
     font-size: .78rem;
     margin-top: .8rem;
