@@ -79,13 +79,15 @@ function showSizePicker(product) {
     if (existing) existing.remove();
 
     const overlay = document.createElement('div');
+    let pickerImg = product.image || PLACEHOLDER;
+    if (pickerImg.startsWith('http://')) pickerImg = pickerImg.replace('http://', 'https://');
     overlay.className = 'size-picker-overlay';
     overlay.innerHTML = `
         <div class="size-picker-modal">
             <button class="size-picker-close" aria-label="Fèmen">&times;</button>
             <div class="size-picker-layout">
-                <img src="${product.image || PLACEHOLDER}" alt="${product.name}"
-                     onerror="this.src='${PLACEHOLDER}';this.onerror=null">
+                <img src="${pickerImg}" alt="${product.name}"
+                     onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{this.src='${PLACEHOLDER}';this.onerror=null}">
                 <div class="size-picker-info">
                     <div class="size-picker-category">${product.category || ''}</div>
                     <div class="size-picker-name">${product.name}</div>
@@ -123,12 +125,13 @@ function showSizePicker(product) {
 
 function renderProductCard(p) {
     const sizes = p.sizes ? p.sizes.split(',').map(s => s.trim()).join(', ') : '';
-    const imgSrc = p.image || PLACEHOLDER;
+    let imgSrc = p.image || PLACEHOLDER;
+    if (imgSrc.startsWith('http://')) imgSrc = imgSrc.replace('http://', 'https://');
     const prodJson = JSON.stringify(p).replace(/'/g, "&#39;");
     return `
         <div class="product-card" tabindex="0" role="button" aria-label="${p.name}">
             <div class="product-image-wrap">
-                <img class="product-image" src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="this.src='${PLACEHOLDER}';this.onerror=null">
+                <img class="product-image" src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{this.src='${PLACEHOLDER}';this.onerror=null}">
                 <div class="product-overlay">
                     <button class="add-cart-btn" onclick="event.stopPropagation();showSizePicker(${prodJson})">Ajoute nan demann</button>
                 </div>
@@ -227,10 +230,12 @@ function renderCart() {
     cart.forEach(item => {
         const subtotal = item.price * item.quantity;
         total += subtotal;
+        let imgSrc = item.image || PLACEHOLDER;
+        if (imgSrc.startsWith('http://')) imgSrc = imgSrc.replace('http://', 'https://');
         html += `
             <li class="cart-item">
-                <img src="${item.image || PLACEHOLDER}" alt="${item.name}"
-                     onerror="this.src='${PLACEHOLDER}';this.onerror=null">
+                <img src="${imgSrc}" alt="${item.name}"
+                     onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{this.src='${PLACEHOLDER}';this.onerror=null}">
                 <div class="cart-item-info">
                     <div class="cart-item-name">${item.name}</div>
                     ${item.size ? `<div class="cart-item-detail">Gwosè: ${item.size}</div>` : ''}

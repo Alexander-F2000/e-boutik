@@ -61,7 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('product-image')?.addEventListener('input', (e) => {
-        if (e.target.value) showPreview(e.target.value);
+        let url = e.target.value;
+        if (url && url.startsWith('http://')) {
+            url = url.replace('http://', 'https://');
+            e.target.value = url;
+        }
+        if (url) showPreview(url);
     });
 
     function compressImage(file, maxW, quality, cb) {
