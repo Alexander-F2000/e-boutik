@@ -61,12 +61,21 @@ function saveOrders(orders) {
 }
 
 async function syncFromGitHub() {
-    if (localStorage.getItem('eboutik_pending_sync')) return;
     const files = [
         { path: 'products.json', key: 'eboutik_products' },
         { path: 'categories.json', key: 'eboutik_categories' },
         { path: 'orders.json', key: 'eboutik_orders' }
     ];
+    if (localStorage.getItem('eboutik_pending_sync')) {
+        const token = GITHUB_CONFIG.TOKEN;
+        if (token) {
+            for (const f of files) {
+                const data = localStorage.getItem(f.key);
+                if (data) await syncToGitHub(f.path, JSON.stringify(JSON.parse(data), null, 2), 'Retry sync');
+            }
+        }
+        return;
+    }
     for (const f of files) {
         try {
             const resp = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/main/data/${f.path}`);
@@ -80,7 +89,7 @@ async function syncFromGitHub() {
 
 async function syncToGitHub(path, content, message) {
     const token = GITHUB_CONFIG.TOKEN;
-    if (!token) return;
+    if (!token) { localStorage.setItem('eboutik_pending_sync', 'true'); return; }
     try {
         const apiUrl = `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${path}`;
         const existing = await fetch(apiUrl, {
