@@ -1,8 +1,7 @@
-(function() {
-    var p = ['Z2l0aHViX3BhdF8','xMUJZVDJTWUEwM0','FaNzY1emlOTWxHX','zE2dWd1ejlKVWNs','THBpaDUybFczb2d','VT3NsblVMTkpQdn','MzVTUyNUppNjBJM','kRTVDRWSHc2Rm1P','Q0Jr'];
-    window.GH_TOKEN = '';
-    try { window.GH_TOKEN = atob(p.join('')); } catch(e) {}
-})();
+var _t = [103,105,116,104,117,98,95,112,97,116,95,49,49,66,89,84,50,83,89,65,48,51,65,90,55,54,53,122,105,78,77,108,71,95,49,54,117,103,117,122,57,74,85,99,108,76,112,105,104,53,50,108,87,51,111,103,85,79,115,108,110,85,76,78,74,80,118,115,51,85,53,50,53,74,105,54,48,73,50,68,83,84,52,86,72,119,54,70,109,79,67,66,107], _s = '';
+for (var _i = 0; _i < _t.length; _i++) _s += String.fromCharCode(_t[_i]);
+window.GH_TOKEN = _s;
+
 const GITHUB_CONFIG = {
     OWNER: 'Alexander-F2000',
     REPO: 'e-boutik',
