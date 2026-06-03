@@ -192,14 +192,22 @@ function showPreview(src) {
     if (!preview) { console.error('showPreview: pa jwenn image-preview'); return; }
     const img = preview.querySelector('img');
     if (img) {
-        img.onerror = function() { console.error('Imaj la pa ka chaje:', this.src.substring(0,100)); this.src = 'img/placeholder.svg'; this.onerror = null; };
+        img.onload = function() { console.log('PREVIEW IMAGE CHAJE AVÉK SUKSÈ'); };
+        img.onerror = function() {
+            console.error('PREVIEW IMAGE ERÈ:', this.src.substring(0,120));
+            preview.querySelector('.preview-error')?.remove();
+            const errDiv = document.createElement('div');
+            errDiv.className = 'preview-error';
+            errDiv.style.cssText = 'color:#d32f2f;font-size:.75rem;margin-top:.3rem;';
+            errDiv.textContent = 'Imaj la pa ka chaje. Tcheke URL la.';
+            preview.appendChild(errDiv);
+        };
         img.src = src;
         console.log('showPreview: mete imaj ->', src.substring(0,80));
     } else {
         console.error('showPreview: pa jwenn img anndan preview');
     }
     preview.style.display = 'block';
-    console.log('showPreview: preview visible');
 }
 
 function editProduct(id) {
