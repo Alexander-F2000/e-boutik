@@ -187,7 +187,7 @@ function loadProducts() {
     `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen pwodui</td></tr>';
 }
 
-const PLACEHOLDER_DATA = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22 viewBox=%220 0 400 500%22%3E%3Crect width=%22400%22 height=%22500%22 fill=%22%23f0f0f0%22/%3E%3Crect x=%22160%22 y=%22200%22 width=%2280%22 height=%2280%22 rx=%228%22 fill=%22%23d0d0d0%22/%3E%3Ctext x=%22200%22 y=%22320%22 text-anchor=%22middle%22 font-family=%22Georgia, serif%22 font-size=%2214%22 fill=%22%23999%22%3Ee-boutik%3C/text%3E%3C/svg%3E";
+const PLACEHOLDER_DATA = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==";
 
 function adminFallback(img) {
     img.onerror = null;
