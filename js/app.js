@@ -45,9 +45,11 @@ function getCategories() {
 }
 function saveProducts(products) {
     localStorage.setItem('eboutik_products', JSON.stringify(products));
+    syncToGitHub('data/products.json', JSON.stringify(products, null, 2), 'Mete ajou pwodui yo');
 }
 function saveCategories(categories) {
     localStorage.setItem('eboutik_categories', JSON.stringify(categories));
+    syncToGitHub('data/categories.json', JSON.stringify(categories, null, 2), 'Mete ajou kategori yo');
 }
 function getOrders() {
     try { return JSON.parse(localStorage.getItem('eboutik_orders')) || []; }
@@ -55,6 +57,53 @@ function getOrders() {
 }
 function saveOrders(orders) {
     localStorage.setItem('eboutik_orders', JSON.stringify(orders));
+    syncToGitHub('data/orders.json', JSON.stringify(orders, null, 2), 'Mete ajou komand yo');
+}
+
+async function syncFromGitHub() {
+    if (localStorage.getItem('eboutik_pending_sync')) return;
+    const files = [
+        { path: 'products.json', key: 'eboutik_products' },
+        { path: 'categories.json', key: 'eboutik_categories' },
+        { path: 'orders.json', key: 'eboutik_orders' }
+    ];
+    for (const f of files) {
+        try {
+            const resp = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/main/data/${f.path}`);
+            if (resp.ok) {
+                const data = await resp.json();
+                localStorage.setItem(f.key, JSON.stringify(data));
+            }
+        } catch {}
+    }
+}
+
+async function syncToGitHub(path, content, message) {
+    const token = GITHUB_CONFIG.TOKEN;
+    if (!token) return;
+    try {
+        const apiUrl = `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${path}`;
+        const existing = await fetch(apiUrl, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const sha = existing.ok ? (await existing.json()).sha : null;
+        const base64Content = btoa(unescape(encodeURIComponent(content)));
+        const body = { message, content: base64Content };
+        if (sha) body.sha = sha;
+        const resp = await fetch(apiUrl, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+        if (resp.ok) localStorage.removeItem('eboutik_pending_sync');
+        else localStorage.setItem('eboutik_pending_sync', 'true');
+    } catch (e) {
+        localStorage.setItem('eboutik_pending_sync', 'true');
+        console.error('GitHub sync echwe:', e);
+    }
 }
 
 function showNotification(message) {

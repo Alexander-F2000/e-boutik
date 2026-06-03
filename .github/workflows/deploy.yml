@@ -22,6 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - name: Creer config.js
+        run: |
+          cat > js/config.js << EOF
+          const GITHUB_CONFIG = {
+              OWNER: 'Alexander-F2000',
+              REPO: 'e-boutik',
+              TOKEN: '${{ secrets.GH_CONTENT_TOKEN }}'
+          };
+          EOF
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '.'

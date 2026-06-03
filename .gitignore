@@ -7,3 +7,6 @@ Thumbs.db
 # Python
 __pycache__/
 *.py[cod]
+
+# Config
+js/config.js

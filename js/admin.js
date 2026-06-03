@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await syncFromGitHub();
     if (sessionStorage.getItem('eboutik_admin') === 'true') {
         showDashboard();
     }
@@ -53,13 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('image-preview').style.display = 'none';
     });
 
-    document.getElementById('product-image')?.addEventListener('input', (e) => {
-        let url = e.target.value;
-        if (url && url.startsWith('http://')) {
+    document.getElementById('product-image')?.addEventListener('change', (e) => {
+        let url = e.target.value.trim();
+        if (!url) return;
+        if (url.startsWith('http://')) {
             url = url.replace('http://', 'https://');
             e.target.value = url;
         }
-        if (url) showPreview(url);
+        showPreview(url);
     });
 
     function compressImage(file, maxW, quality, cb) {
@@ -167,6 +169,16 @@ function showDashboard() {
     loadProducts();
     loadOrders();
     loadCategories();
+    const syncEl = document.getElementById('sync-status');
+    if (syncEl) {
+        if (!GITHUB_CONFIG.TOKEN) {
+            syncEl.textContent = '⚠️ Pa gen token GitHub — chanjman yo lokal sèlman';
+        } else if (localStorage.getItem('eboutik_pending_sync')) {
+            syncEl.textContent = '⏳ Chanjman yo poko sinkronize — tcheke koneksyon w';
+        } else {
+            syncEl.textContent = '✅ Sinkronize ak GitHub';
+        }
+    }
 }
 
 function loadProducts() {
@@ -196,18 +208,23 @@ function adminFallback(img) {
 
 function showPreview(src) {
     const preview = document.getElementById('image-preview');
-    if (!preview) { console.error('showPreview: pa jwenn image-preview'); return; }
+    if (!preview) return;
     const img = preview.querySelector('img');
     if (img) {
-        img.onload = function() { console.log('PREVIEW IMAGE CHAJE AVÉK SUKSÈ'); };
+        let errMsg = preview.querySelector('.preview-error');
+        if (!errMsg) {
+            errMsg = document.createElement('p');
+            errMsg.className = 'preview-error';
+            errMsg.style.cssText = 'color:#b91c1c;font-size:.75rem;margin-top:.35rem;display:none;';
+            preview.appendChild(errMsg);
+        }
+        img.onload = function() { errMsg.style.display = 'none'; };
         img.onerror = function() {
-            console.error('PREVIEW IMAGE ERÈ:', this.src.substring(0,120));
             adminFallback(this);
+            errMsg.textContent = 'Imaj la pa ka chaje. Verifye URL la oswa eseye yon lòt imaj.';
+            errMsg.style.display = 'block';
         };
         img.src = src;
-        console.log('showPreview: mete imaj ->', src.substring(0,80));
-    } else {
-        console.error('showPreview: pa jwenn img anndan preview');
     }
     preview.style.display = 'block';
 }

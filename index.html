@@ -37,10 +37,12 @@
 
     <footer>e-boutik — 2026</footer>
 
+    <script src="js/config.js"></script>
     <script src="js/nav.js"></script>
     <script src="js/app.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            await syncFromGitHub();
             updateCartBadge();
 
             const products = getProducts();
