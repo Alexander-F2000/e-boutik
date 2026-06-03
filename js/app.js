@@ -1,4 +1,9 @@
-const PLACEHOLDER = 'img/placeholder.svg';
+const PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22 viewBox=%220 0 400 500%22%3E%3Crect width=%22400%22 height=%22500%22 fill=%22%23f0f0f0%22/%3E%3Crect x=%22160%22 y=%22200%22 width=%2280%22 height=%2280%22 rx=%228%22 fill=%22%23d0d0d0%22/%3E%3Ctext x=%22200%22 y=%22320%22 text-anchor=%22middle%22 font-family=%22Georgia, serif%22 font-size=%2214%22 fill=%22%23999%22%3Ee-boutik%3C/text%3E%3C/svg%3E";
+
+function fallbackImage(img) {
+    img.onerror = null;
+    img.src = PLACEHOLDER;
+}
 
 const defaultProducts = [
     { id: 1, name: 'Chemise en lin blanc', price: 49.99, category: 'Hommes', sizes: 'S, M, L, XL', image: PLACEHOLDER },
@@ -87,7 +92,7 @@ function showSizePicker(product) {
             <button class="size-picker-close" aria-label="Fèmen">&times;</button>
             <div class="size-picker-layout">
                 <img src="${pickerImg}" alt="${product.name}"
-                     onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{this.src='${PLACEHOLDER}';this.onerror=null}">
+                     onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{fallbackImage(this)}">
                 <div class="size-picker-info">
                     <div class="size-picker-category">${product.category || ''}</div>
                     <div class="size-picker-name">${product.name}</div>
@@ -131,7 +136,7 @@ function renderProductCard(p) {
     return `
         <div class="product-card" tabindex="0" role="button" aria-label="${p.name}">
             <div class="product-image-wrap">
-                <img class="product-image" src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{this.src='${PLACEHOLDER}';this.onerror=null}">
+                <img class="product-image" src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{fallbackImage(this)}">
                 <div class="product-overlay">
                     <button class="add-cart-btn" onclick="event.stopPropagation();showSizePicker(${prodJson})">Ajoute nan demann</button>
                 </div>
@@ -235,7 +240,7 @@ function renderCart() {
         html += `
             <li class="cart-item">
                 <img src="${imgSrc}" alt="${item.name}"
-                     onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{this.src='${PLACEHOLDER}';this.onerror=null}">
+                     onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{fallbackImage(this)}">
                 <div class="cart-item-info">
                     <div class="cart-item-name">${item.name}</div>
                     ${item.size ? `<div class="cart-item-detail">Gwosè: ${item.size}</div>` : ''}

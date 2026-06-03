@@ -187,6 +187,13 @@ function loadProducts() {
     `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen pwodui</td></tr>';
 }
 
+const PLACEHOLDER_DATA = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22 viewBox=%220 0 400 500%22%3E%3Crect width=%22400%22 height=%22500%22 fill=%22%23f0f0f0%22/%3E%3Crect x=%22160%22 y=%22200%22 width=%2280%22 height=%2280%22 rx=%228%22 fill=%22%23d0d0d0%22/%3E%3Ctext x=%22200%22 y=%22320%22 text-anchor=%22middle%22 font-family=%22Georgia, serif%22 font-size=%2214%22 fill=%22%23999%22%3Ee-boutik%3C/text%3E%3C/svg%3E";
+
+function adminFallback(img) {
+    img.onerror = null;
+    img.src = PLACEHOLDER_DATA;
+}
+
 function showPreview(src) {
     const preview = document.getElementById('image-preview');
     if (!preview) { console.error('showPreview: pa jwenn image-preview'); return; }
@@ -195,12 +202,7 @@ function showPreview(src) {
         img.onload = function() { console.log('PREVIEW IMAGE CHAJE AVÉK SUKSÈ'); };
         img.onerror = function() {
             console.error('PREVIEW IMAGE ERÈ:', this.src.substring(0,120));
-            preview.querySelector('.preview-error')?.remove();
-            const errDiv = document.createElement('div');
-            errDiv.className = 'preview-error';
-            errDiv.style.cssText = 'color:#d32f2f;font-size:.75rem;margin-top:.3rem;';
-            errDiv.textContent = 'Imaj la pa ka chaje. Tcheke URL la.';
-            preview.appendChild(errDiv);
+            adminFallback(this);
         };
         img.src = src;
         console.log('showPreview: mete imaj ->', src.substring(0,80));
