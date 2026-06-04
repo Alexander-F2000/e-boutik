@@ -7,7 +7,11 @@
     "sizes": "S, M, L, XL",
     "image": "https://images.thebestshops.com/product_images/original/SL10662-048_01-a05350.jpg",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   },
   {
     "id": 2,
@@ -17,7 +21,11 @@
     "sizes": "XS, S, M, L",
     "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   },
   {
     "id": 3,
@@ -27,7 +35,11 @@
     "sizes": "Unique",
     "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   },
   {
     "id": 4,
@@ -37,7 +49,11 @@
     "sizes": "S, M, L",
     "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   },
   {
     "id": 5,
@@ -47,7 +63,11 @@
     "sizes": "30, 32, 34, 36",
     "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   },
   {
     "id": 6,
@@ -57,7 +77,11 @@
     "sizes": "Unique",
     "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   },
   {
     "id": 7,
@@ -67,7 +91,11 @@
     "sizes": "XS, S, M, L",
     "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   },
   {
     "id": 8,
@@ -77,7 +105,11 @@
     "sizes": "S, M, L, XL, XXL",
     "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   },
   {
     "id": 9,
@@ -87,7 +119,11 @@
     "sizes": "90, 100, 110",
     "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   },
   {
     "id": 10,
@@ -97,7 +133,11 @@
     "sizes": "S, M, L",
     "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   },
   {
     "id": 11,
@@ -107,7 +147,11 @@
     "sizes": "39, 40, 41, 42, 43",
     "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   },
   {
     "id": 12,
@@ -117,6 +161,10 @@
     "sizes": "Unique",
     "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==",
     "stock": 10,
-    "description": ""
+    "description": "",
+    "brand": "",
+    "material": "",
+    "color": "",
+    "image_hover": ""
   }
 ]

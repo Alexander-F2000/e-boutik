@@ -6,18 +6,18 @@ function fallbackImage(img) {
 }
 
 const defaultProducts = [
-    { id: 1, name: 'Chemise en lin blanc', price: 49.99, category: 'Hommes', sizes: 'S, M, L, XL', image: PLACEHOLDER },
-    { id: 2, name: 'Robe fleurie été', price: 59.99, category: 'Femmes', sizes: 'XS, S, M, L', image: PLACEHOLDER },
-    { id: 3, name: 'Sac en cuir noir', price: 89.99, category: 'Accessoires', sizes: 'Unique', image: PLACEHOLDER },
-    { id: 4, name: 'Blazer oversize', price: 79.99, category: 'Femmes', sizes: 'S, M, L', image: PLACEHOLDER },
-    { id: 5, name: 'Jean brut slim', price: 69.99, category: 'Hommes', sizes: '30, 32, 34, 36', image: PLACEHOLDER },
-    { id: 6, name: 'Montre minimaliste', price: 129.99, category: 'Accessoires', sizes: 'Unique', image: PLACEHOLDER },
-    { id: 7, name: 'Pantalon large beige', price: 54.99, category: 'Femmes', sizes: 'XS, S, M, L', image: PLACEHOLDER },
-    { id: 8, name: 'T-shirt coton bio', price: 29.99, category: 'Hommes', sizes: 'S, M, L, XL, XXL', image: PLACEHOLDER },
-    { id: 9, name: 'Ceinture tressée', price: 39.99, category: 'Accessoires', sizes: '90, 100, 110', image: PLACEHOLDER },
-    { id: 10, name: 'Veste en jean', price: 94.99, category: 'Femmes', sizes: 'S, M, L', image: PLACEHOLDER },
-    { id: 11, name: 'Mocassins cuir', price: 109.99, category: 'Hommes', sizes: '39, 40, 41, 42, 43', image: PLACEHOLDER },
-    { id: 12, name: 'Écharpe cachemire', price: 69.99, category: 'Accessoires', sizes: 'Unique', image: PLACEHOLDER }
+    { id: 1, name: 'Chemise en lin blanc', price: 49.99, category: 'Hommes', sizes: 'S, M, L, XL', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
+    { id: 2, name: 'Robe fleurie été', price: 59.99, category: 'Femmes', sizes: 'XS, S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
+    { id: 3, name: 'Sac en cuir noir', price: 89.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
+    { id: 4, name: 'Blazer oversize', price: 79.99, category: 'Femmes', sizes: 'S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
+    { id: 5, name: 'Jean brut slim', price: 69.99, category: 'Hommes', sizes: '30, 32, 34, 36', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
+    { id: 6, name: 'Montre minimaliste', price: 129.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
+    { id: 7, name: 'Pantalon large beige', price: 54.99, category: 'Femmes', sizes: 'XS, S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
+    { id: 8, name: 'T-shirt coton bio', price: 29.99, category: 'Hommes', sizes: 'S, M, L, XL, XXL', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
+    { id: 9, name: 'Ceinture tressée', price: 39.99, category: 'Accessoires', sizes: '90, 100, 110', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
+    { id: 10, name: 'Veste en jean', price: 94.99, category: 'Femmes', sizes: 'S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
+    { id: 11, name: 'Mocassins cuir', price: 109.99, category: 'Hommes', sizes: '39, 40, 41, 42, 43', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
+    { id: 12, name: 'Écharpe cachemire', price: 69.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' }
 ];
 
 const defaultCategoryNames = ['Hommes', 'Femmes', 'Accessoires'];
@@ -190,17 +190,21 @@ function renderProductCard(p) {
     const sizes = p.sizes ? p.sizes.split(',').map(s => s.trim()).join(', ') : '';
     let imgSrc = p.image || PLACEHOLDER;
     if (imgSrc.startsWith('http://')) imgSrc = imgSrc.replace('http://', 'https://');
+    let imgHov = p.image_hover || '';
+    if (imgHov.startsWith('http://')) imgHov = imgHov.replace('http://', 'https://');
     const prodJson = JSON.stringify(p).replace(/'/g, "&#39;");
+    const wrapStyle = imgHov ? `style="background-image:url('${imgHov}');background-size:cover;background-position:center;"` : '';
     return `
         <div class="product-card" tabindex="0" role="button" aria-label="${p.name}">
-            <div class="product-image-wrap">
-                <img class="product-image" src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{fallbackImage(this)}">
+            <div class="product-image-wrap" ${wrapStyle}>
+                <img class="product-image${imgHov ? ' has-hover' : ''}" src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{fallbackImage(this)}">
                 <div class="product-overlay">
                     <button class="add-cart-btn" onclick="event.stopPropagation();showSizePicker(${prodJson})">Ajoute nan demann</button>
                 </div>
             </div>
             <div class="product-info">
                 <div class="product-category">${p.category || ''}</div>
+                ${p.brand ? `<div class="product-brand">${p.brand}</div>` : ''}
                 <div class="product-name">${p.name}</div>
                 <div class="product-price">${Number(p.price).toFixed(2)} G</div>
                 ${sizes ? `<div class="product-sizes">${sizes}</div>` : ''}

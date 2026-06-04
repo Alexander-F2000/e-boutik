@@ -99,8 +99,22 @@
                             <label>Gwosè (separe pa vigil)</label>
                             <input type="text" id="product-sizes" placeholder="S, M, L, XL">
                         </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label>Mak</label>
+                                <input type="text" id="product-brand" placeholder="Nike, Adidas...">
+                            </div>
+                            <div class="form-group">
+                                <label>Matiè</label>
+                                <input type="text" id="product-material" placeholder="Koton, Kwiv...">
+                            </div>
+                            <div class="form-group">
+                                <label>Koulè</label>
+                                <input type="text" id="product-color" placeholder="Blan, Nwa...">
+                            </div>
+                        </div>
                         <div class="form-group">
-                            <label>Imaj</label>
+                            <label>Imaj prensipal</label>
                             <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
                                 <input type="text" id="product-image" placeholder="https://..." style="flex:1;min-width:180px;">
                                 <span style="color:var(--text-light);font-size:.75rem;line-height:2.5;">oubyen</span>
@@ -109,6 +123,17 @@
                             <p style="font-size:.7rem;color:var(--text-light);margin-top:.35rem;">URL dwe kòmanse ak <strong>https://</strong> pou mache sou sit la</p>
                             <div id="image-preview" style="margin-top:.5rem;display:none;">
                                 <img src="" alt="preview" style="max-width:120px;max-height:120px;border-radius:4px;border:1px solid var(--border);">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Imaj hover (2yèm imaj lè sourit pase)</label>
+                            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+                                <input type="text" id="product-image-hover" placeholder="https://..." style="flex:1;min-width:180px;">
+                                <span style="color:var(--text-light);font-size:.75rem;line-height:2.5;">oubyen</span>
+                                <input type="file" id="product-image-hover-file" accept="image/jpeg,image/png,image/webp,image/gif" style="flex:1;min-width:150px;padding:.5rem 0;">
+                            </div>
+                            <div id="image-preview-hover" style="margin-top:.5rem;display:none;">
+                                <img src="" alt="preview hover" style="max-width:120px;max-height:120px;border-radius:4px;border:1px solid var(--border);">
                             </div>
                         </div>
                         <div style="display:flex; gap:.5rem;">
