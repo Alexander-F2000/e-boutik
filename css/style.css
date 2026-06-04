@@ -315,6 +315,22 @@ nav .nav-links a:hover::after { width: 100%; }
     color: var(--text-light);
     margin-top: .3rem;
 }
+.product-card .product-brand {
+    font-size: .72rem;
+    color: var(--text-light);
+    margin-bottom: .1rem;
+    font-weight: 500;
+}
+.product-card .product-image-wrap {
+    position: relative;
+    overflow: hidden;
+}
+.product-card .product-image.has-hover {
+    transition: opacity .35s ease;
+}
+.product-card:hover .product-image.has-hover {
+    opacity: 0;
+}
 
 /* Search */
 .search-bar { margin-bottom: 1.2rem; }

@@ -92,6 +92,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    document.getElementById('product-image-hover')?.addEventListener('change', (e) => {
+        const url = e.target.value.trim();
+        if (url) showPreviewHover(url);
+    });
+
+    document.getElementById('product-image-hover-file')?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        compressImage(file, 800, 0.7, (compressed) => {
+            document.getElementById('product-image-hover').value = compressed;
+            showPreviewHover(compressed);
+        });
+    });
+
     document.getElementById('product-form')?.addEventListener('submit', (e) => {
         e.preventDefault();
         try {
@@ -105,7 +119,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 category: document.getElementById('product-category').value,
                 sizes: document.getElementById('product-sizes').value.trim(),
                 stock: parseInt(document.getElementById('product-stock').value) || 0,
-                image: document.getElementById('product-image').value || 'img/placeholder.svg'
+                brand: document.getElementById('product-brand').value.trim(),
+                material: document.getElementById('product-material').value.trim(),
+                color: document.getElementById('product-color').value.trim(),
+                image: document.getElementById('product-image').value || '',
+                image_hover: document.getElementById('product-image-hover').value || ''
             };
 
             if (!data.name) { alert('Tanpri antre non pwodui a.'); return; }
@@ -229,6 +247,29 @@ function showPreview(src) {
     preview.style.display = 'block';
 }
 
+function showPreviewHover(src) {
+    const preview = document.getElementById('image-preview-hover');
+    if (!preview) return;
+    const img = preview.querySelector('img');
+    if (img) {
+        let errMsg = preview.querySelector('.preview-error');
+        if (!errMsg) {
+            errMsg = document.createElement('p');
+            errMsg.className = 'preview-error';
+            errMsg.style.cssText = 'color:#b91c1c;font-size:.75rem;margin-top:.35rem;display:none;';
+            preview.appendChild(errMsg);
+        }
+        img.onload = function() { errMsg.style.display = 'none'; };
+        img.onerror = function() {
+            adminFallback(this);
+            errMsg.textContent = 'Imaj la pa ka chaje. Verifye URL la oswa eseye yon lòt imaj.';
+            errMsg.style.display = 'block';
+        };
+        img.src = src;
+    }
+    preview.style.display = 'block';
+}
+
 function editProduct(id) {
     try {
         const products = getProducts();
@@ -243,11 +284,19 @@ function editProduct(id) {
         document.getElementById('product-category').value = p.category || '';
         document.getElementById('product-sizes').value = p.sizes || '';
         document.getElementById('product-stock').value = p.stock || 0;
+        document.getElementById('product-brand').value = p.brand || '';
+        document.getElementById('product-material').value = p.material || '';
+        document.getElementById('product-color').value = p.color || '';
         let imgVal = p.image || '';
         if (imgVal.startsWith('http://')) imgVal = imgVal.replace('http://', 'https://');
         document.getElementById('product-image').value = imgVal;
         document.getElementById('image-preview').style.display = 'none';
         if (imgVal) showPreview(imgVal);
+        let imgHov = p.image_hover || '';
+        if (imgHov.startsWith('http://')) imgHov = imgHov.replace('http://', 'https://');
+        document.getElementById('product-image-hover').value = imgHov;
+        document.getElementById('image-preview-hover').style.display = 'none';
+        if (imgHov) showPreviewHover(imgHov);
         document.getElementById('product-form-submit').textContent = 'Modifye';
         document.getElementById('product-form-cancel').style.display = 'inline-block';
     } catch(e) {
