@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Products
+    document.getElementById('show-add-form-btn')?.addEventListener('click', () => {
         const form = document.getElementById('product-form');
         form.style.display = 'block';
         form.reset();
