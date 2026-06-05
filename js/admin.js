@@ -34,11 +34,41 @@ document.addEventListener('DOMContentLoaded', async () => {
             btn.classList.add('active');
             document.querySelectorAll('.admin-tab-content').forEach(el => el.style.display = 'none');
             document.getElementById('tab-' + btn.dataset.tab).style.display = 'block';
+            if (btn.dataset.tab === 'stock') { loadStockTab(); loadSaleProducts(); }
+            if (btn.dataset.tab === 'sales') { loadSaleProducts(); updateSaleCalc(); }
+            if (btn.dataset.tab === 'reports') loadReportsTab();
         });
     });
 
+    document.getElementById('show-purchase-btn')?.addEventListener('click', () => {
+        document.getElementById('purchase-form').style.display = 'block';
+        document.getElementById('purchase-product').innerHTML = '';
+        const products = getProducts();
+        document.getElementById('purchase-product').innerHTML = products.map(p =>
+            `<option value="${p.id}">${p.name} (Stòk: ${p.stock || 0})</option>`
+        ).join('');
+        document.getElementById('purchase-qty').value = 10;
+        document.getElementById('purchase-cost').value = 0;
+        document.getElementById('purchase-note').value = '';
+        document.getElementById('purchase-calc').textContent = '';
+    });
+
+    document.getElementById('purchase-qty')?.addEventListener('input', () => {
+        const qty = parseInt(document.getElementById('purchase-qty').value) || 0;
+        const cost = parseFloat(document.getElementById('purchase-cost').value) || 0;
+        document.getElementById('purchase-calc').textContent = qty > 0 && cost > 0
+            ? 'Total: ' + (qty * cost).toFixed(2) + ' G'
+            : '';
+    });
+    document.getElementById('purchase-cost')?.addEventListener('input', () => {
+        const qty = parseInt(document.getElementById('purchase-qty').value) || 0;
+        const cost = parseFloat(document.getElementById('purchase-cost').value) || 0;
+        document.getElementById('purchase-calc').textContent = qty > 0 && cost > 0
+            ? 'Total: ' + (qty * cost).toFixed(2) + ' G'
+            : '';
+    });
+
     // Products
-    document.getElementById('show-add-form-btn')?.addEventListener('click', () => {
         const form = document.getElementById('product-form');
         form.style.display = 'block';
         form.reset();
@@ -52,6 +82,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('product-form-cancel')?.addEventListener('click', () => {
         document.getElementById('product-form').style.display = 'none';
         document.getElementById('image-preview').style.display = 'none';
+    });
+
+    document.getElementById('purchase-cancel')?.addEventListener('click', () => {
+        document.getElementById('purchase-form').style.display = 'none';
+    });
+
+    document.getElementById('purchase-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const pid = parseInt(document.getElementById('purchase-product').value);
+        const qty = parseInt(document.getElementById('purchase-qty').value) || 0;
+        const cost = parseFloat(document.getElementById('purchase-cost').value) || 0;
+        const note = document.getElementById('purchase-note').value.trim();
+        if (!pid || qty <= 0 || cost <= 0) { alert('Ranpli tout chan yo.'); return; }
+        addPurchase(pid, qty, cost, note);
+        document.getElementById('purchase-form').style.display = 'none';
+        loadStockTab();
+    });
+
+    document.getElementById('sale-qty')?.addEventListener('input', updateSaleCalc);
+    document.getElementById('sale-type')?.addEventListener('change', updateSaleCalc);
+    document.getElementById('sale-product')?.addEventListener('change', updateSaleCalc);
+
+    document.getElementById('sale-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const pid = parseInt(document.getElementById('sale-product').value);
+        const qty = parseInt(document.getElementById('sale-qty').value) || 0;
+        const type = document.getElementById('sale-type').value;
+        const msg = document.getElementById('sale-message');
+        if (!pid || qty <= 0) { msg.className = 'error'; msg.textContent = 'Chwazi yon pwodui ak yon kantite.'; return; }
+        const result = sellProduct(pid, qty, type);
+        if (result.error) { msg.className = 'error'; msg.textContent = result.error; return; }
+        msg.className = 'success';
+        msg.textContent = 'Vant konfime! Total: ' + result.totalPrice.toFixed(2) + ' G, Bénéfis: ' + result.profit.toFixed(2) + ' G';
+        document.getElementById('sale-qty').value = 1;
+        updateSaleCalc();
+        loadStockTab();
+        if (document.getElementById('tab-reports').style.display !== 'none') loadReportsTab();
     });
 
     document.getElementById('product-image')?.addEventListener('change', (e) => {
@@ -115,6 +182,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = {
                 name: document.getElementById('product-name').value.trim(),
                 price: parseFloat(document.getElementById('product-price').value) || 0,
+                costPrice: parseFloat(document.getElementById('product-costprice').value) || 0,
+                wholesalePrice: parseFloat(document.getElementById('product-wholesaleprice').value) || 0,
+                batchQuantity: parseInt(document.getElementById('product-batchquantity').value) || 0,
+                batchPrice: parseFloat(document.getElementById('product-batchprice').value) || 0,
+                alertThreshold: parseInt(document.getElementById('product-alertthreshold').value) || 5,
                 description: document.getElementById('product-description').value.trim(),
                 category: document.getElementById('product-category').value,
                 sizes: document.getElementById('product-sizes').value.trim(),
@@ -140,6 +212,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             saveProducts(products);
             document.getElementById('product-form').style.display = 'none';
             loadProducts();
+            loadStockTab();
         } catch(e) {
             console.error('Form submit erè:', e);
             alert('Yon erè rive lè sove pwodui a.');
@@ -187,16 +260,7 @@ function showDashboard() {
     loadProducts();
     loadOrders();
     loadCategories();
-    const syncEl = document.getElementById('sync-status');
-    if (syncEl) {
-        if (!GITHUB_CONFIG.TOKEN) {
-            syncEl.textContent = '⚠️ Pa gen token GitHub — chanjman yo lokal sèlman';
-        } else if (localStorage.getItem('eboutik_pending_sync')) {
-            syncEl.textContent = '⏳ Chanjman yo poko sinkronize — tcheke koneksyon w';
-        } else {
-            syncEl.textContent = '✅ Sinkronize ak GitHub';
-        }
-    }
+    loadStockTab();
 }
 
 function loadProducts() {
@@ -280,6 +344,11 @@ function editProduct(id) {
         document.getElementById('product-id').value = p.id;
         document.getElementById('product-name').value = p.name;
         document.getElementById('product-price').value = p.price;
+        document.getElementById('product-costprice').value = p.costPrice || 0;
+        document.getElementById('product-wholesaleprice').value = p.wholesalePrice || 0;
+        document.getElementById('product-batchquantity').value = p.batchQuantity || 0;
+        document.getElementById('product-batchprice').value = p.batchPrice || 0;
+        document.getElementById('product-alertthreshold').value = p.alertThreshold || 5;
         document.getElementById('product-description').value = p.description || '';
         document.getElementById('product-category').value = p.category || '';
         document.getElementById('product-sizes').value = p.sizes || '';
@@ -424,4 +493,144 @@ function showOrderDetail(id) {
     document.body.appendChild(overlay);
     overlay.querySelector('.size-picker-close').addEventListener('click', () => overlay.remove());
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+}
+
+function loadStockTab() {
+    const tbody = document.getElementById('stock-table-body');
+    const products = getProducts();
+    const alerts = document.getElementById('stock-alerts');
+    if (!tbody) return;
+    const lowStock = products.filter(p => (p.stock || 0) <= p.alertThreshold);
+    if (lowStock.length > 0) {
+        alerts.innerHTML = '<div style="background:#fff3e0;border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:.82rem;border-left:3px solid #ff9800;">⚠️ ' + lowStock.length + ' pwodui gen stòk ki ba: '
+            + lowStock.map(p => '<strong>' + p.name + '</strong> (' + (p.stock || 0) + ' / ' + p.alertThreshold + ')').join(', ')
+            + '</div>';
+    } else {
+        alerts.innerHTML = '<div style="background:#e8f5e9;border-radius:var(--radius-sm);padding:.5rem 1rem;font-size:.82rem;color:#2e7d32;">✅ Tout pwodui gen ase stòk</div>';
+    }
+    tbody.innerHTML = products.map(p => {
+        const st = p.stock || 0;
+        const warn = st <= p.alertThreshold;
+        return '<tr' + (warn ? ' style="background:#fff8e1;"' : '') + '>'
+            + '<td>' + p.name + '</td>'
+            + '<td' + (warn ? ' style="color:#d32f2f;font-weight:600;"' : '') + '>' + st + '</td>'
+            + '<td>' + (p.costPrice || 0).toFixed(2) + ' G</td>'
+            + '<td>' + parseFloat(p.price).toFixed(2) + ' G</td>'
+            + '<td>' + p.alertThreshold + '</td>'
+            + '<td>' + (warn ? '<span style="color:#d32f2f;font-size:1.1rem;">⚠️</span>' : '<span style="color:#2e7d32;">✓</span>') + '</td>'
+            + '</tr>';
+    }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen pwodui</td></tr>';
+}
+
+function loadSaleProducts() {
+    const select = document.getElementById('sale-product');
+    if (!select) return;
+    const products = getProducts();
+    select.innerHTML = products.map(p =>
+        '<option value="' + p.id + '">' + p.name + ' (Stòk: ' + (p.stock || 0) + ')</option>'
+    ).join('');
+}
+
+function updateSaleCalc() {
+    const pid = parseInt(document.getElementById('sale-product')?.value);
+    const qty = parseInt(document.getElementById('sale-qty')?.value) || 0;
+    const type = document.getElementById('sale-type')?.value;
+    if (!pid || qty <= 0) {
+        document.getElementById('sale-unit-price-display').textContent = '0.00 G';
+        document.getElementById('sale-total-display').textContent = '0.00 G';
+        document.getElementById('sale-profit-display').textContent = '';
+        document.getElementById('sale-batch-detail').style.display = 'none';
+        document.getElementById('sale-discount').style.display = 'none';
+        return;
+    }
+    const products = getProducts();
+    const p = products.find(x => x.id == pid);
+    if (!p) return;
+    let unitPrice = 0, totalPrice = 0, profit = 0;
+    let batchDetail = '', discountText = '';
+    if (type === 'EN_GROS') {
+        unitPrice = p.wholesalePrice || p.price;
+        totalPrice = Math.round(unitPrice * qty * 100) / 100;
+    } else if (type === 'BATCH' && p.batchQuantity > 0) {
+        const batchQty = p.batchQuantity;
+        const batchP = p.batchPrice || 0;
+        const normalUnitPrice = p.price;
+        const fullBatches = Math.floor(qty / batchQty);
+        const remainder = qty % batchQty;
+        const batchTotal = fullBatches * batchP;
+        const remainderTotal = remainder * normalUnitPrice;
+        totalPrice = Math.round((batchTotal + remainderTotal) * 100) / 100;
+        unitPrice = qty > 0 ? totalPrice / qty : 0;
+        if (fullBatches > 0) {
+            batchDetail = fullBatches + ' lot x ' + batchP.toFixed(2) + ' G = ' + batchTotal.toFixed(2) + ' G';
+            if (remainder > 0) {
+                batchDetail += ' + rès ' + remainder + ' inite x ' + normalUnitPrice.toFixed(2) + ' G = ' + remainderTotal.toFixed(2) + ' G';
+            }
+            const normalBatchPrice = batchQty * normalUnitPrice;
+            if (normalBatchPrice > 0) {
+                const disc = Math.round(((normalBatchPrice - batchP) / normalBatchPrice) * 100);
+                discountText = 'Rabais: -' + disc + '%';
+            }
+        } else {
+            unitPrice = normalUnitPrice;
+            totalPrice = Math.round(unitPrice * qty * 100) / 100;
+            batchDetail = 'Mwens ke yon lot. Pri inite nòmal aplike.';
+        }
+    } else {
+        unitPrice = p.price;
+        totalPrice = Math.round(unitPrice * qty * 100) / 100;
+    }
+    profit = Math.round((unitPrice - (p.costPrice || 0)) * qty * 100) / 100;
+    document.getElementById('sale-unit-price-display').textContent = unitPrice.toFixed(2) + ' G';
+    document.getElementById('sale-total-display').textContent = totalPrice.toFixed(2) + ' G';
+    const profitEl = document.getElementById('sale-profit-display');
+    if (profit >= 0) {
+        profitEl.innerHTML = '💰 Bénéfis estime: <strong style="color:#2e7d32;">' + profit.toFixed(2) + ' G</strong>';
+    } else {
+        profitEl.innerHTML = '📉 Pèt estime: <strong style="color:#d32f2f;">' + Math.abs(profit).toFixed(2) + ' G</strong>';
+    }
+    const batchEl = document.getElementById('sale-batch-detail');
+    if (batchDetail) {
+        batchEl.style.display = 'block';
+        batchEl.textContent = batchDetail;
+    } else {
+        batchEl.style.display = 'none';
+    }
+    const discEl = document.getElementById('sale-discount');
+    if (discountText) {
+        discEl.style.display = 'block';
+        discEl.textContent = discountText;
+    } else {
+        discEl.style.display = 'none';
+    }
+}
+
+function loadReportsTab() {
+    const tbody = document.getElementById('transactions-table-body');
+    if (!tbody) return;
+    const txns = getTransactions();
+    const sales = txns.filter(t => t.type === 'VENTE');
+    const totalSales = sales.reduce((s, t) => s + t.totalPrice, 0);
+    const totalProfit = sales.reduce((s, t) => s + t.profit, 0);
+    const simpleSales = sales.filter(t => t.saleType === 'SIMPLE').reduce((s, t) => s + t.totalPrice, 0);
+    const wholesaleSales = sales.filter(t => t.saleType === 'EN_GROS').reduce((s, t) => s + t.totalPrice, 0);
+    document.getElementById('stat-total-sales').textContent = totalSales.toFixed(2) + ' G';
+    document.getElementById('stat-total-profit').textContent = totalProfit.toFixed(2) + ' G';
+    document.getElementById('stat-simple-sales').textContent = simpleSales.toFixed(2) + ' G';
+    document.getElementById('stat-wholesale-sales').textContent = wholesaleSales.toFixed(2) + ' G';
+    tbody.innerHTML = txns.slice().reverse().map(t => {
+        const isSale = t.type === 'VENTE';
+        return '<tr>'
+            + '<td style="font-size:.75rem;">' + (t.createdAt || '—') + '</td>'
+            + '<td><span style="padding:.15rem .5rem;border-radius:4px;font-size:.7rem;font-weight:500;'
+            + (isSale ? 'background:#e8f5e9;color:#2e7d32;">VENTE' : 'background:#e3f2fd;color:#1565c0;">ACHAT')
+            + (t.saleType && isSale ? ' (' + t.saleType + ')' : '') + '</span></td>'
+            + '<td>' + (t.productName || '—') + '</td>'
+            + '<td>' + t.quantity + '</td>'
+            + '<td>' + (t.totalPrice || 0).toFixed(2) + ' G</td>'
+            + '<td style="color:' + (isSale ? (t.profit >= 0 ? '#2e7d32' : '#d32f2f') : '#999') + ';">'
+            + (isSale ? (t.profit || 0).toFixed(2) + ' G' : '—') + '</td>'
+            + '<td><button class="btn btn-outline btn-sm" onclick="deleteTransaction(' + t.id + ');loadReportsTab();loadStockTab();">Siprime</button></td>'
+            + '</tr>';
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen tranzaksyon</td></tr>';
 }

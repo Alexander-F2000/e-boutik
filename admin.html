@@ -50,16 +50,18 @@
         <div id="dashboard-section" class="admin-dashboard" style="display:none;">
             <div class="admin-header">
                 <h2>Tablo debò</h2>
-                <div style="display:flex;align-items:center;gap:.5rem;">
-                    <span id="sync-status" style="font-size:.75rem;color:var(--text-light);"></span>
+                <div>
                     <button class="btn btn-outline btn-sm" id="logout-btn">Dekonekte</button>
                 </div>
             </div>
 
             <div class="admin-tabs">
                 <button class="active" data-tab="products">Pwodui</button>
+                <button data-tab="stock">Stòk</button>
+                <button data-tab="sales">Vant</button>
                 <button data-tab="categories">Kategori</button>
                 <button data-tab="orders">Kòmand</button>
+                <button data-tab="reports">Rapò</button>
             </div>
 
             <div class="admin-tab-content" id="tab-products">
@@ -77,8 +79,18 @@
                                 <input type="text" id="product-name" required>
                             </div>
                             <div class="form-group">
-                                <label>Pri (G)</label>
+                                <label>Pri vant (G)</label>
                                 <input type="number" step="0.01" id="product-price" required>
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label>Pri revian (G)</label>
+                                <input type="number" step="0.01" id="product-costprice" value="0" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label>Pri an gwo (G)</label>
+                                <input type="number" step="0.01" id="product-wholesaleprice" value="0" placeholder="0.00">
                             </div>
                         </div>
                         <div class="form-group">
@@ -95,9 +107,25 @@
                                 <input type="number" id="product-stock" value="10">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label>Gwosè (separe pa vigil)</label>
-                            <input type="text" id="product-sizes" placeholder="S, M, L, XL">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label>Quantite pa lot</label>
+                                <input type="number" id="product-batchquantity" value="0" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Pri pa lot (G)</label>
+                                <input type="number" step="0.01" id="product-batchprice" value="0" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label>Sej alèt stòk</label>
+                                <input type="number" id="product-alertthreshold" value="5" placeholder="5">
+                            </div>
+                            <div class="form-group">
+                                <label>Gwosè (separe pa vigil)</label>
+                                <input type="text" id="product-sizes" placeholder="S, M, L, XL">
+                            </div>
                         </div>
                         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
                             <div class="form-group">
@@ -210,6 +238,136 @@
                                 </tr>
                             </thead>
                             <tbody id="orders-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-tab-content" id="tab-stock" style="display:none;">
+                <div class="admin-card">
+                    <h3>Jesyon stòk</h3>
+                    <div class="admin-actions">
+                        <button class="btn btn-primary btn-sm" id="show-purchase-btn">+ Reaprovisionne</button>
+                    </div>
+                    <div id="stock-alerts" style="margin-bottom:1rem;"></div>
+                    <form id="purchase-form" style="display:none; max-width:500px; margin-bottom:1.5rem; padding:1rem; background:var(--accent-light); border-radius:var(--radius-sm);">
+                        <h4 style="margin-bottom:.8rem;font-family:var(--font-serif);font-weight:400;">Reaprovisionne stòk</h4>
+                        <div class="form-group">
+                            <label>Pwodui</label>
+                            <select id="purchase-product"></select>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label>Kantite</label>
+                                <input type="number" id="purchase-qty" value="10" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label>Pri inite (G)</label>
+                                <input type="number" step="0.01" id="purchase-cost" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Nòt</label>
+                            <input type="text" id="purchase-note" placeholder="Founisè, n° fakti...">
+                        </div>
+                        <div id="purchase-calc" style="font-size:.85rem;color:var(--text-secondary);margin-bottom:.8rem;"></div>
+                        <div style="display:flex;gap:.5rem;">
+                            <button type="submit" class="btn btn-primary btn-sm">Valide acha a</button>
+                            <button type="button" class="btn btn-outline btn-sm" id="purchase-cancel">Anile</button>
+                        </div>
+                    </form>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Pwodui</th>
+                                    <th>Stòk</th>
+                                    <th>Pri Revian</th>
+                                    <th>Pri Vant</th>
+                                    <th>Sèj Alèt</th>
+                                    <th>Estatì</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stock-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-tab-content" id="tab-sales" style="display:none;">
+                <div class="admin-card">
+                    <h3>Fè yon vant</h3>
+                    <form id="sale-form" style="max-width:500px;">
+                        <div class="form-group">
+                            <label>Pwodui</label>
+                            <select id="sale-product"></select>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                            <div class="form-group">
+                                <label>Kantite</label>
+                                <input type="number" id="sale-qty" value="1" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label>Kalite vant</label>
+                                <select id="sale-type">
+                                    <option value="SIMPLE">Senp</option>
+                                    <option value="EN_GROS">An gwo</option>
+                                    <option value="BATCH">Pa lot</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="sale-price-display" style="background:var(--accent-light);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1rem;">
+                            <div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--text-secondary);margin-bottom:.3rem;">
+                                <span>Pri inite:</span><span id="sale-unit-price-display">0.00 G</span>
+                            </div>
+                            <div id="sale-batch-detail" style="display:none;font-size:.8rem;color:var(--text-secondary);margin-bottom:.3rem;"></div>
+                            <div id="sale-discount" style="display:none;font-size:.8rem;color:#2e7d32;margin-bottom:.3rem;"></div>
+                            <div style="display:flex;justify-content:space-between;font-size:1.1rem;font-weight:600;padding-top:.5rem;border-top:1px solid var(--border);">
+                                <span>Total:</span><span id="sale-total-display">0.00 G</span>
+                            </div>
+                        </div>
+                        <div id="sale-profit-display" style="font-size:.85rem;color:var(--text-secondary);margin-bottom:.8rem;"></div>
+                        <button type="submit" class="btn btn-primary">Konfime vant lan</button>
+                        <p id="sale-message" style="margin-top:.8rem;font-size:.82rem;"></p>
+                    </form>
+                </div>
+            </div>
+
+            <div class="admin-tab-content" id="tab-reports" style="display:none;">
+                <div class="admin-card">
+                    <h3>Rapò ak estatistik</h3>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;">
+                        <div class="stat-box" style="background:var(--accent-light);border-radius:var(--radius-sm);padding:1rem;text-align:center;">
+                            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:.3rem;">Total Vant</div>
+                            <div id="stat-total-sales" style="font-family:var(--font-serif);font-size:1.4rem;">0.00 G</div>
+                        </div>
+                        <div class="stat-box" style="background:#e8f5e9;border-radius:var(--radius-sm);padding:1rem;text-align:center;">
+                            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:.3rem;">Bénéfis total</div>
+                            <div id="stat-total-profit" style="font-family:var(--font-serif);font-size:1.4rem;color:#2e7d32;">0.00 G</div>
+                        </div>
+                        <div class="stat-box" style="background:#fff3e0;border-radius:var(--radius-sm);padding:1rem;text-align:center;">
+                            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:.3rem;">Vant Senp</div>
+                            <div id="stat-simple-sales" style="font-family:var(--font-serif);font-size:1.4rem;">0.00 G</div>
+                        </div>
+                        <div class="stat-box" style="background:#e3f2fd;border-radius:var(--radius-sm);padding:1rem;text-align:center;">
+                            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:.3rem;">Vant An Gwo</div>
+                            <div id="stat-wholesale-sales" style="font-family:var(--font-serif);font-size:1.4rem;">0.00 G</div>
+                        </div>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Dat</th>
+                                    <th>Kalite</th>
+                                    <th>Pwodui</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th>Bénéfis</th>
+                                    <th>Aksyon</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactions-table-body"></tbody>
                         </table>
                     </div>
                 </div>

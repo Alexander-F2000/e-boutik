@@ -6,21 +6,32 @@ function fallbackImage(img) {
 }
 
 const defaultProducts = [
-    { id: 1, name: 'Chemise en lin blanc', price: 49.99, category: 'Hommes', sizes: 'S, M, L, XL', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
-    { id: 2, name: 'Robe fleurie été', price: 59.99, category: 'Femmes', sizes: 'XS, S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
-    { id: 3, name: 'Sac en cuir noir', price: 89.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
-    { id: 4, name: 'Blazer oversize', price: 79.99, category: 'Femmes', sizes: 'S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
-    { id: 5, name: 'Jean brut slim', price: 69.99, category: 'Hommes', sizes: '30, 32, 34, 36', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
-    { id: 6, name: 'Montre minimaliste', price: 129.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
-    { id: 7, name: 'Pantalon large beige', price: 54.99, category: 'Femmes', sizes: 'XS, S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
-    { id: 8, name: 'T-shirt coton bio', price: 29.99, category: 'Hommes', sizes: 'S, M, L, XL, XXL', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
-    { id: 9, name: 'Ceinture tressée', price: 39.99, category: 'Accessoires', sizes: '90, 100, 110', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
-    { id: 10, name: 'Veste en jean', price: 94.99, category: 'Femmes', sizes: 'S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
-    { id: 11, name: 'Mocassins cuir', price: 109.99, category: 'Hommes', sizes: '39, 40, 41, 42, 43', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' },
-    { id: 12, name: 'Écharpe cachemire', price: 69.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '' }
+    { id: 1, name: 'Chemise en lin blanc', price: 49.99, category: 'Hommes', sizes: 'S, M, L, XL', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 25, wholesalePrice: 42.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 2, name: 'Robe fleurie été', price: 59.99, category: 'Femmes', sizes: 'XS, S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 30, wholesalePrice: 50.99, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 3, name: 'Sac en cuir noir', price: 89.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 45, wholesalePrice: 76.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 3 },
+    { id: 4, name: 'Blazer oversize', price: 79.99, category: 'Femmes', sizes: 'S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 40, wholesalePrice: 67.99, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 5, name: 'Jean brut slim', price: 69.99, category: 'Hommes', sizes: '30, 32, 34, 36', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 35, wholesalePrice: 59.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 6, name: 'Montre minimaliste', price: 129.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 65, wholesalePrice: 110.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 3 },
+    { id: 7, name: 'Pantalon large beige', price: 54.99, category: 'Femmes', sizes: 'XS, S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 27, wholesalePrice: 46.74, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 8, name: 'T-shirt coton bio', price: 29.99, category: 'Hommes', sizes: 'S, M, L, XL, XXL', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 15, wholesalePrice: 25.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 10 },
+    { id: 9, name: 'Ceinture tressée', price: 39.99, category: 'Accessoires', sizes: '90, 100, 110', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 20, wholesalePrice: 33.99, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 10, name: 'Veste en jean', price: 94.99, category: 'Femmes', sizes: 'S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 47, wholesalePrice: 80.74, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 11, name: 'Mocassins cuir', price: 109.99, category: 'Hommes', sizes: '39, 40, 41, 42, 43', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 55, wholesalePrice: 93.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 12, name: 'Écharpe cachemire', price: 69.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 35, wholesalePrice: 59.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 3 }
 ];
 
 const defaultCategoryNames = ['Hommes', 'Femmes', 'Accessoires'];
+
+function normalizeProduct(p) {
+    return {
+        ...p,
+        costPrice: p.costPrice || 0,
+        wholesalePrice: p.wholesalePrice || 0,
+        batchQuantity: p.batchQuantity || 0,
+        batchPrice: p.batchPrice || 0,
+        alertThreshold: p.alertThreshold != null ? p.alertThreshold : 5
+    };
+}
 
 function getProducts() {
     try {
@@ -29,8 +40,8 @@ function getProducts() {
             products = defaultProducts;
             localStorage.setItem('eboutik_products', JSON.stringify(products));
         }
-        return products;
-    } catch { return defaultProducts; }
+        return products.map(normalizeProduct);
+    } catch { return defaultProducts.map(normalizeProduct); }
 }
 
 function getCategories() {
@@ -60,11 +71,133 @@ function saveOrders(orders) {
     syncToGitHub('data/orders.json', JSON.stringify(orders, null, 2), 'Mete ajou komand yo');
 }
 
+function getTransactions() {
+    try { return JSON.parse(localStorage.getItem('eboutik_transactions')) || []; }
+    catch { return []; }
+}
+function saveTransactions(txns) {
+    localStorage.setItem('eboutik_transactions', JSON.stringify(txns));
+    syncToGitHub('data/transactions.json', JSON.stringify(txns, null, 2), 'Mete ajou tranzaksyon yo');
+}
+
+function addPurchase(productId, qty, unitCost, note) {
+    const products = getProducts();
+    const p = products.find(x => x.id == productId);
+    if (!p) return;
+    const oldQty = p.stock || 0;
+    const oldCost = p.costPrice || 0;
+    const newCost = oldQty > 0
+        ? ((oldCost * oldQty) + (unitCost * qty)) / (oldQty + qty)
+        : unitCost;
+    p.costPrice = Math.round(newCost * 100) / 100;
+    p.stock = (p.stock || 0) + qty;
+    p.sellingPrice = p.price;
+    saveProducts(products);
+    const txns = getTransactions();
+    txns.push({
+        id: Date.now(),
+        type: 'ACHAT',
+        saleType: null,
+        productId: p.id,
+        productName: p.name,
+        quantity: qty,
+        unitPrice: unitCost,
+        totalPrice: Math.round(unitCost * qty * 100) / 100,
+        costPrice: p.costPrice,
+        profit: 0,
+        note: note || 'Reaprovisionne',
+        createdAt: new Date().toLocaleString('fr-FR')
+    });
+    saveTransactions(txns);
+    showNotification(p.name + ': ' + qty + ' inite ajoute nan stok!');
+}
+
+function sellProduct(productId, qty, saleType) {
+    const products = getProducts();
+    const p = products.find(x => x.id == productId);
+    if (!p) return { error: 'Pwodui pa jwenn' };
+    const stock = p.stock || 0;
+    if (qty > stock) return { error: 'Stok ensifizan. Stok: ' + stock + ', ou vle: ' + qty };
+    let unitPrice = 0, totalPrice = 0, discountPercent = 0;
+    let batchUsed = 0, batchQty = 0, remainder = 0, remainderPrice = 0;
+    if (saleType === 'EN_GROS') {
+        unitPrice = p.wholesalePrice || p.price;
+        totalPrice = Math.round(unitPrice * qty * 100) / 100;
+    } else if (saleType === 'BATCH' && p.batchQuantity > 0) {
+        batchQty = p.batchQuantity;
+        const batchP = p.batchPrice || 0;
+        const normalUnitPrice = p.price;
+        const fullBatches = Math.floor(qty / batchQty);
+        remainder = qty % batchQty;
+        const batchTotal = fullBatches * batchP;
+        const remainderTotal = remainder * normalUnitPrice;
+        totalPrice = Math.round((batchTotal + remainderTotal) * 100) / 100;
+        batchUsed = fullBatches;
+        const normalBatchPrice = batchQty * normalUnitPrice;
+        if (normalBatchPrice > 0) {
+            discountPercent = Math.round(((normalBatchPrice - batchP) / normalBatchPrice) * 100);
+        }
+        unitPrice = totalPrice / qty;
+    } else {
+        unitPrice = p.price;
+        totalPrice = Math.round(unitPrice * qty * 100) / 100;
+    }
+    const profit = Math.round((unitPrice - (p.costPrice || 0)) * qty * 100) / 100;
+    p.stock = stock - qty;
+    p.price = unitPrice;
+    saveProducts(products);
+    const txns = getTransactions();
+    txns.push({
+        id: Date.now(),
+        type: 'VENTE',
+        saleType: saleType,
+        productId: p.id,
+        productName: p.name,
+        quantity: qty,
+        unitPrice: Math.round(unitPrice * 100) / 100,
+        totalPrice: totalPrice,
+        costPrice: p.costPrice || 0,
+        profit: profit,
+        batchInfo: saleType === 'BATCH' ? {
+            batchQty: batchQty,
+            batchPrice: p.batchPrice,
+            fullBatches: batchUsed,
+            remainder: remainder,
+            remainderPrice: remainderPrice,
+            discountPercent: discountPercent
+        } : null,
+        note: 'Vant ' + saleType,
+        createdAt: new Date().toLocaleString('fr-FR')
+    });
+    saveTransactions(txns);
+    return { success: true, totalPrice, profit, saleType, batchInfo: saleType === 'BATCH' ? { batchQty, batchPrice: p.batchPrice, fullBatches: batchUsed, remainder, discountPercent } : null };
+}
+
+function deleteTransaction(id) {
+    const txns = getTransactions();
+    const txn = txns.find(x => x.id == id);
+    if (!txn) return;
+    const products = getProducts();
+    const p = products.find(x => x.id == txn.productId);
+    if (p) {
+        if (txn.type === 'ACHAT') {
+            p.stock = (p.stock || 0) - txn.quantity;
+        } else if (txn.type === 'VENTE') {
+            p.stock = (p.stock || 0) + txn.quantity;
+        }
+        if (p.stock < 0) p.stock = 0;
+        saveProducts(products);
+    }
+    saveTransactions(txns.filter(x => x.id != id));
+    showNotification('Tranzaksyon an siprime!');
+}
+
 async function syncFromGitHub() {
     const files = [
         { path: 'products.json', key: 'eboutik_products' },
         { path: 'categories.json', key: 'eboutik_categories' },
-        { path: 'orders.json', key: 'eboutik_orders' }
+        { path: 'orders.json', key: 'eboutik_orders' },
+        { path: 'transactions.json', key: 'eboutik_transactions' }
     ];
     if (localStorage.getItem('eboutik_pending_sync')) {
         const token = GITHUB_CONFIG.TOKEN;
