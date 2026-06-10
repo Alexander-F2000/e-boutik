@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('login-section').style.display = 'none';
         showDashboard();
         document.getElementById('admin-user-display').textContent = 'Konekte kòm: ' + user;
-        showNotification('✅ Kont admin kreye avèk siksès! Byenvini ' + user);
+        showNotification('Byenvini ' + user);
     });
 
     document.getElementById('login-form')?.addEventListener('submit', async (e) => {
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('login-section').style.display = 'none';
             showDashboard();
             document.getElementById('admin-user-display').textContent = 'Konekte kòm: ' + user;
-            showNotification('✅ Koneksyon siksès! Byenvini ' + user);
+            showNotification('Byenvini ' + user);
         } else {
             error.textContent = 'Erè: modpas pa kòrèk pou "' + user + '".';
         }

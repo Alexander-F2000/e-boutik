@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('account-user-display').textContent = found.name + ' (' + found.email + ')';
             loadClientOrders(found.email);
             error.textContent = '';
-            showNotification('✅ Konekte kòm ' + found.name);
+            showNotification('Byenvini ' + found.name);
         } else {
             const exists = accounts.find(a => a.email === email);
             if (exists) {
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('account-user-display').textContent = newClient.name + ' (' + newClient.email + ')';
         loadClientOrders(newClient.email);
         error.textContent = '';
-        showNotification('✅ Kont kreye! Byenvini ' + name);
+        showNotification('Byenvini ' + name);
     });
 
     document.getElementById('account-logout-btn')?.addEventListener('click', () => {
