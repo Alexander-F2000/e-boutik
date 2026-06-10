@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-boutik — À propos</title>
+    <meta name="description" content="e-boutik se yon boutik an liy ki ofri vètman, akseswa ak style. Chwazi ak swen, livré ak amou.">
+    <meta property="og:title" content="e-boutik — À propos">
+    <meta property="og:description" content="Dekouvri istwa e-boutik, misyon nou ak ekip nou an.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#C9A96E">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .about-content { max-width: 720px; margin: 0 auto; line-height: 1.8; }
+        .about-content h2 { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 400; margin: 2rem 0 .8rem; }
+        .about-content p { color: var(--text-secondary); margin-bottom: 1rem; }
+        .about-values { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .about-value { text-align: center; padding: 1.5rem; background: var(--accent-light); border-radius: var(--radius); }
+        .about-value h3 { font-family: var(--font-serif); font-size: 1.1rem; font-weight: 400; margin-bottom: .5rem; }
+        .about-value p { font-size: .85rem; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">e<span>-boutik</span></a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links" id="nav-links">
+            <a href="catalog.html">Katalòg</a>
+            <a href="cart.html">Demann <span class="cart-badge" id="cart-count">0</span></a>
+            <a href="about.html">À propos</a>
+            <a href="contact.html">Kontak</a>
+            <a href="account.html">Mon kont</a>
+            <a href="admin.html">Admin</a>
+        </div>
+        <div class="mobile-overlay" id="mobile-overlay"></div>
+    </nav>
+
+    <div class="hero-banner" style="height:280px;">
+        <div class="hero-overlay">
+            <h1>À propos</h1>
+            <p>Istwa nou, misyon nou.</p>
+        </div>
+    </div>
+
+    <div class="container about-content">
+        <h2>Istwa nou</h2>
+        <p>e-boutik te kreye ak yon vizyon senp: pote style ak elégance nan chak kay. Depi kreyasyon nou an, nou angaje nan ofri pi bon kalite vètman ak akseswa, chwazi ak swen pou chak kliyan.</p>
+
+        <h2>Misyon nou</h2>
+        <p>Misyon nou se demokratize mòd ak kalite. Nou kwè ke chak moun merite santi yo byen nan po yo ak bèl nan sa yo mete. Se poutèt sa nou travay dirèkteman ak atizan ak founisè konfyans pou pote ou pi bon moso yo.</p>
+
+        <div class="about-values">
+            <div class="about-value">
+                <h3>Kalite</h3>
+                <p>Chak pwodui se chwazi ak atansyon pou asire w ke w ap resevwa pi bon an.</p>
+            </div>
+            <div class="about-value">
+                <h3>Konfyans</h3>
+                <p>Nou mete kliyan nou an premye. Transparans ak konfyans se baz relasyon nou an.</p>
+            </div>
+            <div class="about-value">
+                <h3>Style</h3>
+                <p>Nou swiv tandans yo pou pote ou sa ki genyen pi bon an nan mòd.</p>
+            </div>
+            <div class="about-value">
+                <h3>Livrezon</h3>
+                <p>Nou asire w ke kòmand ou an rive byen vit ak an sekirite.</p>
+            </div>
+        </div>
+
+        <h2>Ekip nou an</h2>
+        <p>Yon ti ekip pasyone de mòd ak sèvis kliyan. Nou travay chak jou pou amelyore eksperyans ou e ofri ou sa ki pi bon. N ap kontinye grandi ak ou, epi n ap toujou koute feedback ou.</p>
+    </div>
+
+    <footer>e-boutik — 2026</footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/app.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', updateCartBadge);</script>
+</body>
+</html>

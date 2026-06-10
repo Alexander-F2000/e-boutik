@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-boutik — Kontak</title>
+    <meta name="description" content="Kontakte e-boutik. Nou la pou reponn tout kesyon ou.">
+    <meta property="og:title" content="e-boutik — Kontak">
+    <meta property="og:description" content="Voye yon mesaj, nou la pou ede w.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#C9A96E">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; max-width: 860px; margin: 0 auto; }
+        .contact-info h2 { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 400; margin-bottom: 1rem; }
+        .contact-info p { color: var(--text-secondary); margin-bottom: .8rem; font-size: .88rem; }
+        .contact-info .contact-detail { margin-top: 1.5rem; }
+        .contact-info .contact-detail strong { display: block; font-size: .73rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-light); margin-bottom: .2rem; }
+        .contact-info .contact-detail span { font-size: .9rem; }
+        @media (max-width: 640px) { .contact-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">e<span>-boutik</span></a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links" id="nav-links">
+            <a href="catalog.html">Katalòg</a>
+            <a href="cart.html">Demann <span class="cart-badge" id="cart-count">0</span></a>
+            <a href="about.html">À propos</a>
+            <a href="contact.html">Kontak</a>
+            <a href="account.html">Mon kont</a>
+            <a href="admin.html">Admin</a>
+        </div>
+        <div class="mobile-overlay" id="mobile-overlay"></div>
+    </nav>
+
+    <div class="hero-banner" style="height:280px;">
+        <div class="hero-overlay">
+            <h1>Kontak</h1>
+            <p>Nou la pou ede w.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="contact-grid">
+            <div class="contact-info">
+                <h2>Ann pale</h2>
+                <p>Ou gen yon kesyon, yon pwoblèm oswa ou annik vle di bonjou? Voye yon mesaj, e nou pral reponn ou byento.</p>
+                <div class="contact-detail">
+                    <strong>Imèl</strong>
+                    <span>kontak@e-boutik.com</span>
+                </div>
+                <div class="contact-detail">
+                    <strong>Telefòn</strong>
+                    <span>+509 12 34 56 78</span>
+                </div>
+                <div class="contact-detail">
+                    <strong>Adrès</strong>
+                    <span>23, Rèv Senyè, Pòtoprens, Ayiti</span>
+                </div>
+            </div>
+
+            <div>
+                <form id="contact-form" novalidate>
+                    <div class="form-group">
+                        <label>Non ou</label>
+                        <input type="text" id="contact-name" required placeholder="Jan Dupont">
+                    </div>
+                    <div class="form-group">
+                        <label>Imèl ou</label>
+                        <input type="email" id="contact-email" required placeholder="jan@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Sijè</label>
+                        <input type="text" id="contact-subject" required placeholder="Sijè mesaj ou">
+                    </div>
+                    <div class="form-group">
+                        <label>Mesaj</label>
+                        <textarea id="contact-message" rows="5" required placeholder="Ekri mesaj ou isit..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Voye mesaj</button>
+                    <p id="contact-message-status" style="margin-top:1rem;font-size:.85rem;"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>e-boutik — 2026</footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartBadge();
+            document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const msg = document.getElementById('contact-message-status');
+                msg.className = 'success';
+                msg.textContent = 'Mèsi! Mesaj ou an te voye. N ap kontakte ou byento.';
+                e.target.reset();
+            });
+        });
+    </script>
+</body>
+</html>

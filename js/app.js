@@ -5,19 +5,20 @@ function fallbackImage(img) {
     img.src = PLACEHOLDER;
 }
 
+const IMG_BASE = 'https://picsum.photos/seed';
 const defaultProducts = [
-    { id: 1, name: 'Chemise en lin blanc', price: 49.99, category: 'Hommes', sizes: 'S, M, L, XL', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 25, wholesalePrice: 42.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
-    { id: 2, name: 'Robe fleurie été', price: 59.99, category: 'Femmes', sizes: 'XS, S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 30, wholesalePrice: 50.99, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
-    { id: 3, name: 'Sac en cuir noir', price: 89.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 45, wholesalePrice: 76.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 3 },
-    { id: 4, name: 'Blazer oversize', price: 79.99, category: 'Femmes', sizes: 'S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 40, wholesalePrice: 67.99, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
-    { id: 5, name: 'Jean brut slim', price: 69.99, category: 'Hommes', sizes: '30, 32, 34, 36', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 35, wholesalePrice: 59.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
-    { id: 6, name: 'Montre minimaliste', price: 129.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 65, wholesalePrice: 110.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 3 },
-    { id: 7, name: 'Pantalon large beige', price: 54.99, category: 'Femmes', sizes: 'XS, S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 27, wholesalePrice: 46.74, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
-    { id: 8, name: 'T-shirt coton bio', price: 29.99, category: 'Hommes', sizes: 'S, M, L, XL, XXL', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 15, wholesalePrice: 25.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 10 },
-    { id: 9, name: 'Ceinture tressée', price: 39.99, category: 'Accessoires', sizes: '90, 100, 110', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 20, wholesalePrice: 33.99, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
-    { id: 10, name: 'Veste en jean', price: 94.99, category: 'Femmes', sizes: 'S, M, L', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 47, wholesalePrice: 80.74, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
-    { id: 11, name: 'Mocassins cuir', price: 109.99, category: 'Hommes', sizes: '39, 40, 41, 42, 43', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 55, wholesalePrice: 93.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
-    { id: 12, name: 'Écharpe cachemire', price: 69.99, category: 'Accessoires', sizes: 'Unique', brand: '', material: '', color: '', image: PLACEHOLDER, image_hover: '', costPrice: 35, wholesalePrice: 59.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 3 }
+    { id: 1, name: 'Chemise en lin blanc', price: 49.99, category: 'Hommes', sizes: 'S, M, L, XL', brand: 'LinStyle', material: 'Lin', color: 'Blan', image: IMG_BASE + '/chemise/400/500', image_hover: IMG_BASE + '/chemise-hover/400/500', costPrice: 25, wholesalePrice: 42.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 2, name: 'Robe fleurie été', price: 59.99, category: 'Femmes', sizes: 'XS, S, M, L', brand: 'Floraison', material: 'Koton', color: 'Imprime', image: IMG_BASE + '/robe/400/500', image_hover: IMG_BASE + '/robe-hover/400/500', costPrice: 30, wholesalePrice: 50.99, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 3, name: 'Sac en cuir noir', price: 89.99, category: 'Accessoires', sizes: 'Unique', brand: 'Cuiré', material: 'Kwiv', color: 'Nwa', image: IMG_BASE + '/sac/400/500', image_hover: IMG_BASE + '/sac-hover/400/500', costPrice: 45, wholesalePrice: 76.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 3 },
+    { id: 4, name: 'Blazer oversize', price: 79.99, category: 'Femmes', sizes: 'S, M, L', brand: 'Moderne', material: 'Polyèst', color: 'Bej', image: IMG_BASE + '/blazer/400/500', image_hover: IMG_BASE + '/blazer-hover/400/500', costPrice: 40, wholesalePrice: 67.99, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 5, name: 'Jean brut slim', price: 69.99, category: 'Hommes', sizes: '30, 32, 34, 36', brand: 'DenimCo', material: 'Denim', color: 'Blue', image: IMG_BASE + '/jean/400/500', image_hover: IMG_BASE + '/jean-hover/400/500', costPrice: 35, wholesalePrice: 59.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 6, name: 'Montre minimaliste', price: 129.99, category: 'Accessoires', sizes: 'Unique', brand: 'TempsPur', material: 'Metal', color: 'Ajan', image: IMG_BASE + '/montre/400/500', image_hover: IMG_BASE + '/montre-hover/400/500', costPrice: 65, wholesalePrice: 110.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 3 },
+    { id: 7, name: 'Pantalon large beige', price: 54.99, category: 'Femmes', sizes: 'XS, S, M, L', brand: 'Aisé', material: 'Koton', color: 'Bej', image: IMG_BASE + '/pantalon/400/500', image_hover: IMG_BASE + '/pantalon-hover/400/500', costPrice: 27, wholesalePrice: 46.74, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 8, name: 'T-shirt coton bio', price: 29.99, category: 'Hommes', sizes: 'S, M, L, XL, XXL', brand: 'BioCoton', material: 'Koton bio', color: 'Blan', image: IMG_BASE + '/tshirt/400/500', image_hover: IMG_BASE + '/tshirt-hover/400/500', costPrice: 15, wholesalePrice: 25.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 10 },
+    { id: 9, name: 'Ceinture tressée', price: 39.99, category: 'Accessoires', sizes: '90, 100, 110', brand: 'Tressé', material: 'Kwiv', color: 'Mawon', image: IMG_BASE + '/ceinture/400/500', image_hover: IMG_BASE + '/ceinture-hover/400/500', costPrice: 20, wholesalePrice: 33.99, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 10, name: 'Veste en jean', price: 94.99, category: 'Femmes', sizes: 'S, M, L', brand: 'DenimCo', material: 'Denim', color: 'Blue', image: IMG_BASE + '/veste/400/500', image_hover: IMG_BASE + '/veste-hover/400/500', costPrice: 47, wholesalePrice: 80.74, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 11, name: 'Mocassins cuir', price: 109.99, category: 'Hommes', sizes: '39, 40, 41, 42, 43', brand: 'Paso', material: 'Kwiv', color: 'Mawon', image: IMG_BASE + '/mocassins/400/500', image_hover: IMG_BASE + '/mocassins-hover/400/500', costPrice: 55, wholesalePrice: 93.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 5 },
+    { id: 12, name: 'Écharpe cachemire', price: 69.99, category: 'Accessoires', sizes: 'Unique', brand: 'Cachemire', material: 'Kachmir', color: 'Gri', image: IMG_BASE + '/echarpe/400/500', image_hover: IMG_BASE + '/echarpe-hover/400/500', costPrice: 35, wholesalePrice: 59.49, batchQuantity: 0, batchPrice: 0, alertThreshold: 3 }
 ];
 
 const defaultCategoryNames = ['Hommes', 'Femmes', 'Accessoires'];
@@ -328,7 +329,7 @@ function renderProductCard(p) {
     const prodJson = JSON.stringify(p).replace(/'/g, "&#39;");
     const wrapStyle = imgHov ? `style="background-image:url('${imgHov}');background-size:cover;background-position:center;"` : '';
     return `
-        <div class="product-card" tabindex="0" role="button" aria-label="${p.name}">
+        <div class="product-card" tabindex="0" role="button" aria-label="${p.name}" onclick="window.location.href='product.html?id=${p.id}'">
             <div class="product-image-wrap" ${wrapStyle}>
                 <img class="product-image${imgHov ? ' has-hover' : ''}" src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{fallbackImage(this)}">
                 <div class="product-overlay">
@@ -427,6 +428,8 @@ function renderCart() {
     let html = '<ul class="cart-items">';
     let total = 0;
 
+    const client = (function() { try { return JSON.parse(sessionStorage.getItem('eboutik_client')); } catch { return null; } })();
+
     cart.forEach(item => {
         const subtotal = item.price * item.quantity;
         total += subtotal;
@@ -460,10 +463,11 @@ function renderCart() {
         </div>
         <div class="checkout-section" id="checkout-section">
             <h2>Pase kòmand la</h2>
+            ${client ? '<p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.8rem;">Konekte kòm ' + client.name + ' — ' + client.email + '</p>' : '<p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.8rem;">Ou pa konekte. <a href="account.html" style="color:var(--accent);">Konekte oswa kreye yon kont</a> pou swiv kòmand ou.</p>'}
             <form id="checkout-form" novalidate>
                 <div class="form-group">
                     <label for="customer-name">Non konplè</label>
-                    <input type="text" id="customer-name" required placeholder="Jan Dupont">
+                    <input type="text" id="customer-name" required placeholder="Jan Dupont" value="${client ? client.name : ''}">
                 </div>
                 <div class="form-group">
                     <label for="customer-phone">Telefòn</label>
@@ -507,6 +511,7 @@ function renderCart() {
                 customer_phone: phone,
                 customer_address: address,
                 customer_notes: notes,
+                customer_email: client ? client.email : '',
                 total: total,
                 status: 'Ap tann',
                 created_at: new Date().toLocaleString('fr-FR'),

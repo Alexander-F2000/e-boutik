@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>e-boutik — Administrasyon</title>
+    <meta name="description" content="Jere boutik ou fasilman.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta property="og:title" content="e-boutik — Administrasyon">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#C9A96E">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -15,6 +21,9 @@
         <div class="nav-links" id="nav-links">
             <a href="catalog.html">Katalòg</a>
             <a href="cart.html">Demann <span class="cart-badge" id="cart-count">0</span></a>
+            <a href="about.html">À propos</a>
+            <a href="contact.html">Kontak</a>
+            <a href="account.html">Mon kont</a>
             <a href="admin.html">Admin</a>
         </div>
         <div class="mobile-overlay" id="mobile-overlay"></div>
@@ -28,7 +37,30 @@
     </div>
 
     <div class="container">
-        <div id="login-section" class="admin-login">
+        <div id="register-section" class="admin-login" style="display:none;">
+            <div class="login-card">
+                <h1>Kreye kont admin</h1>
+                <p>Premye koneksyon. Kreye yon non itilizatè ak yon modpas.</p>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label>Non itilizatè</label>
+                        <input type="text" id="reg-user" required placeholder="admin" minlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label>Modpas</label>
+                        <input type="password" id="reg-pass" required placeholder="8 karaktè min." minlength="8">
+                    </div>
+                    <div class="form-group">
+                        <label>Konfime modpas</label>
+                        <input type="password" id="reg-pass-confirm" required placeholder="Rekiper modpas la">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Kreye kont</button>
+                    <p class="admin-login-error" id="register-error"></p>
+                </form>
+            </div>
+        </div>
+
+        <div id="login-section" class="admin-login" style="display:none;">
             <div class="login-card">
                 <h1>Administrasyon</h1>
                 <p>Konekte pou jere boutik ou.</p>
@@ -39,7 +71,7 @@
                     </div>
                     <div class="form-group">
                         <label>Modpas</label>
-                        <input type="password" id="login-pass" required placeholder="admin">
+                        <input type="password" id="login-pass" required placeholder="Modpas ou">
                     </div>
                     <button type="submit" class="btn btn-primary" style="width:100%;">Konekte</button>
                     <p class="admin-login-error" id="login-error"></p>
@@ -51,6 +83,7 @@
             <div class="admin-header">
                 <h2>Tablo debò</h2>
                 <div>
+                    <span id="admin-user-display" style="font-size:.82rem;color:var(--text-light);margin-right:1rem;"></span>
                     <button class="btn btn-outline btn-sm" id="logout-btn">Dekonekte</button>
                 </div>
             </div>
