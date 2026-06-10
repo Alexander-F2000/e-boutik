@@ -76,8 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('account-user-display').textContent = found.name + ' (' + found.email + ')';
             loadClientOrders(found.email);
             error.textContent = '';
+            showNotification('✅ Konekte kòm ' + found.name);
         } else {
-            error.textContent = 'Imèl oswa modpas pa kòrèk.';
+            const exists = accounts.find(a => a.email === email);
+            if (exists) {
+                error.textContent = 'Erè: modpas pa kòrèk pou ' + email + '.';
+            } else {
+                error.textContent = 'Erè: kont ' + email + ' pa egziste. Kreye yon kont an premye.';
+            }
         }
     });
 
@@ -87,10 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = document.getElementById('account-reg-name').value.trim();
         const pass = document.getElementById('account-reg-pass').value;
         const error = document.getElementById('account-register-error');
-        if (!email || !name || !pass) { error.textContent = 'Ranpli tout chan yo.'; return; }
+        if (!email || !name || !pass) { error.textContent = 'Erè: ranpli tout chan yo.'; return; }
+        if (pass.length < 8) { error.textContent = 'Erè: modpas dwe gen 8 karaktè minimòm.'; return; }
         let accounts = getClientAccounts();
         if (accounts.find(a => a.email === email)) {
-            error.textContent = 'Imèl sa a deja enskri.';
+            error.textContent = 'Erè: imèl ' + email + ' deja enskri.';
             return;
         }
         const hash = await hashPassword(pass);
@@ -103,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('account-user-display').textContent = newClient.name + ' (' + newClient.email + ')';
         loadClientOrders(newClient.email);
         error.textContent = '';
+        showNotification('✅ Kont kreye! Byenvini ' + name);
     });
 
     document.getElementById('account-logout-btn')?.addEventListener('click', () => {

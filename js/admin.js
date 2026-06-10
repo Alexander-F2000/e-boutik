@@ -50,13 +50,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const confirm = document.getElementById('reg-pass-confirm').value;
         const error = document.getElementById('register-error');
 
-        if (!user || user.length < 3) { error.textContent = 'Non itilizatè dwe gen 3 karaktè minimòm.'; return; }
-        if (!ALLOWED_ADMINS.includes(user)) { error.textContent = 'Non itilizatè pa otorize. Kontakte administratè a.'; return; }
-        if (pass.length < 8) { error.textContent = 'Modpas dwe gen 8 karaktè minimòm.'; return; }
-        if (pass !== confirm) { error.textContent = 'Modpas yo pa konfime.'; return; }
+        if (!user || user.length < 3) { error.textContent = 'Erè: non itilizatè dwe gen 3 karaktè minimòm.'; return; }
+        if (!ALLOWED_ADMINS.includes(user)) { error.textContent = 'Erè: non itilizatè pa otorize. Kontakte administratè a.'; return; }
+        if (pass.length < 8) { error.textContent = 'Erè: modpas dwe gen 8 karaktè minimòm.'; return; }
+        if (pass !== confirm) { error.textContent = 'Erè: modpas yo pa konfime.'; return; }
 
         const existing = getAdminCreds();
-        if (getAdminCred(user)) { error.textContent = 'Admin sa a deja gen yon modpas. Kontakte lòt admin an.'; return; }
+        if (getAdminCred(user)) { error.textContent = 'Erè: admin sa a deja gen yon modpas. Kontakte lòt admin an.'; return; }
 
         const hash = await hashPassword(pass);
         existing.push({ username: user, password: hash });
@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('login-section').style.display = 'none';
         showDashboard();
         document.getElementById('admin-user-display').textContent = 'Konekte kòm: ' + user;
+        showNotification('✅ Kont admin kreye avèk siksès! Byenvini ' + user);
     });
 
     document.getElementById('login-form')?.addEventListener('submit', async (e) => {
@@ -77,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const cred = getAdminCred(user);
 
         if (!cred) {
-            error.textContent = 'Admin sa pa gen kont. Tanpri kreye yon kont an premye.';
+            error.textContent = 'Erè: kont admin "' + user + '" pa egziste. Kreye yon kont an premye.';
             return;
         }
 
@@ -88,8 +89,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('login-section').style.display = 'none';
             showDashboard();
             document.getElementById('admin-user-display').textContent = 'Konekte kòm: ' + user;
+            showNotification('✅ Koneksyon siksès! Byenvini ' + user);
         } else {
-            error.textContent = 'Idantifyan yo pa kòrèk.';
+            error.textContent = 'Erè: modpas pa kòrèk pou "' + user + '".';
         }
     });
 
