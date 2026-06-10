@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-boutik — Mon kont</title>
+    <meta name="description" content="Konekte oswa kreye yon kont pou swiv kòmand ou yo.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta property="og:title" content="e-boutik — Mon kont">
+    <meta name="theme-color" content="#C9A96E">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .account-page { max-width: 600px; margin: 0 auto; }
+        .account-card { background: var(--white); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow); }
+        .account-card h1 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 400; margin-bottom: .3rem; }
+        .account-card p { font-size: .82rem; color: var(--text-secondary); margin-bottom: 1.2rem; }
+        .account-dashboard { max-width: 700px; margin: 0 auto; animation: fadeUp .4s ease; }
+        .account-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+        .account-header h2 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 400; }
+        .account-orders h3 { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 400; margin-bottom: .8rem; padding-bottom: .5rem; border-bottom: 1px solid var(--border-light); }
+        .account-order { background: var(--white); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: .8rem; }
+        .account-order-header { display: flex; justify-content: space-between; font-size: .82rem; margin-bottom: .3rem; }
+        .account-order-id { font-weight: 500; }
+        .account-order-status { padding: .15rem .5rem; border-radius: 4px; font-size: .7rem; font-weight: 500; }
+        .account-order-status.pending { background: #fff3e0; color: #e65100; }
+        .account-order-status.confirmed { background: #e8f5e9; color: #2e7d32; }
+        .account-order-total { font-size: .9rem; font-weight: 500; margin-top: .3rem; }
+        .account-order-date { font-size: .75rem; color: var(--text-light); }
+        .switch-link { font-size: .82rem; color: var(--accent); cursor: pointer; }
+        .switch-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">e<span>-boutik</span></a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links" id="nav-links">
+            <a href="catalog.html">Katalòg</a>
+            <a href="cart.html">Demann <span class="cart-badge" id="cart-count">0</span></a>
+            <a href="about.html">À propos</a>
+            <a href="contact.html">Kontak</a>
+            <a href="account.html">Mon kont</a>
+            <a href="admin.html">Admin</a>
+        </div>
+        <div class="mobile-overlay" id="mobile-overlay"></div>
+    </nav>
+
+    <div class="hero-banner" style="height:220px;">
+        <div class="hero-overlay">
+            <h1>Mon kont</h1>
+            <p>Jere enfòmasyon ou ak kòmand ou yo.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="account-login-section" class="account-page" style="display:none;">
+            <div class="account-card">
+                <h1>Konekte</h1>
+                <p>Konekte pou wè istwa kòmand ou yo.</p>
+                <form id="account-login-form">
+                    <div class="form-group">
+                        <label>Imèl</label>
+                        <input type="email" id="account-login-email" required placeholder="ou@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Modpas</label>
+                        <input type="password" id="account-login-pass" required placeholder="Modpas ou">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Konekte</button>
+                    <p class="admin-login-error" id="account-login-error"></p>
+                </form>
+                <p style="margin-top:1rem;font-size:.78rem;text-align:center;">pa gen kont? <span class="switch-link" onclick="showAccountRegister()">Kreye yon kont</span></p>
+            </div>
+        </div>
+
+        <div id="account-register-section" class="account-page" style="display:none;">
+            <div class="account-card">
+                <h1>Kreye yon kont</h1>
+                <p>Enskri pou swiv kòmand ou yo fasilman.</p>
+                <form id="account-register-form">
+                    <div class="form-group">
+                        <label>Imèl</label>
+                        <input type="email" id="account-reg-email" required placeholder="ou@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Non ou</label>
+                        <input type="text" id="account-reg-name" required placeholder="Jan Dupont">
+                    </div>
+                    <div class="form-group">
+                        <label>Modpas</label>
+                        <input type="password" id="account-reg-pass" required placeholder="8 karaktè min." minlength="8">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%;">Kreye kont</button>
+                    <p class="admin-login-error" id="account-register-error"></p>
+                </form>
+                <p style="margin-top:1rem;font-size:.78rem;text-align:center;">Deja gen yon kont? <span class="switch-link" onclick="showAccountLogin()">Konekte</span></p>
+            </div>
+        </div>
+
+        <div id="account-dashboard" class="account-dashboard" style="display:none;">
+            <div class="account-header">
+                <h2>Mon kont</h2>
+                <div>
+                    <span id="account-user-display" style="font-size:.82rem;color:var(--text-light);margin-right:1rem;"></span>
+                    <button class="btn btn-outline btn-sm" id="account-logout-btn">Dekonekte</button>
+                </div>
+            </div>
+            <div class="account-orders">
+                <h3>Istwa kòmand yo</h3>
+                <div id="account-orders-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>e-boutik — 2026</footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/account.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-boutik — Pwodui</title>
+    <meta name="description" content="Detay pwodui e-boutik.">
+    <meta property="og:type" content="product">
+    <meta name="theme-color" content="#C9A96E">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .product-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; max-width: 960px; margin: 0 auto; }
+        .product-detail-image { border-radius: var(--radius); overflow: hidden; background: #f8f8f8; }
+        .product-detail-image img { width: 100%; height: 500px; object-fit: cover; transition: opacity .35s; }
+        .product-detail-image img.hover-img { display: none; }
+        .product-detail-image:hover img.main-img.hover-available { opacity: 0; }
+        .product-detail-image:hover img.hover-img { display: block; }
+        .product-detail-info h1 { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 400; margin-bottom: .3rem; }
+        .product-detail-category { font-size: .7rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); font-weight: 500; margin-bottom: .5rem; }
+        .product-detail-brand { font-size: .78rem; color: var(--text-light); margin-bottom: .5rem; }
+        .product-detail-price { font-size: 1.4rem; font-weight: 500; margin-bottom: .3rem; }
+        .product-detail-wholesale { font-size: .82rem; color: var(--text-secondary); margin-bottom: 1rem; }
+        .product-detail-desc { color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.2rem; font-size: .9rem; }
+        .product-detail-meta { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: 1.2rem; font-size: .82rem; }
+        .product-detail-meta strong { color: var(--text-light); font-size: .7rem; text-transform: uppercase; letter-spacing: 1px; display: block; }
+        .product-detail-sizes { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .product-detail-sizes button { padding: .5rem 1.2rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--white); cursor: pointer; font-family: var(--font-sans); font-size: .82rem; transition: all .2s; }
+        .product-detail-sizes button:hover { border-color: var(--accent); color: var(--accent); }
+        .product-detail-sizes button.selected { background: var(--accent); color: var(--white); border-color: var(--accent); }
+        .product-detail-qty { display: flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem; }
+        .product-detail-qty button { width: 38px; height: 38px; border: 1px solid var(--border); border-radius: 50%; background: var(--white); cursor: pointer; font-size: 1.1rem; transition: all .2s; }
+        .product-detail-qty button:hover { border-color: var(--accent); }
+        .product-detail-qty span { min-width: 32px; text-align: center; font-weight: 500; }
+        #detail-add-cart { width: 100%; }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: .82rem; color: var(--text-light); }
+        .back-link:hover { color: var(--accent); }
+        @media (max-width: 720px) { .product-detail { grid-template-columns: 1fr; gap: 1.5rem; } .product-detail-image img { height: 320px; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">e<span>-boutik</span></a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links" id="nav-links">
+            <a href="catalog.html">Katalòg</a>
+            <a href="cart.html">Demann <span class="cart-badge" id="cart-count">0</span></a>
+            <a href="about.html">À propos</a>
+            <a href="contact.html">Kontak</a>
+            <a href="account.html">Mon kont</a>
+            <a href="admin.html">Admin</a>
+        </div>
+        <div class="mobile-overlay" id="mobile-overlay"></div>
+    </nav>
+
+    <div class="container">
+        <a href="catalog.html" class="back-link">← Retounen nan katalòg</a>
+        <div class="product-detail" id="product-detail">
+            <div class="product-detail-image" id="detail-image-wrap">
+                <img id="detail-image" src="" alt="">
+            </div>
+            <div class="product-detail-info">
+                <div class="product-detail-category" id="detail-category"></div>
+                <h1 id="detail-name"></h1>
+                <div class="product-detail-brand" id="detail-brand"></div>
+                <div class="product-detail-price" id="detail-price"></div>
+                <div class="product-detail-wholesale" id="detail-wholesale"></div>
+                <div class="product-detail-desc" id="detail-desc"></div>
+                <div class="product-detail-meta" id="detail-meta"></div>
+                <p style="font-size:.78rem;color:var(--text-light);margin-bottom:.5rem;">Chwazi gwosè:</p>
+                <div class="product-detail-sizes" id="detail-sizes"></div>
+                <div class="product-detail-qty">
+                    <button id="detail-qty-minus" aria-label="Diminye">−</button>
+                    <span id="detail-qty">1</span>
+                    <button id="detail-qty-plus" aria-label="Ogmantye">+</button>
+                </div>
+                <button class="btn btn-primary" id="detail-add-cart">Ajoute nan demann</button>
+                <p id="detail-message" style="margin-top:.8rem;font-size:.85rem;"></p>
+            </div>
+        </div>
+    </div>
+
+    <footer>e-boutik — 2026</footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/product.js"></script>
+</body>
+</html>

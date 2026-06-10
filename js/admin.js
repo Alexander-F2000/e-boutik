@@ -1,19 +1,75 @@
+async function hashPassword(password) {
+    const enc = new TextEncoder().encode(password);
+    const buf = await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function getAdminCreds() {
+    try { return JSON.parse(localStorage.getItem('eboutik_admin')); }
+    catch { return null; }
+}
+
+function saveAdminCreds(creds) {
+    localStorage.setItem('eboutik_admin', JSON.stringify(creds));
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     await syncFromGitHub();
+
+    const existing = getAdminCreds();
+
+    if (existing) {
+        document.getElementById('login-section').style.display = 'block';
+        document.getElementById('register-section').style.display = 'none';
+    } else {
+        document.getElementById('register-section').style.display = 'block';
+        document.getElementById('login-section').style.display = 'none';
+    }
+
     if (sessionStorage.getItem('eboutik_admin') === 'true') {
         showDashboard();
     }
 
-    document.getElementById('login-form')?.addEventListener('submit', (e) => {
+    document.getElementById('register-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const user = document.getElementById('login-user').value;
+        const user = document.getElementById('reg-user').value.trim();
+        const pass = document.getElementById('reg-pass').value;
+        const confirm = document.getElementById('reg-pass-confirm').value;
+        const error = document.getElementById('register-error');
+
+        if (!user || user.length < 3) { error.textContent = 'Non itilizatè dwe gen 3 karaktè minimòm.'; return; }
+        if (pass.length < 8) { error.textContent = 'Modpas dwe gen 8 karaktè minimòm.'; return; }
+        if (pass !== confirm) { error.textContent = 'Modpas yo pa konfime.'; return; }
+
+        const hash = await hashPassword(pass);
+        saveAdminCreds({ username: user, password: hash });
+        sessionStorage.setItem('eboutik_admin', 'true');
+        document.getElementById('register-error').textContent = '';
+        document.getElementById('register-section').style.display = 'none';
+        document.getElementById('login-section').style.display = 'none';
+        showDashboard();
+        document.getElementById('admin-user-display').textContent = 'Konekte kòm: ' + user;
+    });
+
+    document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = document.getElementById('login-user').value.trim();
         const pass = document.getElementById('login-pass').value;
         const error = document.getElementById('login-error');
+        const creds = getAdminCreds();
 
-        if (user === 'admin' && pass === 'admin') {
-            document.getElementById('login-error').textContent = '';
+        if (!creds) {
+            error.textContent = 'Pa gen kont admin. Tanpri enskri ou an premye.';
+            return;
+        }
+
+        const hash = await hashPassword(pass);
+        if (user === creds.username && hash === creds.password) {
+            error.textContent = '';
             sessionStorage.setItem('eboutik_admin', 'true');
+            document.getElementById('login-section').style.display = 'none';
             showDashboard();
+            document.getElementById('admin-user-display').textContent = 'Konekte kòm: ' + user;
         } else {
             error.textContent = 'Idantifyan yo pa kòrèk.';
         }
@@ -21,11 +77,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('logout-btn')?.addEventListener('click', () => {
         sessionStorage.removeItem('eboutik_admin');
+        const creds = getAdminCreds();
         document.getElementById('dashboard-section').style.display = 'none';
-        document.getElementById('login-section').style.display = 'block';
+        if (creds) {
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('register-section').style.display = 'none';
+        } else {
+            document.getElementById('register-section').style.display = 'block';
+            document.getElementById('login-section').style.display = 'none';
+        }
     });
 
-    // Tabs
     document.querySelectorAll('[data-tab]').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('[data-tab]').forEach(b => {
@@ -68,7 +130,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             : '';
     });
 
-    // Products
     document.getElementById('show-add-form-btn')?.addEventListener('click', () => {
         const form = document.getElementById('product-form');
         form.style.display = 'block';
@@ -151,13 +212,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         reader.readAsDataURL(file);
     }
 
-    document.getElementById('product-image-file')?.addEventListener('change', (e) => {
+    async function uploadImage(file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        try {
+            const resp = await fetch('/api/upload.php', { method: 'POST', body: formData });
+            if (resp.ok) {
+                const data = await resp.json();
+                return window.location.origin + '/' + data.url;
+            }
+        } catch {}
+        return null;
+    }
+
+    document.getElementById('product-image-file')?.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        compressImage(file, 800, 0.7, (compressed) => {
-            document.getElementById('product-image').value = compressed;
-            showPreview(compressed);
-        });
+        const url = await uploadImage(file);
+        if (url) {
+            document.getElementById('product-image').value = url;
+            showPreview(url);
+        } else {
+            compressImage(file, 800, 0.7, (compressed) => {
+                document.getElementById('product-image').value = compressed;
+                showPreview(compressed);
+            });
+        }
     });
 
     document.getElementById('product-image-hover')?.addEventListener('change', (e) => {
@@ -165,13 +245,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (url) showPreviewHover(url);
     });
 
-    document.getElementById('product-image-hover-file')?.addEventListener('change', (e) => {
+    document.getElementById('product-image-hover-file')?.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        compressImage(file, 800, 0.7, (compressed) => {
-            document.getElementById('product-image-hover').value = compressed;
-            showPreviewHover(compressed);
-        });
+        const url = await uploadImage(file);
+        if (url) {
+            document.getElementById('product-image-hover').value = url;
+            showPreviewHover(url);
+        } else {
+            compressImage(file, 800, 0.7, (compressed) => {
+                document.getElementById('product-image-hover').value = compressed;
+                showPreviewHover(compressed);
+            });
+        }
     });
 
     document.getElementById('product-form')?.addEventListener('submit', (e) => {
@@ -220,7 +306,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Categories
     document.getElementById('show-add-cat-btn')?.addEventListener('click', () => {
         const form = document.getElementById('category-form');
         form.style.display = 'block';
@@ -257,6 +342,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function showDashboard() {
     document.getElementById('login-section').style.display = 'none';
+    document.getElementById('register-section').style.display = 'none';
     document.getElementById('dashboard-section').style.display = 'block';
     loadProducts();
     loadOrders();
@@ -503,11 +589,11 @@ function loadStockTab() {
     if (!tbody) return;
     const lowStock = products.filter(p => (p.stock || 0) <= p.alertThreshold);
     if (lowStock.length > 0) {
-        alerts.innerHTML = '<div style="background:#fff3e0;border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:.82rem;border-left:3px solid #ff9800;">⚠️ ' + lowStock.length + ' pwodui gen stòk ki ba: '
+        alerts.innerHTML = '<div style="background:#fff3e0;border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:.82rem;border-left:3px solid #ff9800;">\u26A0\uFE0F ' + lowStock.length + ' pwodui gen stòk ki ba: '
             + lowStock.map(p => '<strong>' + p.name + '</strong> (' + (p.stock || 0) + ' / ' + p.alertThreshold + ')').join(', ')
             + '</div>';
     } else {
-        alerts.innerHTML = '<div style="background:#e8f5e9;border-radius:var(--radius-sm);padding:.5rem 1rem;font-size:.82rem;color:#2e7d32;">✅ Tout pwodui gen ase stòk</div>';
+        alerts.innerHTML = '<div style="background:#e8f5e9;border-radius:var(--radius-sm);padding:.5rem 1rem;font-size:.82rem;color:#2e7d32;">\u2705 Tout pwodui gen ase stòk</div>';
     }
     tbody.innerHTML = products.map(p => {
         const st = p.stock || 0;
@@ -518,7 +604,7 @@ function loadStockTab() {
             + '<td>' + (p.costPrice || 0).toFixed(2) + ' G</td>'
             + '<td>' + parseFloat(p.price).toFixed(2) + ' G</td>'
             + '<td>' + p.alertThreshold + '</td>'
-            + '<td>' + (warn ? '<span style="color:#d32f2f;font-size:1.1rem;">⚠️</span>' : '<span style="color:#2e7d32;">✓</span>') + '</td>'
+            + '<td>' + (warn ? '<span style="color:#d32f2f;font-size:1.1rem;">\u26A0\uFE0F</span>' : '<span style="color:#2e7d32;">\u2713</span>') + '</td>'
             + '</tr>';
     }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen pwodui</td></tr>';
 }
@@ -586,9 +672,9 @@ function updateSaleCalc() {
     document.getElementById('sale-total-display').textContent = totalPrice.toFixed(2) + ' G';
     const profitEl = document.getElementById('sale-profit-display');
     if (profit >= 0) {
-        profitEl.innerHTML = '💰 Bénéfis estime: <strong style="color:#2e7d32;">' + profit.toFixed(2) + ' G</strong>';
+        profitEl.innerHTML = '\uD83D\uDCB0 Bénéfis estime: <strong style="color:#2e7d32;">' + profit.toFixed(2) + ' G</strong>';
     } else {
-        profitEl.innerHTML = '📉 Pèt estime: <strong style="color:#d32f2f;">' + Math.abs(profit).toFixed(2) + ' G</strong>';
+        profitEl.innerHTML = '\uD83D\uDCC9 Pèt estime: <strong style="color:#d32f2f;">' + Math.abs(profit).toFixed(2) + ' G</strong>';
     }
     const batchEl = document.getElementById('sale-batch-detail');
     if (batchDetail) {
