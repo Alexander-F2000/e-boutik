@@ -1,3 +1,5 @@
+const ALLOWED_ADMINS = ['admin', 'admin2'];
+
 async function hashPassword(password) {
     const enc = new TextEncoder().encode(password);
     const buf = await crypto.subtle.digest('SHA-256', enc);
@@ -5,30 +7,41 @@ async function hashPassword(password) {
 }
 
 function getAdminCreds() {
-    try { return JSON.parse(localStorage.getItem('eboutik_admin')); }
-    catch { return null; }
+    try { return JSON.parse(localStorage.getItem('eboutik_admin_creds')) || []; }
+    catch { return []; }
 }
 
 function saveAdminCreds(creds) {
-    localStorage.setItem('eboutik_admin', JSON.stringify(creds));
+    localStorage.setItem('eboutik_admin_creds', JSON.stringify(creds));
+}
+
+function getAdminCred(username) {
+    return getAdminCreds().find(c => c.username === username) || null;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
     await syncFromGitHub();
 
-    const existing = getAdminCreds();
+    document.getElementById('login-section').style.display = 'block';
+    document.getElementById('register-section').style.display = 'none';
 
-    if (existing) {
-        document.getElementById('login-section').style.display = 'block';
-        document.getElementById('register-section').style.display = 'none';
-    } else {
-        document.getElementById('register-section').style.display = 'block';
-        document.getElementById('login-section').style.display = 'none';
-    }
-
-    if (sessionStorage.getItem('eboutik_admin') === 'true') {
+    if (sessionStorage.getItem('eboutik_admin')) {
         showDashboard();
     }
+
+    document.getElementById('show-register-link')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('register-section').style.display = 'block';
+        document.getElementById('register-error').textContent = '';
+    });
+
+    document.getElementById('show-login-link')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('register-section').style.display = 'none';
+        document.getElementById('login-section').style.display = 'block';
+        document.getElementById('login-error').textContent = '';
+    });
 
     document.getElementById('register-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -38,11 +51,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         const error = document.getElementById('register-error');
 
         if (!user || user.length < 3) { error.textContent = 'Non itilizatè dwe gen 3 karaktè minimòm.'; return; }
+        if (!ALLOWED_ADMINS.includes(user)) { error.textContent = 'Non itilizatè pa otorize. Kontakte administratè a.'; return; }
         if (pass.length < 8) { error.textContent = 'Modpas dwe gen 8 karaktè minimòm.'; return; }
         if (pass !== confirm) { error.textContent = 'Modpas yo pa konfime.'; return; }
 
+        const existing = getAdminCreds();
+        if (getAdminCred(user)) { error.textContent = 'Admin sa a deja gen yon modpas. Kontakte lòt admin an.'; return; }
+
         const hash = await hashPassword(pass);
-        saveAdminCreds({ username: user, password: hash });
+        existing.push({ username: user, password: hash });
+        saveAdminCreds(existing);
         sessionStorage.setItem('eboutik_admin', 'true');
         document.getElementById('register-error').textContent = '';
         document.getElementById('register-section').style.display = 'none';
@@ -56,17 +74,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const user = document.getElementById('login-user').value.trim();
         const pass = document.getElementById('login-pass').value;
         const error = document.getElementById('login-error');
-        const creds = getAdminCreds();
+        const cred = getAdminCred(user);
 
-        if (!creds) {
-            error.textContent = 'Pa gen kont admin. Tanpri enskri ou an premye.';
+        if (!cred) {
+            error.textContent = 'Admin sa pa gen kont. Tanpri kreye yon kont an premye.';
             return;
         }
 
         const hash = await hashPassword(pass);
-        if (user === creds.username && hash === creds.password) {
+        if (hash === cred.password) {
             error.textContent = '';
-            sessionStorage.setItem('eboutik_admin', 'true');
+            sessionStorage.setItem('eboutik_admin', user);
             document.getElementById('login-section').style.display = 'none';
             showDashboard();
             document.getElementById('admin-user-display').textContent = 'Konekte kòm: ' + user;
@@ -77,15 +95,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('logout-btn')?.addEventListener('click', () => {
         sessionStorage.removeItem('eboutik_admin');
-        const creds = getAdminCreds();
         document.getElementById('dashboard-section').style.display = 'none';
-        if (creds) {
-            document.getElementById('login-section').style.display = 'block';
-            document.getElementById('register-section').style.display = 'none';
-        } else {
-            document.getElementById('register-section').style.display = 'block';
-            document.getElementById('login-section').style.display = 'none';
-        }
+        document.getElementById('login-section').style.display = 'block';
+        document.getElementById('register-section').style.display = 'none';
     });
 
     document.querySelectorAll('[data-tab]').forEach(btn => {
