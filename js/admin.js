@@ -18,7 +18,7 @@ function getAdminCred(username) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await syncFromGitHub();
+    await syncFromSupabase();
 
     document.getElementById('login-section').style.display = 'block';
     document.getElementById('register-section').style.display = 'none';
@@ -151,6 +151,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadCategories();
         loadStockTab();
         loadCategorySelect();
+    });
+
+    document.getElementById('migrate-btn')?.addEventListener('click', async () => {
+        const status = document.getElementById('migration-status');
+        status.innerHTML = '<span style="color:var(--accent);">Migrasyon an ap fet...</span>';
+        const result = await migrateLocalStorageToSupabase();
+        if (!result.success) {
+            status.innerHTML = '<span style="color:#b91c1c;">Erè: ' + (result.error || 'Migration pa mache') + '</span>';
+            return;
+        }
+        let html = '<div style="background:#e8f5e9;padding:.8rem 1rem;border-radius:var(--radius-sm);">✅ Migrasyon fini!<ul style="margin-top:.5rem;padding-left:1.2rem;">';
+        for (const [table, r] of Object.entries(result.results)) {
+            if (r.status === 'ok') html += '<li style="color:#2e7d32;">' + table + ': ' + r.count + ' done migre</li>';
+            else if (r.status === 'skip') html += '<li style="color:#999;">' + table + ': pa gen done</li>';
+            else html += '<li style="color:#b91c1c;">' + table + ': ' + (r.error || 'erè') + '</li>';
+        }
+        html += '</ul></div>';
+        status.innerHTML = html;
     });
 
     document.getElementById('show-add-form-btn')?.addEventListener('click', () => {

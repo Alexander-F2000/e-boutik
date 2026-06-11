@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    await syncFromGitHub();
+    await syncFromSupabase();
     updateCartBadge();
 
     const grid = document.getElementById('product-grid');

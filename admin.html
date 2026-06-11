@@ -97,6 +97,7 @@
                 <button data-tab="categories">Kategori</button>
                 <button data-tab="orders">Kòmand</button>
                 <button data-tab="reports">Rapò</button>
+                <button data-tab="migration">Migrasyon</button>
             </div>
 
             <div class="admin-tab-content" id="tab-products">
@@ -409,11 +410,24 @@
                 </div>
             </div>
         </div>
+
+            <div class="admin-tab-content" id="tab-migration" style="display:none;">
+                <div class="admin-card">
+                    <h3>Migrasyon done → Supabase</h3>
+                    <p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:1rem;">
+                        Migre tout done ki nan localStorage (pwodui, kategori, kòmand, tranzaksyon, kliyan, admin) 
+                        nan baz done Supabase nan nwaj la. Fè sa yon sèl fwa apre ou fin kreye tab yo nan SQL Editor.
+                    </p>
+                    <button class="btn btn-primary" id="migrate-btn">🚀 Migre done yo nan Supabase</button>
+                    <div id="migration-status" style="margin-top:1rem;font-size:.85rem;"></div>
+                </div>
+            </div>
     </div>
 
     <footer>e-boutik — 2026</footer>
 
-    <script src="js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="js/supabase.js"></script>
     <script src="js/nav.js"></script>
     <script src="js/app.js"></script>
     <script src="js/admin.js"></script>
