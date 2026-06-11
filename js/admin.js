@@ -1,5 +1,3 @@
-const ALLOWED_ADMINS = ['admin', 'admin2'];
-
 async function hashPassword(password) {
     const enc = new TextEncoder().encode(password);
     const buf = await crypto.subtle.digest('SHA-256', enc);
@@ -51,7 +49,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const error = document.getElementById('register-error');
 
         if (!user || user.length < 3) { error.textContent = 'Erè: non itilizatè dwe gen 3 karaktè minimòm.'; return; }
-        if (!ALLOWED_ADMINS.includes(user)) { error.textContent = 'Erè: non itilizatè pa otorize. Kontakte administratè a.'; return; }
         if (pass.length < 8) { error.textContent = 'Erè: modpas dwe gen 8 karaktè minimòm.'; return; }
         if (pass !== confirm) { error.textContent = 'Erè: modpas yo pa konfime.'; return; }
 
