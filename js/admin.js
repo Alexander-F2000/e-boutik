@@ -144,6 +144,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             : '';
     });
 
+    document.getElementById('reset-products-btn')?.addEventListener('click', () => {
+        if (!confirm('Are ou? Sa pral efase tout pwodui ak kategori aktyèl yo epi retounen nan default.')) return;
+        if (!confirm('Konfime: tout done pral pèdi. Kontinye?')) return;
+        saveProducts(defaultProducts.map(normalizeProduct));
+        saveCategories(defaultCategoryNames.map((n, i) => ({ id: i + 1, name: n })));
+        showNotification('Tout pwodui ak kategori reset nan default!');
+        loadProducts();
+        loadCategories();
+        loadStockTab();
+        loadCategorySelect();
+    });
+
     document.getElementById('show-add-form-btn')?.addEventListener('click', () => {
         const form = document.getElementById('product-form');
         form.style.display = 'block';
