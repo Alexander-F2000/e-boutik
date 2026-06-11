@@ -5,13 +5,15 @@
 const SUPABASE_URL = 'https://dnantlspypnbpraezout.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuYW50bHNweXBuYnByYWV6b3V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTEwODgsImV4cCI6MjA5Njc4NzA4OH0.diXlvOq7Jbh-CnLOfrekpIhnDiUjQrZTxbnuVailgkk';
 
-function supabaseHeaders() {
-    return {
+function supabaseHeaders(prefer) {
+    var h = {
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     };
+    if (prefer) h['Prefer'] = prefer;
+    return h;
 }
 
 // ----------------------------------------------------------
@@ -30,13 +32,14 @@ async function supabaseSelect(table) {
 // ----------------------------------------------------------
 async function supabaseUpsert(table, data, conflictColumn) {
     if (!data || data.length === 0) return;
-    const resp = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
+    var params = conflictColumn ? '?on_conflict=' + conflictColumn : '';
+    var resp = await fetch(SUPABASE_URL + '/rest/v1/' + table + params, {
         method: 'POST',
-        headers: supabaseHeaders(),
+        headers: supabaseHeaders('resolution=merge-duplicates'),
         body: JSON.stringify(data)
     });
     if (!resp.ok) {
-        const text = await resp.text().catch(function() { return ''; });
+        var text = await resp.text().catch(function() { return ''; });
         throw new Error('HTTP ' + resp.status + ': ' + text);
     }
     return await resp.json().catch(function() { return null; });
@@ -78,12 +81,12 @@ async function syncFromSupabase() {
 // ============================================================
 async function syncToSupabase() {
     var tables = [
-        { table: 'products', key: 'eboutik_products' },
-        { table: 'categories', key: 'eboutik_categories' },
-        { table: 'orders', key: 'eboutik_orders' },
-        { table: 'transactions', key: 'eboutik_transactions' },
-        { table: 'clients', key: 'eboutik_clients' },
-        { table: 'admins', key: 'eboutik_admin_creds' }
+        { table: 'products', key: 'eboutik_products', conflict: 'id' },
+        { table: 'categories', key: 'eboutik_categories', conflict: 'id' },
+        { table: 'orders', key: 'eboutik_orders', conflict: 'id' },
+        { table: 'transactions', key: 'eboutik_transactions', conflict: 'id' },
+        { table: 'clients', key: 'eboutik_clients', conflict: 'email' },
+        { table: 'admins', key: 'eboutik_admin_creds', conflict: 'username' }
     ];
 
     var allOk = true;
@@ -96,7 +99,7 @@ async function syncToSupabase() {
             var data = JSON.parse(raw);
             if (!Array.isArray(data) || data.length === 0) continue;
 
-            await supabaseUpsert(t.table, data);
+            await supabaseUpsert(t.table, data, t.conflict);
         } catch (e) {
             console.warn('Supabase syncTo: ' + t.table + ' — ' + e.message);
             allOk = false;
@@ -115,12 +118,12 @@ async function syncToSupabase() {
 // ============================================================
 async function migrateLocalStorageToSupabase() {
     var tables = [
-        { table: 'products', key: 'eboutik_products' },
-        { table: 'categories', key: 'eboutik_categories' },
-        { table: 'orders', key: 'eboutik_orders' },
-        { table: 'transactions', key: 'eboutik_transactions' },
-        { table: 'clients', key: 'eboutik_clients' },
-        { table: 'admins', key: 'eboutik_admin_creds' }
+        { table: 'products', key: 'eboutik_products', conflict: 'id' },
+        { table: 'categories', key: 'eboutik_categories', conflict: 'id' },
+        { table: 'orders', key: 'eboutik_orders', conflict: 'id' },
+        { table: 'transactions', key: 'eboutik_transactions', conflict: 'id' },
+        { table: 'clients', key: 'eboutik_clients', conflict: 'email' },
+        { table: 'admins', key: 'eboutik_admin_creds', conflict: 'username' }
     ];
 
     var results = {};
@@ -142,7 +145,7 @@ async function migrateLocalStorageToSupabase() {
             // Batches of 50
             for (var j = 0; j < data.length; j += 50) {
                 var batch = data.slice(j, j + 50);
-                await supabaseUpsert(t.table, batch);
+                await supabaseUpsert(t.table, batch, t.conflict);
             }
 
             results[t.table] = { status: 'ok', count: data.length };
