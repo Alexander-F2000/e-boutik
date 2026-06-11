@@ -57,11 +57,11 @@ function getCategories() {
 }
 function saveProducts(products) {
     localStorage.setItem('eboutik_products', JSON.stringify(products));
-    syncToGitHub('data/products.json', JSON.stringify(products, null, 2), 'Mete ajou pwodui yo');
+    syncToSupabase();
 }
 function saveCategories(categories) {
     localStorage.setItem('eboutik_categories', JSON.stringify(categories));
-    syncToGitHub('data/categories.json', JSON.stringify(categories, null, 2), 'Mete ajou kategori yo');
+    syncToSupabase();
 }
 function getOrders() {
     try { return JSON.parse(localStorage.getItem('eboutik_orders')) || []; }
@@ -69,7 +69,7 @@ function getOrders() {
 }
 function saveOrders(orders) {
     localStorage.setItem('eboutik_orders', JSON.stringify(orders));
-    syncToGitHub('data/orders.json', JSON.stringify(orders, null, 2), 'Mete ajou komand yo');
+    syncToSupabase();
 }
 
 function getTransactions() {
@@ -78,7 +78,7 @@ function getTransactions() {
 }
 function saveTransactions(txns) {
     localStorage.setItem('eboutik_transactions', JSON.stringify(txns));
-    syncToGitHub('data/transactions.json', JSON.stringify(txns, null, 2), 'Mete ajou tranzaksyon yo');
+    syncToSupabase();
 }
 
 function addPurchase(productId, qty, unitCost, note) {
@@ -191,62 +191,6 @@ function deleteTransaction(id) {
     }
     saveTransactions(txns.filter(x => x.id != id));
     showNotification('Tranzaksyon an siprime!');
-}
-
-async function syncFromGitHub() {
-    const files = [
-        { path: 'products.json', key: 'eboutik_products' },
-        { path: 'categories.json', key: 'eboutik_categories' },
-        { path: 'orders.json', key: 'eboutik_orders' },
-        { path: 'transactions.json', key: 'eboutik_transactions' }
-    ];
-    if (localStorage.getItem('eboutik_pending_sync')) {
-        const token = GITHUB_CONFIG.TOKEN;
-        if (token) {
-            for (const f of files) {
-                const data = localStorage.getItem(f.key);
-                if (data) await syncToGitHub(f.path, JSON.stringify(JSON.parse(data), null, 2), 'Retry sync');
-            }
-        }
-        return;
-    }
-    for (const f of files) {
-        try {
-            const resp = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/main/data/${f.path}`);
-            if (resp.ok) {
-                const data = await resp.json();
-                localStorage.setItem(f.key, JSON.stringify(data));
-            }
-        } catch {}
-    }
-}
-
-async function syncToGitHub(path, content, message) {
-    const token = GITHUB_CONFIG.TOKEN;
-    if (!token) { localStorage.setItem('eboutik_pending_sync', 'true'); return; }
-    try {
-        const apiUrl = `https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/contents/${path}`;
-        const existing = await fetch(apiUrl, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const sha = existing.ok ? (await existing.json()).sha : null;
-        const base64Content = btoa(unescape(encodeURIComponent(content)));
-        const body = { message, content: base64Content };
-        if (sha) body.sha = sha;
-        const resp = await fetch(apiUrl, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
-        if (resp.ok) localStorage.removeItem('eboutik_pending_sync');
-        else localStorage.setItem('eboutik_pending_sync', 'true');
-    } catch (e) {
-        localStorage.setItem('eboutik_pending_sync', 'true');
-        console.error('GitHub sync echwe:', e);
-    }
 }
 
 function showNotification(message) {
