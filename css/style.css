@@ -901,6 +901,46 @@ footer {
 }
 
 /* Responsive */
+/* Dashboard */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+.dash-card {
+    border-radius: var(--radius-sm);
+    padding: 1.2rem 1rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+.dash-card-icon {
+    font-size: 1.8rem;
+    margin-bottom: .4rem;
+}
+.dash-card-label {
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: .85;
+    margin-bottom: .2rem;
+}
+.dash-card-value {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+.order-badge {
+    display: inline-block;
+    padding: .15rem .55rem;
+    border-radius: 4px;
+    font-size: .7rem;
+    font-weight: 500;
+}
+.status-pending { background: #fff3e0; color: #e65100; }
+.status-confirmed { background: #e8f5e9; color: #2e7d32; }
+.status-cancelled { background: #fbe9e7; color: #c62828; }
+
 @media (max-width: 768px) {
     nav { padding: .8rem 1.2rem; }
     nav .logo { font-size: 1.2rem; }
