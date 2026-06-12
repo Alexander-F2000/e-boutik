@@ -890,8 +890,17 @@ function drawSalesChart(sales) {
         const barH = (val / maxVal) * chartH;
         const y = pad.top + chartH - barH;
         ctx.fillStyle = gradient;
+        // Draw bar with rounded top corners
+        const r = Math.min(4, barW / 2, barH / 2);
         ctx.beginPath();
-        ctx.roundRect(x, y, barW, barH, [4, 4, 0, 0]);
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + barW - r, y);
+        ctx.quadraticCurveTo(x + barW, y, x + barW, y + r);
+        ctx.lineTo(x + barW, y + barH);
+        ctx.lineTo(x, y + barH);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
         ctx.fill();
 
         // Label
