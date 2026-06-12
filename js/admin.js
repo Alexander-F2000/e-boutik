@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             btn.classList.add('active');
             document.querySelectorAll('.admin-tab-content').forEach(el => el.style.display = 'none');
             document.getElementById('tab-' + btn.dataset.tab).style.display = 'block';
+            if (btn.dataset.tab === 'dashboard') loadDashboard();
             if (btn.dataset.tab === 'stock') { loadStockTab(); loadSaleProducts(); }
             if (btn.dataset.tab === 'sales') { loadSaleProducts(); updateSaleCalc(); }
             if (btn.dataset.tab === 'reports') loadReportsTab();
@@ -394,6 +395,12 @@ function showDashboard() {
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('register-section').style.display = 'none';
     document.getElementById('dashboard-section').style.display = 'block';
+    // Activer tablo debò pa defo
+    document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-tab="dashboard"]').classList.add('active');
+    document.querySelectorAll('.admin-tab-content').forEach(el => el.style.display = 'none');
+    document.getElementById('tab-dashboard').style.display = 'block';
+    loadDashboard();
     loadProducts();
     loadOrders();
     loadCategories();
@@ -770,4 +777,134 @@ function loadReportsTab() {
             + '<td><button class="btn btn-outline btn-sm" onclick="deleteTransaction(' + t.id + ');loadReportsTab();loadStockTab();">Siprime</button></td>'
             + '</tr>';
     }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen tranzaksyon</td></tr>';
+}
+
+// ============================================================
+// TABLEAU DE BORD
+// ============================================================
+function loadDashboard() {
+    const products = getProducts();
+    const orders = getOrders();
+    const txns = getTransactions();
+    const clients = (function() {
+        try { return JSON.parse(localStorage.getItem('eboutik_clients')) || []; }
+        catch { return []; }
+    })();
+
+    // ---- KPIs ----
+    const sales = txns.filter(t => t.type === 'VENTE');
+    const totalRevenue = sales.reduce((s, t) => s + t.totalPrice, 0);
+    document.getElementById('dash-total-sales').textContent = totalRevenue.toFixed(2) + ' G';
+    document.getElementById('dash-total-orders').textContent = orders.length;
+    document.getElementById('dash-total-products').textContent = products.length;
+    document.getElementById('dash-total-clients').textContent = clients.length;
+
+    // ---- Dènye kòmand (5 dènye) ----
+    const recentEl = document.getElementById('dash-recent-orders');
+    const recentOrders = orders.slice().reverse().slice(0, 5);
+    if (recentOrders.length === 0) {
+        recentEl.innerHTML = '<p style="color:var(--text-light);">Pa gen kòmand ankò.</p>';
+    } else {
+        recentEl.innerHTML = '<ul style="list-style:none;padding:0;margin:0;">' +
+            recentOrders.map(o => '<li style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border-light);">' +
+                '<span><strong>#' + o.id + '</strong> — ' + (o.customer_name || 'Anonim') + '</span>' +
+                '<span style="display:flex;align-items:center;gap:.5rem;">' +
+                '<span style="font-weight:500;">' + parseFloat(o.total).toFixed(2) + ' G</span>' +
+                '<span class="order-badge status-' + (o.status === 'Konfime' ? 'confirmed' : o.status === 'Anile' ? 'cancelled' : 'pending') + '">' +
+                (o.status || 'Ap tann') + '</span></span></li>'
+            ).join('') + '</ul>';
+    }
+
+    // ---- Alèt stòk ----
+    const alertsEl = document.getElementById('dash-stock-alerts');
+    const lowStock = products.filter(p => (p.stock || 0) <= p.alertThreshold);
+    if (lowStock.length === 0) {
+        alertsEl.innerHTML = '<p style="color:#2e7d32;">✅ Tout pwodui gen ase stòk.</p>';
+    } else {
+        alertsEl.innerHTML = '<ul style="list-style:none;padding:0;margin:0;">' +
+            lowStock.map(p => '<li style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border-light);">' +
+                '<span>' + p.name + '</span>' +
+                '<span style="color:#d32f2f;font-weight:600;">' + (p.stock || 0) + ' / ' + p.alertThreshold + '</span></li>'
+            ).join('') + '</ul>';
+    }
+
+    // ---- Grafik vant (7 dènye jou) ----
+    drawSalesChart(sales);
+}
+
+function drawSalesChart(sales) {
+    const canvas = document.getElementById('sales-chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width || canvas.parentElement.clientWidth || 600;
+    canvas.height = rect.height || canvas.parentElement.clientHeight || 200;
+
+    // Prepare 7-day data
+    const labels = [];
+    const data = [];
+    const now = new Date();
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(d.getDate() - i);
+        const key = d.toISOString().slice(0, 10);
+        labels.push(d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' }));
+        const daySales = sales.filter(t => t.createdAt && t.createdAt.slice(0, 10) === key);
+        data.push(daySales.reduce((s, t) => s + t.totalPrice, 0));
+    }
+
+    const W = canvas.width, H = canvas.height;
+    const pad = { top: 20, right: 20, bottom: 30, left: 50 };
+    const chartW = W - pad.left - pad.right;
+    const chartH = H - pad.top - pad.bottom;
+    const maxVal = Math.max(...data, 1);
+
+    // Clear
+    ctx.clearRect(0, 0, W, H);
+
+    // Grid lines
+    ctx.strokeStyle = '#e0e0e0';
+    ctx.lineWidth = 1;
+    const gridLines = 4;
+    for (let i = 0; i <= gridLines; i++) {
+        const y = pad.top + (chartH / gridLines) * i;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(W - pad.right, y);
+        ctx.stroke();
+        ctx.fillStyle = '#999';
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText((maxVal - (maxVal / gridLines) * i).toFixed(0), pad.left - 8, y + 4);
+    }
+
+    // Bars
+    const barW = chartW / data.length * 0.6;
+    const gap = chartW / data.length * 0.4;
+    const gradient = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
+    gradient.addColorStop(0, '#667eea');
+    gradient.addColorStop(1, '#764ba2');
+
+    data.forEach((val, i) => {
+        const x = pad.left + (chartW / data.length) * i + gap / 2;
+        const barH = (val / maxVal) * chartH;
+        const y = pad.top + chartH - barH;
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.roundRect(x, y, barW, barH, [4, 4, 0, 0]);
+        ctx.fill();
+
+        // Label
+        ctx.fillStyle = '#666';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(labels[i], x + barW / 2, H - pad.bottom + 16);
+
+        // Value on top
+        if (val > 0) {
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText(val.toFixed(0), x + barW / 2, y - 5);
+        }
+    });
 }
