@@ -53,6 +53,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (pass !== confirm) { error.textContent = 'Erè: modpas yo pa konfime.'; return; }
 
         const existing = getAdminCreds();
+        // Verify limit against Supabase too
+        try {
+            const supabaseAdmins = await supabaseSelect('admins');
+            if (supabaseAdmins && supabaseAdmins.length >= 2) {
+                error.textContent = 'Erè: limit 2 kont admin nan Supabase. Kontakte yon admin pou siprime yon kont avan.';
+                return;
+            }
+        } catch (e) { /* If Supabase unreachable, fall back to localStorage check */ }
+        if (existing.length >= 2) { error.textContent = 'Erè: limit 2 kont admin. Kontakte yon admin pou siprime yon kont avan.'; return; }
         if (getAdminCred(user)) { error.textContent = 'Erè: admin sa a deja gen yon modpas. Kontakte lòt admin an.'; return; }
 
         const hash = await hashPassword(pass);
