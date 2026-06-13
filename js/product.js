@@ -44,16 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('detail-desc').textContent = p.description || '';
     const meta = document.getElementById('detail-meta');
     const metaItems = [];
-    if (p.material) metaItems.push('<div><strong>Matiè</strong>' + p.material + '</div>');
-    if (p.color) metaItems.push('<div><strong>Koulè</strong>' + p.color + '</div>');
-    if (p.stock != null) metaItems.push('<div><strong>Stòk</strong>' + p.stock + ' inite</div>');
+    if (p.material) metaItems.push('<div><strong>Matiè</strong> ' + escapeHTML(p.material) + '</div>');
+    if (p.color) metaItems.push('<div><strong>Koulè</strong> ' + escapeHTML(p.color) + '</div>');
+    if (p.stock != null) metaItems.push('<div><strong>Stòk</strong> ' + Number(p.stock) + ' inite</div>');
     meta.innerHTML = metaItems.join('');
 
     const sizes = p.sizes ? p.sizes.split(',').map(s => s.trim()).filter(s => s) : [];
     const sizesContainer = document.getElementById('detail-sizes');
     let selectedSize = '';
     if (sizes.length && !(sizes.length === 1 && sizes[0].toLowerCase() === 'unique')) {
-        sizesContainer.innerHTML = sizes.map(s => '<button class="size-btn" data-size="' + s + '">' + s + '</button>').join('');
+        sizesContainer.innerHTML = sizes.map(function(s) { return '<button class="size-btn" data-size="' + escapeHTML(s) + '">' + escapeHTML(s) + '</button>'; }).join('');
         sizesContainer.querySelectorAll('.size-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 sizesContainer.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));

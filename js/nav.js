@@ -1,3 +1,9 @@
+// Register Service Worker for offline support
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+        .catch(function(err) { console.warn('SW registration failed:', err); });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.getElementById('menu-toggle');
     const links = document.getElementById('nav-links');
@@ -9,17 +15,34 @@ document.addEventListener('DOMContentLoaded', () => {
         toggle.classList.remove('open');
         links.classList.remove('open');
         if (overlay) overlay.classList.remove('show');
+        toggle.setAttribute('aria-expanded', 'false');
     }
 
     function openMenu() {
         toggle.classList.add('open');
         links.classList.add('open');
         if (overlay) overlay.classList.add('show');
+        toggle.setAttribute('aria-expanded', 'true');
     }
 
     toggle.addEventListener('click', () => {
         if (links.classList.contains('open')) closeMenu();
         else openMenu();
+    });
+
+    toggle.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (links.classList.contains('open')) closeMenu();
+            else openMenu();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && links.classList.contains('open')) {
+            closeMenu();
+            toggle.focus();
+        }
     });
 
     if (overlay) overlay.addEventListener('click', closeMenu);

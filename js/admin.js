@@ -17,13 +17,20 @@ function getAdminCred(username) {
     return getAdminCreds().find(c => c.username === username) || null;
 }
 
+function isAdminSessionValid() {
+    const user = sessionStorage.getItem('eboutik_admin');
+    if (!user) return false;
+    const creds = getAdminCreds();
+    return creds.some(function(c) { return c.username === user; });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     await syncFromSupabase();
 
     document.getElementById('login-section').style.display = 'block';
     document.getElementById('register-section').style.display = 'none';
 
-    if (sessionStorage.getItem('eboutik_admin')) {
+    if (isAdminSessionValid()) {
         showDashboard();
     }
 
@@ -127,9 +134,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('purchase-form').style.display = 'block';
         document.getElementById('purchase-product').innerHTML = '';
         const products = getProducts();
-        document.getElementById('purchase-product').innerHTML = products.map(p =>
-            `<option value="${p.id}">${p.name} (Stòk: ${p.stock || 0})</option>`
-        ).join('');
+        document.getElementById('purchase-product').innerHTML = products.map(function(p) {
+            return '<option value="' + p.id + '">' + escapeHTML(p.name) + ' (Stòk: ' + (p.stock || 0) + ')</option>';
+        }).join('');
         document.getElementById('purchase-qty').value = 10;
         document.getElementById('purchase-cost').value = 0;
         document.getElementById('purchase-note').value = '';
@@ -264,15 +271,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function uploadImage(file) {
-        const formData = new FormData();
-        formData.append('image', file);
         try {
-            const resp = await fetch('/api/upload.php', { method: 'POST', body: formData });
+            const fileName = Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g, '');
+            const resp = await fetch(SUPABASE_URL + '/storage/v1/object/eboutik-images/' + fileName, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                    'apikey': SUPABASE_ANON_KEY,
+                },
+                body: file
+            });
             if (resp.ok) {
-                const data = await resp.json();
-                return window.location.origin + '/' + data.url;
+                return SUPABASE_URL + '/storage/v1/object/public/eboutik-images/' + fileName;
             }
-        } catch {}
+        } catch(e) {
+            console.warn('Supabase upload failed, using client compression:', e);
+        }
         return null;
     }
 
@@ -410,19 +424,15 @@ function showDashboard() {
 function loadProducts() {
     const tbody = document.getElementById('products-table-body');
     const products = getProducts();
-    tbody.innerHTML = products.map(p => `
-        <tr>
-            <td>${p.id}</td>
-            <td>${p.name}</td>
-            <td>${parseFloat(p.price).toFixed(2)} G</td>
-            <td>${p.category || '—'}</td>
-            <td>${p.stock || 0}</td>
-            <td>
-                <button class="btn btn-primary btn-sm" onclick="editProduct(${p.id})">Modifye</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">Siprime</button>
-            </td>
-        </tr>
-    `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen pwodui</td></tr>';
+    tbody.innerHTML = products.map(function(p) {
+        return '<tr><td>' + escapeHTML(String(p.id)) + '</td>'
+            + '<td>' + escapeHTML(p.name) + '</td>'
+            + '<td>' + parseFloat(p.price).toFixed(2) + ' G</td>'
+            + '<td>' + escapeHTML(p.category || '\u2014') + '</td>'
+            + '<td>' + (p.stock || 0) + '</td>'
+            + '<td><button class="btn btn-primary btn-sm" onclick="editProduct(' + p.id + ')">Modifye</button> '
+            + '<button class="btn btn-danger btn-sm" onclick="deleteProduct(' + p.id + ')">Siprime</button></td></tr>';
+    }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen pwodui</td></tr>';
 }
 
 const PLACEHOLDER_DATA = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==";
@@ -528,16 +538,12 @@ function deleteProduct(id) {
 function loadCategories() {
     const tbody = document.getElementById('categories-table-body');
     const categories = getCategories();
-    tbody.innerHTML = categories.map(c => `
-        <tr>
-            <td>${c.id}</td>
-            <td>${c.name}</td>
-            <td>
-                <button class="btn btn-primary btn-sm" onclick="editCategory(${c.id})">Modifye</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteCategory(${c.id})">Siprime</button>
-            </td>
-        </tr>
-    `).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen kategori</td></tr>';
+    tbody.innerHTML = categories.map(function(c) {
+        return '<tr><td>' + escapeHTML(String(c.id)) + '</td>'
+            + '<td>' + escapeHTML(c.name) + '</td>'
+            + '<td><button class="btn btn-primary btn-sm" onclick="editCategory(' + c.id + ')">Modifye</button> '
+            + '<button class="btn btn-danger btn-sm" onclick="deleteCategory(' + c.id + ')">Siprime</button></td></tr>';
+    }).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen kategori</td></tr>';
 }
 
 function editCategory(id) {
@@ -571,21 +577,17 @@ function loadOrders() {
     const tbody = document.getElementById('orders-table-body');
     const orders = getOrders();
     const statuses = ['Ap tann', 'Konfime', 'Anile'];
-    tbody.innerHTML = orders.map(o => `
-        <tr>
-            <td>${o.id}</td>
-            <td>${o.customer_name}</td>
-            <td>${parseFloat(o.total).toFixed(2)} G</td>
-            <td>
-                <select class="order-status-select" data-order-id="${o.id}"
-                    style="padding:.25rem .4rem;border:1px solid var(--border);border-radius:4px;font-family:var(--font-sans);font-size:.75rem;">
-                    ${statuses.map(s => `<option value="${s}" ${o.status === s ? 'selected' : ''}>${s}</option>`).join('')}
-                </select>
-            </td>
-            <td>${o.created_at || '—'}</td>
-            <td><button class="btn btn-outline btn-sm" onclick="showOrderDetail(${o.id})">Detay</button></td>
-        </tr>
-    `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen kòmand</td></tr>';
+    tbody.innerHTML = orders.map(function(o) {
+        return '<tr><td>' + escapeHTML(String(o.id)) + '</td>'
+            + '<td>' + escapeHTML(o.customer_name || '') + '</td>'
+            + '<td>' + parseFloat(o.total).toFixed(2) + ' G</td>'
+            + '<td><select class="order-status-select" data-order-id="' + o.id + '"'
+            + ' style="padding:.25rem .4rem;border:1px solid var(--border);border-radius:4px;font-family:var(--font-sans);font-size:.75rem;">'
+            + statuses.map(function(s) { return '<option value="' + escapeHTML(s) + '"' + (o.status === s ? ' selected' : '') + '>' + escapeHTML(s) + '</option>'; }).join('')
+            + '</select></td>'
+            + '<td>' + escapeHTML(o.created_at || '\u2014') + '</td>'
+            + '<td><button class="btn btn-outline btn-sm" onclick="showOrderDetail(' + o.id + ')">Detay</button></td></tr>';
+    }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen kòmand</td></tr>';
 
     tbody.querySelectorAll('.order-status-select').forEach(sel => {
         sel.addEventListener('change', () => {
@@ -609,31 +611,26 @@ function showOrderDetail(id) {
 
     const overlay = document.createElement('div');
     overlay.className = 'size-picker-overlay';
-    overlay.innerHTML = `
-        <div class="size-picker-modal" style="max-width:500px;">
-            <button class="size-picker-close" aria-label="Fèmen">&times;</button>
-            <div style="padding:2rem;">
-                <h3 style="margin-bottom:1rem;font-family:var(--font-serif);">Detay kòmand #${order.id}</h3>
-                <div class="order-confirm-details">
-                    <p><strong>Kliyan:</strong> ${order.customer_name}</p>
-                    ${order.customer_phone ? `<p><strong>Telefòn:</strong> ${order.customer_phone}</p>` : ''}
-                    ${order.customer_address ? `<p><strong>Adrès:</strong> ${order.customer_address}</p>` : ''}
-                    <p><strong>Total:</strong> ${parseFloat(order.total).toFixed(2)} G</p>
-                    <p><strong>Estati:</strong> ${order.status}</p>
-                    <p><strong>Dat:</strong> ${order.created_at}</p>
-                </div>
-                <h4 style="margin:1rem 0 .5rem;font-size:.9rem;">Atik yo:</h4>
-                <ul style="list-style:none;padding:0;">
-                    ${(order.items || []).map(i => `
-                        <li style="padding:.4rem 0;border-bottom:1px solid var(--border-light);font-size:.85rem;display:flex;justify-content:space-between;">
-                            <span>${i.name} ${i.size ? '(' + i.size + ')' : ''} x${i.quantity}</span>
-                            <span style="font-weight:500;">${(i.price * i.quantity).toFixed(2)} G</span>
-                        </li>
-                    `).join('')}
-                </ul>
-            </div>
-        </div>
-    `;
+    overlay.innerHTML = '<div class="size-picker-modal" style="max-width:500px;">'
+        + '<button class="size-picker-close" aria-label="Fèmen">&times;</button>'
+        + '<div style="padding:2rem;">'
+        + '<h3 style="margin-bottom:1rem;font-family:var(--font-serif);">Detay kòmand #' + escapeHTML(String(order.id)) + '</h3>'
+        + '<div class="order-confirm-details">'
+        + '<p><strong>Kliyan:</strong> ' + escapeHTML(order.customer_name || '') + '</p>'
+        + (order.customer_phone ? '<p><strong>Telefòn:</strong> ' + escapeHTML(order.customer_phone) + '</p>' : '')
+        + (order.customer_address ? '<p><strong>Adrès:</strong> ' + escapeHTML(order.customer_address) + '</p>' : '')
+        + '<p><strong>Total:</strong> ' + parseFloat(order.total).toFixed(2) + ' G</p>'
+        + '<p><strong>Estati:</strong> ' + escapeHTML(order.status || '') + '</p>'
+        + '<p><strong>Dat:</strong> ' + escapeHTML(order.created_at || '') + '</p>'
+        + '</div>'
+        + '<h4 style="margin:1rem 0 .5rem;font-size:.9rem;">Atik yo:</h4>'
+        + '<ul style="list-style:none;padding:0;">'
+        + (order.items || []).map(function(i) {
+            return '<li style="padding:.4rem 0;border-bottom:1px solid var(--border-light);font-size:.85rem;display:flex;justify-content:space-between;">'
+                + '<span>' + escapeHTML(i.name) + (i.size ? ' (' + escapeHTML(i.size) + ')' : '') + ' x' + i.quantity + '</span>'
+                + '<span style="font-weight:500;">' + (i.price * i.quantity).toFixed(2) + ' G</span></li>';
+        }).join('')
+        + '</ul></div></div>';
     document.body.appendChild(overlay);
     overlay.querySelector('.size-picker-close').addEventListener('click', () => overlay.remove());
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
@@ -647,16 +644,16 @@ function loadStockTab() {
     const lowStock = products.filter(p => (p.stock || 0) <= p.alertThreshold);
     if (lowStock.length > 0) {
         alerts.innerHTML = '<div style="background:#fff3e0;border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:.82rem;border-left:3px solid #ff9800;">' + lowStock.length + ' pwodui gen stòk ki ba: '
-            + lowStock.map(p => '<strong>' + p.name + '</strong> (' + (p.stock || 0) + ' / ' + p.alertThreshold + ')').join(', ')
+            + lowStock.map(function(p) { return '<strong>' + escapeHTML(p.name) + '</strong> (' + (p.stock || 0) + ' / ' + p.alertThreshold + ')'; }).join(', ')
             + '</div>';
     } else {
         alerts.innerHTML = '<div style="background:#e8f5e9;border-radius:var(--radius-sm);padding:.5rem 1rem;font-size:.82rem;color:#2e7d32;">Tout pwodui gen ase stòk</div>';
     }
-    tbody.innerHTML = products.map(p => {
+    tbody.innerHTML = products.map(function(p) {
         const st = p.stock || 0;
         const warn = st <= p.alertThreshold;
         return '<tr' + (warn ? ' style="background:#fff8e1;"' : '') + '>'
-            + '<td>' + p.name + '</td>'
+            + '<td>' + escapeHTML(p.name) + '</td>'
             + '<td' + (warn ? ' style="color:#d32f2f;font-weight:600;"' : '') + '>' + st + '</td>'
             + '<td>' + (p.costPrice || 0).toFixed(2) + ' G</td>'
             + '<td>' + parseFloat(p.price).toFixed(2) + ' G</td>'
@@ -670,9 +667,9 @@ function loadSaleProducts() {
     const select = document.getElementById('sale-product');
     if (!select) return;
     const products = getProducts();
-    select.innerHTML = products.map(p =>
-        '<option value="' + p.id + '">' + p.name + ' (Stòk: ' + (p.stock || 0) + ')</option>'
-    ).join('');
+    select.innerHTML = products.map(function(p) {
+        return '<option value="' + p.id + '">' + escapeHTML(p.name) + ' (Stòk: ' + (p.stock || 0) + ')</option>';
+    }).join('');
 }
 
 function updateSaleCalc() {
@@ -729,9 +726,9 @@ function updateSaleCalc() {
     document.getElementById('sale-total-display').textContent = totalPrice.toFixed(2) + ' G';
     const profitEl = document.getElementById('sale-profit-display');
     if (profit >= 0) {
-        profitEl.innerHTML = '\uD83D\uDCB0 Bénéfis estime: <strong style="color:#2e7d32;">' + profit.toFixed(2) + ' G</strong>';
+        profitEl.innerHTML = 'Bénéfis estime: <strong style="color:#2e7d32;">' + profit.toFixed(2) + ' G</strong>';
     } else {
-        profitEl.innerHTML = '\uD83D\uDCC9 Pèt estime: <strong style="color:#d32f2f;">' + Math.abs(profit).toFixed(2) + ' G</strong>';
+        profitEl.innerHTML = 'Pèt estime: <strong style="color:#d32f2f;">' + Math.abs(profit).toFixed(2) + ' G</strong>';
     }
     const batchEl = document.getElementById('sale-batch-detail');
     if (batchDetail) {
@@ -762,18 +759,18 @@ function loadReportsTab() {
     document.getElementById('stat-total-profit').textContent = totalProfit.toFixed(2) + ' G';
     document.getElementById('stat-simple-sales').textContent = simpleSales.toFixed(2) + ' G';
     document.getElementById('stat-wholesale-sales').textContent = wholesaleSales.toFixed(2) + ' G';
-    tbody.innerHTML = txns.slice().reverse().map(t => {
+    tbody.innerHTML = txns.slice().reverse().map(function(t) {
         const isSale = t.type === 'VENTE';
         return '<tr>'
-            + '<td style="font-size:.75rem;">' + (t.createdAt || '—') + '</td>'
+            + '<td style="font-size:.75rem;">' + escapeHTML(t.createdAt || '\u2014') + '</td>'
             + '<td><span style="padding:.15rem .5rem;border-radius:4px;font-size:.7rem;font-weight:500;'
             + (isSale ? 'background:#e8f5e9;color:#2e7d32;">VENTE' : 'background:#e3f2fd;color:#1565c0;">ACHAT')
-            + (t.saleType && isSale ? ' (' + t.saleType + ')' : '') + '</span></td>'
-            + '<td>' + (t.productName || '—') + '</td>'
+            + (t.saleType && isSale ? ' (' + escapeHTML(t.saleType) + ')' : '') + '</span></td>'
+            + '<td>' + escapeHTML(t.productName || '\u2014') + '</td>'
             + '<td>' + t.quantity + '</td>'
             + '<td>' + (t.totalPrice || 0).toFixed(2) + ' G</td>'
             + '<td style="color:' + (isSale ? (t.profit >= 0 ? '#2e7d32' : '#d32f2f') : '#999') + ';">'
-            + (isSale ? (t.profit || 0).toFixed(2) + ' G' : '—') + '</td>'
+            + (isSale ? (t.profit || 0).toFixed(2) + ' G' : '\u2014') + '</td>'
             + '<td><button class="btn btn-outline btn-sm" onclick="deleteTransaction(' + t.id + ');loadReportsTab();loadStockTab();">Siprime</button></td>'
             + '</tr>';
     }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen tranzaksyon</td></tr>';
@@ -806,13 +803,14 @@ function loadDashboard() {
         recentEl.innerHTML = '<p style="color:var(--text-light);">Pa gen kòmand ankò.</p>';
     } else {
         recentEl.innerHTML = '<ul style="list-style:none;padding:0;margin:0;">' +
-            recentOrders.map(o => '<li style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border-light);">' +
-                '<span><strong>#' + o.id + '</strong> — ' + (o.customer_name || 'Anonim') + '</span>' +
-                '<span style="display:flex;align-items:center;gap:.5rem;">' +
-                '<span style="font-weight:500;">' + parseFloat(o.total).toFixed(2) + ' G</span>' +
-                '<span class="order-badge status-' + (o.status === 'Konfime' ? 'confirmed' : o.status === 'Anile' ? 'cancelled' : 'pending') + '">' +
-                (o.status || 'Ap tann') + '</span></span></li>'
-            ).join('') + '</ul>';
+            recentOrders.map(function(o) {
+                return '<li style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border-light);">'
+                    + '<span><strong>#' + o.id + '</strong> &mdash; ' + escapeHTML(o.customer_name || 'Anonim') + '</span>'
+                    + '<span style="display:flex;align-items:center;gap:.5rem;">'
+                    + '<span style="font-weight:500;">' + parseFloat(o.total).toFixed(2) + ' G</span>'
+                    + '<span class="order-badge status-' + (o.status === 'Konfime' ? 'confirmed' : o.status === 'Anile' ? 'cancelled' : 'pending') + '">'
+                    + escapeHTML(o.status || 'Ap tann') + '</span></span></li>';
+            }).join('') + '</ul>';
     }
 
     // ---- Alèt stòk ----
@@ -822,10 +820,11 @@ function loadDashboard() {
         alertsEl.innerHTML = '<p style="color:#2e7d32;">Tout pwodui gen ase stòk.</p>';
     } else {
         alertsEl.innerHTML = '<ul style="list-style:none;padding:0;margin:0;">' +
-            lowStock.map(p => '<li style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border-light);">' +
-                '<span>' + p.name + '</span>' +
-                '<span style="color:#d32f2f;font-weight:600;">' + (p.stock || 0) + ' / ' + p.alertThreshold + '</span></li>'
-            ).join('') + '</ul>';
+            lowStock.map(function(p) {
+                return '<li style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border-light);">'
+                    + '<span>' + escapeHTML(p.name) + '</span>'
+                    + '<span style="color:#d32f2f;font-weight:600;">' + (p.stock || 0) + ' / ' + p.alertThreshold + '</span></li>';
+            }).join('') + '</ul>';
     }
 
     // ---- Grafik vant (7 dènye jou) ----

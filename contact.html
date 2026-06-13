@@ -35,7 +35,7 @@
             <a href="cart.html">Demann <span class="cart-badge" id="cart-count">0</span></a>
             <a href="about.html">À propos</a>
             <a href="contact.html">Kontak</a>
-            <a href="account.html">Mon kont</a>
+            <a href="account.html">Kont mwen</a>
             <a href="admin.html">Admin</a>
         </div>
         <div class="mobile-overlay" id="mobile-overlay"></div>
@@ -120,7 +120,7 @@
             </div>
             <div class="footer-col">
                 <h4>Èd</h4>
-                <a href="account.html">Mon kont</a>
+                <a href="account.html">Kont mwen</a>
                 <a href="contact.html">Kontakte nou</a>
                 <a href="about.html">FAQ</a>
             </div>
@@ -139,10 +139,41 @@
             updateCartBadge();
             document.getElementById('contact-form')?.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const msg = document.getElementById('contact-message-status');
-                msg.className = 'success';
-                msg.textContent = 'Mèsi! Mesaj ou an te voye. N ap kontakte ou byento.';
-                e.target.reset();
+                const statusMsg = document.getElementById('contact-message-status');
+                const name = document.getElementById('contact-name').value.trim();
+                const email = document.getElementById('contact-email').value.trim();
+                const subject = document.getElementById('contact-subject').value.trim();
+                const message = document.getElementById('contact-message').value.trim();
+
+                if (!name || !email || !subject || !message) {
+                    statusMsg.className = 'error';
+                    statusMsg.textContent = 'Erè: ranpli tout chan yo.';
+                    return;
+                }
+
+                try {
+                    const messages = JSON.parse(localStorage.getItem('eboutik_messages') || '[]');
+                    messages.push({
+                        id: Date.now(),
+                        name: name,
+                        email: email,
+                        subject: subject,
+                        message: message,
+                        created_at: new Date().toLocaleString('fr-FR')
+                    });
+                    localStorage.setItem('eboutik_messages', JSON.stringify(messages));
+                    // Sync to Supabase if available
+                    if (typeof syncToSupabase === 'function') {
+                        syncToSupabase();
+                    }
+                    statusMsg.className = 'success';
+                    statusMsg.textContent = 'Mesci! Mesaj ou an te voye. N ap kontakte ou byento.';
+                    e.target.reset();
+                } catch(err) {
+                    statusMsg.className = 'error';
+                    statusMsg.textContent = 'Erè: pa ka sove mesaj ou. Tanpri eseye ankò.';
+                    console.warn('Contact form error:', err);
+                }
             });
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
