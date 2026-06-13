@@ -8,8 +8,11 @@
     <meta property="og:title" content="e-boutik — À propos">
     <meta property="og:description" content="Dekouvri istwa e-boutik, misyon nou ak ekip nou an.">
     <meta property="og:type" content="website">
-    <meta name="theme-color" content="#C9A96E">
+    <meta name="theme-color" content="#1B1B2E">
     <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <style>
         .about-content { max-width: 720px; margin: 0 auto; line-height: 1.8; }
@@ -46,13 +49,13 @@
     </div>
 
     <div class="container about-content">
-        <h2>Istwa nou</h2>
-        <p>e-boutik te kreye ak yon vizyon senp: pote style ak elégance nan chak kay. Depi kreyasyon nou an, nou angaje nan ofri pi bon kalite vètman ak akseswa, chwazi ak swen pou chak kliyan.</p>
+        <h2 class="fade-in">Istwa nou</h2>
+        <p class="fade-in">e-boutik te kreye ak yon vizyon senp: pote style ak elégance nan chak kay. Depi kreyasyon nou an, nou angaje nan ofri pi bon kalite vètman ak akseswa, chwazi ak swen pou chak kliyan.</p>
 
-        <h2>Misyon nou</h2>
-        <p>Misyon nou se demokratize mòd ak kalite. Nou kwè ke chak moun merite santi yo byen nan po yo ak bèl nan sa yo mete. Se poutèt sa nou travay dirèkteman ak atizan ak founisè konfyans pou pote ou pi bon moso yo.</p>
+        <h2 class="fade-in">Misyon nou</h2>
+        <p class="fade-in">Misyon nou se demokratize mòd ak kalite. Nou kwè ke chak moun merite santi yo byen nan po yo ak bèl nan sa yo mete. Se poutèt sa nou travay dirèkteman ak atizan ak founisè konfyans pou pote ou pi bon moso yo.</p>
 
-        <div class="about-values">
+        <div class="about-values fade-in">
             <div class="about-value">
                 <h3>Kalite</h3>
                 <p>Chak pwodui se chwazi ak atansyon pou asire w ke w ap resevwa pi bon an.</p>
@@ -71,15 +74,52 @@
             </div>
         </div>
 
-        <h2>Ekip nou an</h2>
+        <h2 class="fade-in">Ekip nou an</h2>
         <p>Yon ti ekip pasyone de mòd ak sèvis kliyan. Nou travay chak jou pou amelyore eksperyans ou e ofri ou sa ki pi bon. N ap kontinye grandi ak ou, epi n ap toujou koute feedback ou.</p>
     </div>
 
-    <footer>e-boutik — 2026</footer>
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>e-boutik</h4>
+                <p>Boutik an liy ki ofri vètman, akseswa ak style. Chwazi ak swen, livré ak amou.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Navigasyon</h4>
+                <a href="catalog.html">Katalòg</a>
+            <a href="about.html" aria-current="page">À propos</a>
+                <a href="contact.html">Kontak</a>
+            </div>
+            <div class="footer-col">
+                <h4>Kontak</h4>
+                <a href="https://wa.me/50938411679" target="_blank">WhatsApp +509 38 41 16 79</a>
+                <a href="https://wa.me/50935643979" target="_blank">WhatsApp +509 35 64 39 79</a>
+                <a href="https://wa.me/50936895533" target="_blank">XanderTech +509 36 89 55 33</a>
+            </div>
+            <div class="footer-col">
+                <h4>Èd</h4>
+                <a href="account.html">Mon kont</a>
+                <a href="contact.html">Kontakte nou</a>
+                <a href="about.html">FAQ</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 e-boutik. Tout dwa rezève.</span>
+            <span>Fè ak ❤️ an Ayiti</span>
+        </div>
+    </footer>
 
     <script src="js/supabase.js"></script>
     <script src="js/nav.js"></script>
     <script src="js/app.js"></script>
-    <script>document.addEventListener('DOMContentLoaded', updateCartBadge);</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartBadge();
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+        });
+    </script>
 </body>
 </html>
