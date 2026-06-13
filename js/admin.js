@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             status.innerHTML = '<span style="color:#b91c1c;">Erè: ' + (result.error || 'Migration pa mache') + '</span>';
             return;
         }
-        let html = '<div style="background:#e8f5e9;padding:.8rem 1rem;border-radius:var(--radius-sm);">✅ Migrasyon fini!<ul style="margin-top:.5rem;padding-left:1.2rem;">';
+        let html = '<div style="background:#e8f5e9;padding:.8rem 1rem;border-radius:var(--radius-sm);">Migrasyon fini!<ul style="margin-top:.5rem;padding-left:1.2rem;">';
         for (const [table, r] of Object.entries(result.results)) {
             if (r.status === 'ok') html += '<li style="color:#2e7d32;">' + table + ': ' + r.count + ' done migre</li>';
             else if (r.status === 'skip') html += '<li style="color:#999;">' + table + ': pa gen done</li>';
@@ -646,11 +646,11 @@ function loadStockTab() {
     if (!tbody) return;
     const lowStock = products.filter(p => (p.stock || 0) <= p.alertThreshold);
     if (lowStock.length > 0) {
-        alerts.innerHTML = '<div style="background:#fff3e0;border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:.82rem;border-left:3px solid #ff9800;">\u26A0\uFE0F ' + lowStock.length + ' pwodui gen stòk ki ba: '
+        alerts.innerHTML = '<div style="background:#fff3e0;border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:.82rem;border-left:3px solid #ff9800;">' + lowStock.length + ' pwodui gen stòk ki ba: '
             + lowStock.map(p => '<strong>' + p.name + '</strong> (' + (p.stock || 0) + ' / ' + p.alertThreshold + ')').join(', ')
             + '</div>';
     } else {
-        alerts.innerHTML = '<div style="background:#e8f5e9;border-radius:var(--radius-sm);padding:.5rem 1rem;font-size:.82rem;color:#2e7d32;">\u2705 Tout pwodui gen ase stòk</div>';
+        alerts.innerHTML = '<div style="background:#e8f5e9;border-radius:var(--radius-sm);padding:.5rem 1rem;font-size:.82rem;color:#2e7d32;">Tout pwodui gen ase stòk</div>';
     }
     tbody.innerHTML = products.map(p => {
         const st = p.stock || 0;
@@ -661,7 +661,7 @@ function loadStockTab() {
             + '<td>' + (p.costPrice || 0).toFixed(2) + ' G</td>'
             + '<td>' + parseFloat(p.price).toFixed(2) + ' G</td>'
             + '<td>' + p.alertThreshold + '</td>'
-            + '<td>' + (warn ? '<span style="color:#d32f2f;font-size:1.1rem;">\u26A0\uFE0F</span>' : '<span style="color:#2e7d32;">\u2713</span>') + '</td>'
+            + '<td>' + (warn ? '<span style="color:#d32f2f;font-weight:600;font-size:.7rem;text-transform:uppercase;">Alèt</span>' : '<span style="color:#2e7d32;font-weight:500;font-size:.7rem;">OK</span>') + '</td>'
             + '</tr>';
     }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen pwodui</td></tr>';
 }
@@ -819,7 +819,7 @@ function loadDashboard() {
     const alertsEl = document.getElementById('dash-stock-alerts');
     const lowStock = products.filter(p => (p.stock || 0) <= p.alertThreshold);
     if (lowStock.length === 0) {
-        alertsEl.innerHTML = '<p style="color:#2e7d32;">✅ Tout pwodui gen ase stòk.</p>';
+        alertsEl.innerHTML = '<p style="color:#2e7d32;">Tout pwodui gen ase stòk.</p>';
     } else {
         alertsEl.innerHTML = '<ul style="list-style:none;padding:0;margin:0;">' +
             lowStock.map(p => '<li style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border-light);">' +
