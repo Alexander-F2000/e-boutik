@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://alexander-f2000.github.io/e-boutik/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://alexander-f2000.github.io/e-boutik/catalog.html</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://alexander-f2000.github.io/e-boutik/cart.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://alexander-f2000.github.io/e-boutik/about.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alexander-f2000.github.io/e-boutik/contact.html</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://alexander-f2000.github.io/e-boutik/account.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://alexander-f2000.github.io/e-boutik/admin.html</loc>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://alexander-f2000.github.io/e-boutik/product.html</loc>
+    <priority>0.8</priority>
+  </url>
+</urlset>

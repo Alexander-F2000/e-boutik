@@ -1,3 +1,13 @@
+function escapeHTML(str) {
+    if (str == null) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 const PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==";
 
 function fallbackImage(img) {
@@ -223,25 +233,27 @@ function showSizePicker(product) {
     let pickerImg = product.image || PLACEHOLDER;
     if (pickerImg.startsWith('http://')) pickerImg = pickerImg.replace('http://', 'https://');
     overlay.className = 'size-picker-overlay';
-    overlay.innerHTML = `
-        <div class="size-picker-modal">
-            <button class="size-picker-close" aria-label="Fèmen">&times;</button>
-            <div class="size-picker-layout">
-                <img src="${pickerImg}" alt="${product.name}"
-                     onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{fallbackImage(this)}">
-                <div class="size-picker-info">
-                    <div class="size-picker-category">${product.category || ''}</div>
-                    <div class="size-picker-name">${product.name}</div>
-                    <div class="size-picker-price">${Number(product.price).toFixed(2)} G</div>
-                    <p>Chwazi yon gwosè:</p>
-                    <div class="size-options">
-                        ${sizes.map(s => `<button class="size-option" data-size="${s}">${s}</button>`).join('')}
-                    </div>
-                    <button class="btn btn-primary add-cart-confirm" disabled>Ajoute nan demann</button>
-                </div>
-            </div>
-        </div>
-    `;
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Chwazi gwosè pou ' + escapeHTML(product.name));
+    const safeName = escapeHTML(product.name);
+    const safeCategory = escapeHTML(product.category || '');
+    const safePrice = Number(product.price).toFixed(2);
+    overlay.innerHTML = '<div class="size-picker-modal">'
+        + '<button class="size-picker-close" aria-label="Fèmen">&times;</button>'
+        + '<div class="size-picker-layout">'
+        + '<img src="' + escapeHTML(pickerImg) + '" alt="' + safeName + '"'
+        + ' onerror="if(this.src.startsWith(\'http://\')){this.src=this.src.replace(\'http://\',\'https://\')}else{fallbackImage(this)}">'
+        + '<div class="size-picker-info">'
+        + '<div class="size-picker-category">' + safeCategory + '</div>'
+        + '<div class="size-picker-name">' + safeName + '</div>'
+        + '<div class="size-picker-price">' + safePrice + ' G</div>'
+        + '<p>Chwazi yon gwosè:</p>'
+        + '<div class="size-options">'
+        + sizes.map(function(s) { return '<button class="size-option" data-size="' + escapeHTML(s) + '">' + escapeHTML(s) + '</button>'; }).join('')
+        + '</div>'
+        + '<button class="btn btn-primary add-cart-confirm" disabled>Ajoute nan demann</button>'
+        + '</div></div></div>';
     document.body.appendChild(overlay);
 
     let selectedSize = '';
@@ -256,12 +268,25 @@ function showSizePicker(product) {
     overlay.querySelector('.add-cart-confirm').addEventListener('click', () => {
         if (selectedSize) {
             addToCart(product, selectedSize);
-            showNotification(product.name + ' (' + selectedSize + ') ajoute nan demann!');
+            showNotification(escapeHTML(product.name) + ' (' + selectedSize + ') ajoute nan demann!');
             overlay.remove();
+            document.body.focus();
         }
     });
-    overlay.querySelector('.size-picker-close').addEventListener('click', () => overlay.remove());
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+    overlay.querySelector('.size-picker-close').addEventListener('click', () => { overlay.remove(); document.body.focus(); });
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) { overlay.remove(); document.body.focus(); } });
+    overlay.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { overlay.remove(); document.body.focus(); return; }
+        if (e.key === 'Tab') {
+            const focusable = overlay.querySelectorAll('button, [tabindex]:not([tabindex="-1"]), input, select, textarea');
+            if (focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+    });
+    requestAnimationFrame(() => { const btn = overlay.querySelector('.size-option, .add-cart-confirm, .size-picker-close'); if (btn) btn.focus(); });
 }
 
 function renderProductCard(p) {
@@ -270,25 +295,25 @@ function renderProductCard(p) {
     if (imgSrc.startsWith('http://')) imgSrc = imgSrc.replace('http://', 'https://');
     let imgHov = p.image_hover || '';
     if (imgHov.startsWith('http://')) imgHov = imgHov.replace('http://', 'https://');
-    const prodJson = JSON.stringify(p).replace(/'/g, "&#39;");
-    const wrapStyle = imgHov ? `style="background-image:url('${imgHov}');background-size:cover;background-position:center;"` : '';
-    return `
-        <div class="product-card" tabindex="0" role="button" aria-label="${p.name}" onclick="window.location.href='product.html?id=${p.id}'">
-            <div class="product-image-wrap" ${wrapStyle}>
-                <img class="product-image${imgHov ? ' has-hover' : ''}" src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{fallbackImage(this)}">
-                <div class="product-actions">
-                    <button class="add-cart-btn" onclick="event.stopPropagation();showSizePicker(${prodJson})">Ajoute</button>
-                </div>
-            </div>
-            <div class="product-info">
-                <div class="product-category">${p.category || ''}</div>
-                ${p.brand ? `<div class="product-brand">${p.brand}</div>` : ''}
-                <div class="product-name">${p.name}</div>
-                <div class="product-price">${Number(p.price).toFixed(2)} G</div>
-                ${sizes ? `<div class="product-sizes">${sizes}</div>` : ''}
-            </div>
-        </div>
-    `;
+    const safeName = escapeHTML(p.name);
+    const safeCategory = escapeHTML(p.category || '');
+    const safeBrand = escapeHTML(p.brand || '');
+    const safeSizes = escapeHTML(sizes);
+    const prodForJs = JSON.stringify(p).replace(/'/g, "&#39;").replace(/</g, '\\u003C').replace(/>/g, '\\u003E');
+    const wrapStyle = imgHov ? 'style="background-image:url(\'' + escapeHTML(imgHov) + '\');background-size:cover;background-position:center;"' : '';
+    return '<div class="product-card" tabindex="0" role="button" aria-label="' + safeName + '" onclick="window.location.href=\'product.html?id=' + escapeHTML(String(p.id)) + '\'>'
+        + '<div class="product-image-wrap" ' + wrapStyle + '>'
+        + '<img class="product-image' + (imgHov ? ' has-hover' : '') + '" src="' + escapeHTML(imgSrc) + '" alt="' + safeName + '" loading="lazy" onerror="if(this.src.startsWith(\'http://\')){this.src=this.src.replace(\'http://\',\'https://\')}else{fallbackImage(this)}">'
+        + '<div class="product-actions">'
+        + '<button class="add-cart-btn" onclick="event.stopPropagation();showSizePicker(' + prodForJs + ')">Ajoute</button>'
+        + '</div></div>'
+        + '<div class="product-info">'
+        + '<div class="product-category">' + safeCategory + '</div>'
+        + (p.brand ? '<div class="product-brand">' + safeBrand + '</div>' : '')
+        + '<div class="product-name">' + safeName + '</div>'
+        + '<div class="product-price">' + Number(p.price).toFixed(2) + ' G</div>'
+        + (sizes ? '<div class="product-sizes">' + safeSizes + '</div>' : '')
+        + '</div></div>';
 }
 
 function getCart() {
@@ -358,14 +383,11 @@ function renderCart() {
     const cart = getCart();
 
     if (!cart.length) {
-        content.innerHTML = `
-            <div class="cart-empty">
-                <div class="cart-empty-icon" aria-hidden="true">🛍️</div>
-                <h2>Demann ou vid</h2>
-                <p>Eksplore katalòg nou an epi jwenn pwochen atik ou renmen an.</p>
-                <button class="btn btn-primary" onclick="window.location.href='catalog.html'">Dekouvri katalòg la</button>
-            </div>
-        `;
+        content.innerHTML = '<div class="cart-empty">'
+            + '<h2>Demann ou vid</h2>'
+            + '<p>Eksplore katalòg nou an epi jwenn pwochen atik ou renmen an.</p>'
+            + '<button class="btn btn-primary" onclick="window.location.href=\'catalog.html\'">Dekouvri katalòg la</button>'
+            + '</div>';
         return;
     }
 
@@ -379,57 +401,43 @@ function renderCart() {
         total += subtotal;
         let imgSrc = item.image || PLACEHOLDER;
         if (imgSrc.startsWith('http://')) imgSrc = imgSrc.replace('http://', 'https://');
-        html += `
-            <li class="cart-item">
-                <img src="${imgSrc}" alt="${item.name}"
-                     onerror="if(this.src.startsWith('http://')){this.src=this.src.replace('http://','https://')}else{fallbackImage(this)}">
-                <div class="cart-item-info">
-                    <div class="cart-item-name">${item.name}</div>
-                    ${item.size ? `<div class="cart-item-detail">Gwosè: ${item.size}</div>` : ''}
-                    <div class="cart-item-price">${item.price.toFixed(2)} G</div>
-                </div>
-                <div class="cart-qty">
-                    <button onclick="updateCartItem('${item.key}', -1)" aria-label="Diminye kantite">−</button>
-                    <span>${item.quantity}</span>
-                    <button onclick="updateCartItem('${item.key}', 1)" aria-label="Ogmantye kantite">+</button>
-                </div>
-                <div style="min-width:70px;text-align:right;font-weight:500;">${subtotal.toFixed(2)} G</div>
-                <button class="cart-remove" onclick="removeCartItem('${item.key}')" aria-label="Retire atik sa a">✕</button>
-            </li>
-        `;
+        const safeName = escapeHTML(item.name);
+        const safeSize = escapeHTML(item.size || '');
+        const safeKey = escapeHTML(item.key);
+        html += '<li class="cart-item">'
+            + '<img src="' + escapeHTML(imgSrc) + '" alt="' + safeName + '"'
+            + ' onerror="if(this.src.startsWith(\'http://\')){this.src=this.src.replace(\'http://\',\'https://\')}else{fallbackImage(this)}">'
+            + '<div class="cart-item-info">'
+            + '<div class="cart-item-name">' + safeName + '</div>'
+            + (item.size ? '<div class="cart-item-detail">Gwose: ' + safeSize + '</div>' : '')
+            + '<div class="cart-item-price">' + item.price.toFixed(2) + ' G</div>'
+            + '</div>'
+            + '<div class="cart-qty">'
+            + '<button onclick="updateCartItem(\'' + safeKey + '\', -1)" aria-label="Diminye kantite">\u2212</button>'
+            + '<span>' + item.quantity + '</span>'
+            + '<button onclick="updateCartItem(\'' + safeKey + '\', 1)" aria-label="Ogmantye kantite">+</button>'
+            + '</div>'
+            + '<div style="min-width:70px;text-align:right;font-weight:500;">' + subtotal.toFixed(2) + ' G</div>'
+            + '<button class="cart-remove" onclick="removeCartItem(\'' + safeKey + '\')" aria-label="Retire atik sa a">X</button>'
+            + '</li>';
     });
 
     html += '</ul>';
-    html += `
-        <div class="cart-total-bar">
-            <span class="cart-total-label">Total</span>
-            <span class="cart-total-amount">${total.toFixed(2)} G</span>
-        </div>
-        <div class="checkout-section" id="checkout-section">
-            <h2>Pase kòmand la</h2>
-            ${client ? '<p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.8rem;">Konekte kòm ' + client.name + ' — ' + client.email + '</p>' : '<p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.8rem;">Ou pa konekte. <a href="account.html" style="color:var(--accent);">Konekte oswa kreye yon kont</a> pou swiv kòmand ou.</p>'}
-            <form id="checkout-form" novalidate>
-                <div class="form-group">
-                    <label for="customer-name">Non konplè</label>
-                    <input type="text" id="customer-name" required placeholder="Jan Dupont" value="${client ? client.name : ''}">
-                </div>
-                <div class="form-group">
-                    <label for="customer-phone">Telefòn</label>
-                    <input type="tel" id="customer-phone" required placeholder="+509 12 34 56 78">
-                </div>
-                <div class="form-group">
-                    <label for="customer-address">Adrès</label>
-                    <textarea id="customer-address" required placeholder="..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="customer-notes">Nòt</label>
-                    <textarea id="customer-notes" placeholder="..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Kòmande</button>
-                <p id="order-message" style="margin-top:1rem;"></p>
-            </form>
-        </div>
-    `;
+    html += '<div class="cart-total-bar">'
+        + '<span class="cart-total-label">Total</span>'
+        + '<span class="cart-total-amount">' + total.toFixed(2) + ' G</span>'
+        + '</div>'
+        + '<div class="checkout-section" id="checkout-section">'
+        + '<h2>Pase kòmand la</h2>'
+        + (client ? '<p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.8rem;">Konekte kòm ' + escapeHTML(client.name) + ' &mdash; ' + escapeHTML(client.email) + '</p>' : '<p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.8rem;">Ou pa konekte. <a href="account.html" style="color:var(--accent);">Konekte oswa kreye yon kont</a> pou swiv kòmand ou.</p>')
+        + '<form id="checkout-form" novalidate>'
+        + '<div class="form-group"><label for="customer-name">Non konplè</label><input type="text" id="customer-name" required placeholder="Jan Dupont" value="' + (client ? escapeHTML(client.name) : '') + '"></div>'
+        + '<div class="form-group"><label for="customer-phone">Telefòn</label><input type="tel" id="customer-phone" required placeholder="+509 12 34 56 78"></div>'
+        + '<div class="form-group"><label for="customer-address">Adrès</label><textarea id="customer-address" required placeholder="..."></textarea></div>'
+        + '<div class="form-group"><label for="customer-notes">Nòt</label><textarea id="customer-notes" placeholder="..."></textarea></div>'
+        + '<button type="submit" class="btn btn-primary">Kòmande</button>'
+        + '<p id="order-message" style="margin-top:1rem;"></p>'
+        + '</form></div>';
 
     content.innerHTML = html;
 
@@ -465,19 +473,17 @@ function renderCart() {
             localStorage.removeItem('eboutik_cart');
             updateCartBadge();
 
-            content.innerHTML = `
-                <div class="cart-empty" style="max-width:500px;margin:0 auto;">
-                    <h2 style="font-size:1.6rem;">Mèsi ${name}!</h2>
-                    <p>Kòmand ou an te byen konfime. N ap kontakte ou byento.</p>
-                    <div class="order-confirm-details">
-                        <p><strong>N° kòmand:</strong> ${orderId}</p>
-                        <p><strong>Total:</strong> ${total.toFixed(2)} G</p>
-                        <p><strong>Telefòn:</strong> ${phone}</p>
-                        <p><strong>Adrès:</strong> ${address}</p>
-                    </div>
-                    <button class="btn btn-primary" onclick="window.location.href='catalog.html'">Kontinye fè makèt</button>
-                </div>
-            `;
+            content.innerHTML = '<div class="cart-empty" style="max-width:500px;margin:0 auto;">'
+                + '<h2 style="font-size:1.6rem;">Mesci ' + escapeHTML(name) + '!</h2>'
+                + '<p>Kòmand ou an te byen konfime. N ap kontakte ou byento.</p>'
+                + '<div class="order-confirm-details">'
+                + '<p><strong>N° kòmand:</strong> ' + orderId + '</p>'
+                + '<p><strong>Total:</strong> ' + total.toFixed(2) + ' G</p>'
+                + '<p><strong>Telefòn:</strong> ' + escapeHTML(phone) + '</p>'
+                + '<p><strong>Adrès:</strong> ' + escapeHTML(address) + '</p>'
+                + '</div>'
+                + '<button class="btn btn-primary" onclick="window.location.href=\'catalog.html\'">Kontinye fè makèt</button>'
+                + '</div>';
         };
     }
 }

@@ -59,7 +59,8 @@ async function syncFromSupabase() {
         { table: 'orders', key: 'eboutik_orders' },
         { table: 'transactions', key: 'eboutik_transactions' },
         { table: 'clients', key: 'eboutik_clients' },
-        { table: 'admins', key: 'eboutik_admin_creds' }
+        { table: 'admins', key: 'eboutik_admin_creds' },
+        { table: 'messages', key: 'eboutik_messages' }
     ];
 
     for (var i = 0; i < tables.length; i++) {
@@ -86,7 +87,8 @@ async function syncToSupabase() {
         { table: 'orders', key: 'eboutik_orders', conflict: 'id' },
         { table: 'transactions', key: 'eboutik_transactions', conflict: 'id' },
         { table: 'clients', key: 'eboutik_clients', conflict: 'email' },
-        { table: 'admins', key: 'eboutik_admin_creds', conflict: 'username' }
+        { table: 'admins', key: 'eboutik_admin_creds', conflict: 'username' },
+        { table: 'messages', key: 'eboutik_messages', conflict: 'id' }
     ];
 
     var allOk = true;
@@ -123,7 +125,8 @@ async function migrateLocalStorageToSupabase() {
         { table: 'orders', key: 'eboutik_orders', conflict: 'id' },
         { table: 'transactions', key: 'eboutik_transactions', conflict: 'id' },
         { table: 'clients', key: 'eboutik_clients', conflict: 'email' },
-        { table: 'admins', key: 'eboutik_admin_creds', conflict: 'username' }
+        { table: 'admins', key: 'eboutik_admin_creds', conflict: 'username' },
+        { table: 'messages', key: 'eboutik_messages', conflict: 'id' }
     ];
 
     var results = {};
