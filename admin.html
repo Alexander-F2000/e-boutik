@@ -32,7 +32,7 @@
         <div class="mobile-overlay" id="mobile-overlay"></div>
     </nav>
 
-    <div class="hero-banner" style="height:220px;">
+    <div class="hero-banner">
         <div class="hero-overlay">
             <h1>Administrasyon</h1>
             <p>Jere boutik ou fasilman.</p>
@@ -57,9 +57,9 @@
                         <label>Konfime modpas</label>
                         <input type="password" id="reg-pass-confirm" required placeholder="Rekiper modpas la">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%;">Kreye kont</button>
+                    <button type="submit" class="btn btn-primary btn-full">Kreye kont</button>
                     <p class="admin-login-error" id="register-error"></p>
-                    <p style="margin-top:1rem;font-size:.78rem;text-align:center;">Deja gen yon kont? <a href="#" id="show-login-link" style="color:var(--accent);">Konekte</a></p>
+                    <p class="admin-login-footnote">Deja gen yon kont? <a href="#" id="show-login-link">Konekte</a></p>
                 </form>
             </div>
         </div>
@@ -77,9 +77,9 @@
                         <label>Modpas</label>
                         <input type="password" id="login-pass" required placeholder="Modpas ou">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%;">Konekte</button>
+                    <button type="submit" class="btn btn-primary btn-full">Konekte</button>
                     <p class="admin-login-error" id="login-error"></p>
-                    <p style="margin-top:1rem;font-size:.78rem;text-align:center;">Premye fwa? <a href="#" id="show-register-link" style="color:var(--accent);">Kreye yon kont admin</a></p>
+                    <p class="admin-login-footnote">Premye fwa? <a href="#" id="show-register-link">Kreye yon kont admin</a></p>
                 </form>
             </div>
         </div>
@@ -88,7 +88,7 @@
             <div class="admin-header">
                 <h2>Tablo debò</h2>
                 <div>
-                    <span id="admin-user-display" style="font-size:.82rem;color:var(--text-light);margin-right:1rem;"></span>
+                    <span id="admin-user-display" class="admin-user-display"></span>
                     <button class="btn btn-outline btn-sm" id="logout-btn">Dekonekte</button>
                 </div>
             </div>
@@ -124,25 +124,25 @@
                     </div>
                 </div>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem;">
+                <div class="dash-grid-2">
                     <div class="admin-card">
-                        <h3 style="margin-bottom:.8rem;font-family:var(--font-serif);font-weight:400;">Dènye kòmand</h3>
+                        <h3>Dènye kòmand</h3>
                         <div id="dash-recent-orders" style="font-size:.82rem;">
                             <p style="color:var(--text-light);">Chajman...</p>
                         </div>
                     </div>
                     <div class="admin-card">
-                        <h3 style="margin-bottom:.8rem;font-family:var(--font-serif);font-weight:400;">Alèt stòk</h3>
+                        <h3>Alèt stòk</h3>
                         <div id="dash-stock-alerts" style="font-size:.82rem;">
                             <p style="color:var(--text-light);">Chajman...</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="admin-card" style="margin-top:1.5rem;">
-                    <h3 style="margin-bottom:.8rem;font-family:var(--font-serif);font-weight:400;">Vant pa jou (7 dènye jou)</h3>
-                    <div style="position:relative;width:100%;max-width:100%;height:220px;">
-                        <canvas id="sales-chart" style="width:100%;height:100%;"></canvas>
+                <div class="admin-card admin-card-spaced">
+                    <h3>Vant pa jou (7 dènye jou)</h3>
+                    <div class="chart-container">
+                        <canvas id="sales-chart" class="chart-canvas"></canvas>
                     </div>
                 </div>
             </div>
@@ -157,7 +157,7 @@
 
                     <form id="product-form" style="display:none; margin-bottom:1.5rem;">
                         <input type="hidden" id="product-id">
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div class="admin-form-row">
                             <div class="form-group">
                                 <label>Non</label>
                                 <input type="text" id="product-name" required>
@@ -167,7 +167,7 @@
                                 <input type="number" step="0.01" id="product-price" required>
                             </div>
                         </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div class="admin-form-row">
                             <div class="form-group">
                                 <label>Pri revian (G)</label>
                                 <input type="number" step="0.01" id="product-costprice" value="0" placeholder="0.00">
@@ -181,7 +181,7 @@
                             <label>Deskripsyon</label>
                             <textarea id="product-description" rows="3"></textarea>
                         </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div class="admin-form-row">
                             <div class="form-group">
                                 <label>Kategori</label>
                                 <select id="product-category"></select>
@@ -191,7 +191,7 @@
                                 <input type="number" id="product-stock" value="10">
                             </div>
                         </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div class="admin-form-row">
                             <div class="form-group">
                                 <label>Quantite pa lot</label>
                                 <input type="number" id="product-batchquantity" value="0" placeholder="0">
@@ -201,7 +201,7 @@
                                 <input type="number" step="0.01" id="product-batchprice" value="0" placeholder="0.00">
                             </div>
                         </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div class="admin-form-row">
                             <div class="form-group">
                                 <label>Sej alèt stòk</label>
                                 <input type="number" id="product-alertthreshold" value="5" placeholder="5">
@@ -211,7 +211,7 @@
                                 <input type="text" id="product-sizes" placeholder="S, M, L, XL">
                             </div>
                         </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
+                        <div class="admin-form-row-3">
                             <div class="form-group">
                                 <label>Mak</label>
                                 <input type="text" id="product-brand" placeholder="Nike, Adidas...">
@@ -227,34 +227,34 @@
                         </div>
                         <div class="form-group">
                             <label>Imaj prensipal</label>
-                            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+                            <div class="admin-flex-row">
                                 <input type="text" id="product-image" placeholder="https://..." style="flex:1;min-width:180px;">
-                                <span style="color:var(--text-light);font-size:.75rem;line-height:2.5;">oubyen</span>
+                                <span class="admin-form-sep">oubyen</span>
                                 <input type="file" id="product-image-file" accept="image/jpeg,image/png,image/webp,image/gif" style="flex:1;min-width:150px;padding:.5rem 0;">
                             </div>
-                            <p style="font-size:.7rem;color:var(--text-light);margin-top:.35rem;">URL dwe kòmanse ak <strong>https://</strong> pou mache sou sit la</p>
-                            <div id="image-preview" style="margin-top:.5rem;display:none;">
-                                <img src="" alt="preview" style="max-width:120px;max-height:120px;border-radius:4px;border:1px solid var(--border);">
+                            <p class="admin-form-note">URL dwe kòmanse ak <strong>https://</strong> pou mache sou sit la</p>
+                            <div id="image-preview" class="admin-img-preview" style="display:none;">
+                                <img src="" alt="preview">
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Imaj hover (2yèm imaj lè sourit pase)</label>
-                            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+                            <div class="admin-flex-row">
                                 <input type="text" id="product-image-hover" placeholder="https://..." style="flex:1;min-width:180px;">
-                                <span style="color:var(--text-light);font-size:.75rem;line-height:2.5;">oubyen</span>
+                                <span class="admin-form-sep">oubyen</span>
                                 <input type="file" id="product-image-hover-file" accept="image/jpeg,image/png,image/webp,image/gif" style="flex:1;min-width:150px;padding:.5rem 0;">
                             </div>
-                            <div id="image-preview-hover" style="margin-top:.5rem;display:none;">
-                                <img src="" alt="preview hover" style="max-width:120px;max-height:120px;border-radius:4px;border:1px solid var(--border);">
+                            <div id="image-preview-hover" class="admin-img-preview" style="display:none;">
+                                <img src="" alt="preview hover">
                             </div>
                         </div>
-                        <div style="display:flex; gap:.5rem;">
+                        <div class="admin-flex-row-nowrap">
                             <button type="submit" class="btn btn-primary btn-sm" id="product-form-submit">Ajoute</button>
                             <button type="button" class="btn btn-outline btn-sm" id="product-form-cancel" style="display:none;">Anile</button>
                         </div>
                     </form>
 
-                    <div style="overflow-x:auto;">
+                    <div class="admin-table-wrap">
                         <table class="admin-table">
                             <thead>
                                 <tr>
@@ -285,13 +285,13 @@
                             <label>Non kategori a</label>
                             <input type="text" id="category-name" required placeholder="Ex: Timoun">
                         </div>
-                        <div style="display:flex; gap:.5rem;">
+                        <div class="admin-flex-row-nowrap">
                             <button type="submit" class="btn btn-primary btn-sm" id="category-form-submit">Ajoute</button>
                             <button type="button" class="btn btn-outline btn-sm" id="category-form-cancel" style="display:none;">Anile</button>
                         </div>
                     </form>
 
-                    <div style="overflow-x:auto;">
+                    <div class="admin-table-wrap">
                         <table class="admin-table">
                             <thead>
                                 <tr>
@@ -309,7 +309,7 @@
             <div class="admin-tab-content" id="tab-orders" style="display:none;">
                 <div class="admin-card">
                     <h3>Kòmand yo</h3>
-                    <div style="overflow-x:auto;">
+                    <div class="admin-table-wrap">
                         <table class="admin-table">
                             <thead>
                                 <tr>
@@ -340,7 +340,7 @@
                             <label>Pwodui</label>
                             <select id="purchase-product"></select>
                         </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div class="admin-form-row">
                             <div class="form-group">
                                 <label>Kantite</label>
                                 <input type="number" id="purchase-qty" value="10" min="1">
@@ -355,12 +355,12 @@
                             <input type="text" id="purchase-note" placeholder="Founisè, n° fakti...">
                         </div>
                         <div id="purchase-calc" style="font-size:.85rem;color:var(--text-secondary);margin-bottom:.8rem;"></div>
-                        <div style="display:flex;gap:.5rem;">
+                        <div class="admin-flex-row-nowrap">
                             <button type="submit" class="btn btn-primary btn-sm">Valide acha a</button>
                             <button type="button" class="btn btn-outline btn-sm" id="purchase-cancel">Anile</button>
                         </div>
                     </form>
-                    <div style="overflow-x:auto;">
+                    <div class="admin-table-wrap">
                         <table class="admin-table">
                             <thead>
                                 <tr>
@@ -386,7 +386,7 @@
                             <label>Pwodui</label>
                             <select id="sale-product"></select>
                         </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div class="admin-form-row">
                             <div class="form-group">
                                 <label>Kantite</label>
                                 <input type="number" id="sale-qty" value="1" min="1">
@@ -420,25 +420,25 @@
             <div class="admin-tab-content" id="tab-reports" style="display:none;">
                 <div class="admin-card">
                     <h3>Rapò ak estatistik</h3>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;">
-                        <div class="stat-box" style="background:var(--accent-light);border-radius:var(--radius-sm);padding:1rem;text-align:center;">
-                            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:.3rem;">Total Vant</div>
-                            <div id="stat-total-sales" style="font-family:var(--font-serif);font-size:1.4rem;">0.00 G</div>
+                    <div class="admin-stats-grid">
+                        <div class="stat-box" style="background:var(--accent-light);">
+                            <div class="stat-box-label">Total Vant</div>
+                            <div id="stat-total-sales" class="stat-box-value">0.00 G</div>
                         </div>
-                        <div class="stat-box" style="background:#e8f5e9;border-radius:var(--radius-sm);padding:1rem;text-align:center;">
-                            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:.3rem;">Bénéfis total</div>
-                            <div id="stat-total-profit" style="font-family:var(--font-serif);font-size:1.4rem;color:#2e7d32;">0.00 G</div>
+                        <div class="stat-box" style="background:#e8f5e9;">
+                            <div class="stat-box-label">Bénéfis total</div>
+                            <div id="stat-total-profit" class="stat-box-value" style="color:#2e7d32;">0.00 G</div>
                         </div>
-                        <div class="stat-box" style="background:#fff3e0;border-radius:var(--radius-sm);padding:1rem;text-align:center;">
-                            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:.3rem;">Vant Senp</div>
-                            <div id="stat-simple-sales" style="font-family:var(--font-serif);font-size:1.4rem;">0.00 G</div>
+                        <div class="stat-box" style="background:#fff3e0;">
+                            <div class="stat-box-label">Vant Senp</div>
+                            <div id="stat-simple-sales" class="stat-box-value">0.00 G</div>
                         </div>
-                        <div class="stat-box" style="background:#e3f2fd;border-radius:var(--radius-sm);padding:1rem;text-align:center;">
-                            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);margin-bottom:.3rem;">Vant An Gwo</div>
-                            <div id="stat-wholesale-sales" style="font-family:var(--font-serif);font-size:1.4rem;">0.00 G</div>
+                        <div class="stat-box" style="background:#e3f2fd;">
+                            <div class="stat-box-label">Vant An Gwo</div>
+                            <div id="stat-wholesale-sales" class="stat-box-value">0.00 G</div>
                         </div>
                     </div>
-                    <div style="overflow-x:auto;">
+                    <div class="admin-table-wrap">
                         <table class="admin-table">
                             <thead>
                                 <tr>
