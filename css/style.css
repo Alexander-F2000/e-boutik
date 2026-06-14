@@ -1730,13 +1730,14 @@ footer {
     padding: 5rem 2rem 2rem;
     background: var(--white);
     box-shadow: var(--shadow-lg);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, visibility 0.3s ease;
     z-index: 99;
     align-items: stretch;
     transform: translateX(100%);
+    visibility: hidden;
   }
 
-  nav .nav-links.open { transform: translateX(0); }
+  nav .nav-links.open { transform: translateX(0); visibility: visible; }
 
   nav .nav-links a {
     font-size: 0.85rem;
