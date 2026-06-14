@@ -40,7 +40,7 @@
   --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-html { font-size: 15px; scroll-behavior: smooth; }
+html { font-size: 15px; scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   font-family: var(--font-sans);
@@ -116,6 +116,7 @@ nav .nav-links {
   display: flex;
   gap: 0.4rem;
   align-items: center;
+  position: static;
 }
 
 nav .nav-links a {
@@ -1721,7 +1722,7 @@ footer {
   nav .nav-links {
     position: fixed;
     top: 0;
-    right: -300px;
+    right: 0;
     width: 280px;
     height: 100vh;
     flex-direction: column;
@@ -1729,12 +1730,13 @@ footer {
     padding: 5rem 2rem 2rem;
     background: var(--white);
     box-shadow: var(--shadow-lg);
-    transition: right 0.3s ease;
+    transition: transform 0.3s ease;
     z-index: 99;
     align-items: stretch;
+    transform: translateX(100%);
   }
 
-  nav .nav-links.open { right: 0; }
+  nav .nav-links.open { transform: translateX(0); }
 
   nav .nav-links a {
     font-size: 0.85rem;
