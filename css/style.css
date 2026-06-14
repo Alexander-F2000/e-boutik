@@ -70,7 +70,7 @@ h1, h2, h3, h4, h5, h6 {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2.5rem 2rem;
+  padding: clamp(1.2rem, 3vw, 2.5rem) clamp(0.8rem, 3vw, 2rem);
   flex: 1;
   width: 100%;
 }
@@ -178,7 +178,7 @@ nav .nav-links a[aria-current="page"] {
 .hero-banner {
   position: relative;
   width: 100%;
-  height: 480px;
+  min-height: clamp(260px, 50vh, 480px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -198,14 +198,14 @@ nav .nav-links a[aria-current="page"] {
   position: relative;
   text-align: center;
   padding: 2rem 3rem;
-  max-width: 620px;
+  max-width: min(620px, 90%);
   animation: fadeUp 0.8s ease;
   z-index: 1;
 }
 
 .hero-overlay h1 {
   font-family: var(--font-serif);
-  font-size: 3.6rem;
+  font-size: clamp(1.8rem, 5.5vw, 3.6rem);
   font-weight: 500;
   margin-bottom: 0.6rem;
   line-height: 1.1;
@@ -247,9 +247,9 @@ nav .nav-links a[aria-current="page"] {
 /* ----- 6. SECTION TITLES ----- */
 .section-title {
   font-family: var(--font-serif);
-  font-size: 1.8rem;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
   font-weight: 400;
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(0.8rem, 2vw, 1.5rem);
   position: relative;
   color: var(--text);
 }
@@ -297,7 +297,7 @@ nav .nav-links a[aria-current="page"] {
 .product-card .product-image-wrap {
   position: relative;
   overflow: hidden;
-  height: 300px;
+  aspect-ratio: 3 / 4;
   background: var(--surface);
 }
 
@@ -532,7 +532,7 @@ nav .nav-links a[aria-current="page"] {
 
 .search-bar input {
   width: 100%;
-  max-width: 400px;
+  max-width: min(400px, 100%);
   padding: 0.8rem 1rem 0.8rem 2.8rem;
   font-family: var(--font-sans);
   font-size: 0.9rem;
@@ -586,7 +586,7 @@ nav .nav-links a[aria-current="page"] {
 }
 
 /* ----- 11. CART ----- */
-.cart-page { max-width: 760px; margin: 0 auto; }
+.cart-page { max-width: min(760px, 100%); margin: 0 auto; }
 
 .cart-empty {
   text-align: center;
@@ -622,8 +622,9 @@ nav .nav-links a[aria-current="page"] {
 .cart-item:last-child { border-bottom: none; }
 
 .cart-item img {
-  width: 80px;
-  height: 100px;
+  width: clamp(60px, 12vw, 80px);
+  height: auto;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
   border-radius: var(--radius-sm);
   background: var(--surface);
@@ -660,7 +661,7 @@ nav .nav-links a[aria-current="page"] {
 }
 
 .cart-item .cart-qty button {
-  width: 34px; height: 34px;
+  width: clamp(30px, 7vw, 34px); height: clamp(30px, 7vw, 34px);
   border: none;
   background: var(--white);
   border-radius: 50%;
@@ -735,7 +736,7 @@ nav .nav-links a[aria-current="page"] {
 
 /* ----- 13. ADMIN ----- */
 .admin-login {
-  max-width: 400px;
+  max-width: min(400px, 100%);
   margin: 3rem auto;
   text-align: center;
 }
@@ -761,6 +762,22 @@ nav .nav-links a[aria-current="page"] {
   margin-bottom: 1.5rem;
 }
 
+.admin-login-footnote {
+  margin-top: 1rem;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.admin-login-footnote a {
+  color: var(--accent);
+}
+
+.admin-user-display {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  margin-right: 1rem;
+}
+
 .admin-login .login-card form { max-width: 100%; }
 
 .admin-login .login-error,
@@ -770,8 +787,31 @@ nav .nav-links a[aria-current="page"] {
   margin-top: 0.8rem;
 }
 
+.admin-form-sep {
+  color: var(--text-light);
+  font-size: 0.75rem;
+  line-height: 2.5;
+}
+
+.admin-form-note {
+  font-size: 0.7rem;
+  color: var(--text-light);
+  margin-top: 0.35rem;
+}
+
+.admin-img-preview {
+  margin-top: 0.5rem;
+}
+
+.admin-img-preview img {
+  max-width: 120px;
+  max-height: 120px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
 .admin-dashboard {
-  max-width: 1100px;
+  max-width: min(1100px, 100%);
   margin: 0 auto;
   animation: fadeUp 0.4s ease;
 }
@@ -839,6 +879,57 @@ nav .nav-links a[aria-current="page"] {
   border-bottom: 1px solid var(--border-light);
 }
 
+/* Admin form & layout utilities */
+.admin-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.5rem, 2vw, 1rem);
+}
+
+.admin-form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: clamp(0.5rem, 2vw, 1rem);
+}
+
+.admin-flex-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-flex-row-nowrap {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.admin-card-spaced {
+  margin-top: clamp(1rem, 3vw, 1.5rem);
+}
+
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: clamp(0.8rem, 2vw, 1rem);
+  margin-bottom: clamp(1rem, 3vw, 1.5rem);
+}
+
+.dash-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.8rem, 2vw, 1.5rem);
+  margin-top: clamp(1rem, 3vw, 1.5rem);
+}
+
 .admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -865,6 +956,26 @@ nav .nav-links a[aria-current="page"] {
 .admin-table td:last-child { white-space: nowrap; }
 
 .admin-actions { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; }
+
+.stat-box {
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  text-align: center;
+  transition: transform var(--transition);
+}
+
+.stat-box-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-light);
+  margin-bottom: 0.3rem;
+}
+
+.stat-box-value {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+}
 
 .admin-card .stat-box {
   transition: transform var(--transition);
@@ -1149,8 +1260,8 @@ footer {
 .product-detail {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  max-width: 960px;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  max-width: min(960px, 100%);
   margin: 0 auto;
 }
 
@@ -1162,7 +1273,8 @@ footer {
 
 .product-detail-image img {
   width: 100%;
-  height: 500px;
+  height: auto;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
   transition: opacity 0.35s;
 }
@@ -1267,7 +1379,7 @@ footer {
 }
 
 .product-detail-qty button {
-  width: 38px; height: 38px;
+  width: clamp(34px, 8vw, 38px); height: clamp(34px, 8vw, 38px);
   border: 1.5px solid var(--border);
   border-radius: 50%;
   background: var(--white);
@@ -1302,7 +1414,7 @@ footer {
 .back-link:hover { color: var(--accent); }
 
 /* ----- 22. ACCOUNT PAGE ----- */
-.account-page { max-width: 600px; margin: 0 auto; }
+.account-page { max-width: min(600px, 100%); margin: 0 auto; }
 
 .account-card {
   background: var(--white);
@@ -1326,7 +1438,7 @@ footer {
 }
 
 .account-dashboard {
-  max-width: 700px;
+  max-width: min(700px, 100%);
   margin: 0 auto;
   animation: fadeUp 0.4s ease;
 }
@@ -1403,7 +1515,7 @@ footer {
 .switch-link:hover { text-decoration: underline; }
 
 /* ----- 23. ABOUT PAGE ----- */
-.about-content { max-width: 720px; margin: 0 auto; line-height: 1.8; }
+.about-content { max-width: min(720px, 100%); margin: 0 auto; line-height: 1.8; }
 
 .about-content h2 {
   font-family: var(--font-serif);
@@ -1453,7 +1565,7 @@ footer {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2.5rem;
-  max-width: 860px;
+  max-width: min(860px, 100%);
   margin: 0 auto;
 }
 
@@ -1530,6 +1642,18 @@ footer {
   font-weight: 600;
 }
 
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: clamp(160px, 30vw, 220px);
+}
+
+.chart-canvas {
+  width: 100%;
+  height: 100%;
+}
+
 .order-badge {
   display: inline-block;
   padding: 0.15rem 0.55rem;
@@ -1566,6 +1690,21 @@ footer {
 }
 
 /* ----- 28. RESPONSIVE ----- */
+
+/* Size picker modal responsive */
+@media (max-width: 600px) {
+  .size-picker-layout {
+    grid-template-columns: 1fr;
+  }
+  .size-picker-layout img {
+    max-height: 200px;
+    min-height: 160px;
+  }
+  .size-picker-info {
+    padding: 1.2rem 1rem;
+  }
+}
+
 @media (max-width: 1024px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr;
@@ -1605,21 +1744,18 @@ footer {
     border-radius: var(--radius-xs);
   }
 
-  .hero-banner { height: 340px; }
   .hero-overlay { padding: 1.2rem 1.5rem; }
   .hero-overlay h1 { font-size: 2.2rem; }
   .hero-overlay p { font-size: 0.88rem; }
 
   .container { padding: 1.2rem 1rem; }
   .product-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-  .product-card .product-image-wrap { height: 200px; }
   .product-card .product-name { font-size: 0.9rem; }
   .product-card .product-price { font-size: 0.88rem; }
   .product-card .product-category { font-size: 0.6rem; }
 
   .cart-item { flex-wrap: wrap; gap: 0.6rem; }
-  .cart-item img { width: 60px; height: 76px; }
-  .cart-item .cart-qty button { width: 38px; height: 38px; font-size: 1.1rem; }
+  .cart-item .cart-qty button { width: clamp(32px, 8vw, 38px); height: clamp(32px, 8vw, 38px); font-size: 1rem; }
   .cart-total-amount { font-size: 1.2rem; }
 
   .admin-header { flex-direction: column; gap: 0.6rem; align-items: flex-start; }
@@ -1627,6 +1763,9 @@ footer {
   .admin-tabs button { padding: 0.5rem 1rem; font-size: 0.68rem; }
   .admin-card { padding: 1rem; }
   .admin-table { font-size: 0.72rem; }
+  .admin-form-row,
+  .admin-form-row-3 { grid-template-columns: 1fr; }
+  .dash-grid-2 { grid-template-columns: 1fr; }
   .admin-table th:nth-child(1),
   .admin-table td:nth-child(1) { display: none; }
 
@@ -1641,18 +1780,16 @@ footer {
 
   .contact-grid { grid-template-columns: 1fr; }
   .product-detail { grid-template-columns: 1fr; gap: 1.5rem; }
-  .product-detail-image img { height: 320px; }
 }
+
 
 @media (max-width: 480px) {
   nav { padding: 0.6rem 0.8rem; }
   nav .logo { font-size: 1.1rem; }
-  .hero-banner { height: 260px; }
   .hero-overlay { padding: 1rem 1.2rem; }
   .hero-overlay h1 { font-size: 1.6rem; }
   .hero-overlay p { font-size: 0.8rem; }
   .product-grid { grid-template-columns: 1fr; }
-  .product-card .product-image-wrap { height: 260px; }
   .hero-overlay .hero-btn { padding: 0.6rem 1.5rem; font-size: 0.7rem; }
   .search-bar input { max-width: 100%; font-size: 0.82rem; }
   .admin-actions { flex-direction: column; }
