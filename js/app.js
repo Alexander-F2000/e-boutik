@@ -309,10 +309,10 @@ function renderProductCard(p) {
         + '</div></div>'
         + '<div class="product-info">'
         + '<div class="product-category">' + safeCategory + '</div>'
-        + (p.brand ? '<div class="product-brand">' + safeBrand + '</div>' : '')
+        + '<div class="product-brand' + (p.brand ? '' : ' empty') + '">' + safeBrand + '</div>'
         + '<div class="product-name">' + safeName + '</div>'
         + '<div class="product-price">' + Number(p.price).toFixed(2) + ' G</div>'
-        + (sizes ? '<div class="product-sizes">' + safeSizes + '</div>' : '')
+        + '<div class="product-sizes' + (sizes ? '' : ' empty') + '">' + safeSizes + '</div>'
         + '</div></div>';
 }
 

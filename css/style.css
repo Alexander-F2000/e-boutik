@@ -282,6 +282,7 @@ nav .nav-links a[aria-current="page"] {
   transition: all var(--transition-slow);
   cursor: pointer;
   animation: fadeUp 0.5s ease backwards;
+  min-width: 0;
 }
 
 .product-card:nth-child(1) { animation-delay: 0s; }
@@ -365,6 +366,8 @@ nav .nav-links a[aria-current="page"] {
   min-height: 1.2em;
 }
 
+.product-card .product-brand.empty { visibility: hidden; pointer-events: none; }
+
 .product-card .product-name {
   font-family: var(--font-serif);
   font-size: 1.05rem;
@@ -386,6 +389,8 @@ nav .nav-links a[aria-current="page"] {
   color: var(--text-light);
   min-height: 1.2em;
 }
+
+.product-card .product-sizes.empty { visibility: hidden; pointer-events: none; }
 
 /* Quick add button overlay */
 .product-card .product-actions {
