@@ -48,4 +48,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (overlay) overlay.addEventListener('click', closeMenu);
 
     links.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+    // Show/hide Admin link based on admin session
+    const adminLink = document.querySelector('a[href="admin.html"]');
+    if (adminLink) {
+        const adminUser = sessionStorage.getItem('eboutik_admin');
+        let isAdmin = false;
+        if (adminUser) {
+            try {
+                const creds = JSON.parse(localStorage.getItem('eboutik_admin_creds')) || [];
+                isAdmin = creds.some(function(c) { return c.username === adminUser; });
+            } catch(e) { /* ignore parse errors */ }
+        }
+        if (!isAdmin) adminLink.style.display = 'none';
+    }
 });
