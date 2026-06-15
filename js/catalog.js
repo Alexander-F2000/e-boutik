@@ -62,13 +62,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         var html = pageItems.map(function(p) { return renderProductCard(p); }).join('');
+        grid.innerHTML = html;
 
-        // Pagination controls
+        // Pagination controls — HORS de la grille pour éviter l'effet damier
+        var paginationContainer = document.getElementById('pagination-controls');
+        if (!paginationContainer) {
+            paginationContainer = document.createElement('div');
+            paginationContainer.id = 'pagination-controls';
+            paginationContainer.className = 'pagination';
+            grid.parentNode.insertBefore(paginationContainer, grid.nextSibling);
+        }
+
         if (totalPages > 1) {
-            html += '<div class="pagination" style="display:flex;justify-content:center;gap:.5rem;margin-top:2rem;">';
+            var pHtml = '';
 
             // Prev button
-            html += '<button class="btn btn-outline btn-sm" onclick="window.paginate(' + (currentPage - 1) + ')"'
+            pHtml += '<button class="btn btn-outline btn-sm" onclick="window.paginate(' + (currentPage - 1) + ')"'
                 + (currentPage <= 1 ? ' disabled style="opacity:0.4;cursor:not-allowed;"' : '') + '>Anvan</button>';
 
             // Page numbers (show max 5 pages)
@@ -79,17 +88,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 else pageStart = Math.max(1, pageEnd - 4);
             }
             for (var i = pageStart; i <= pageEnd; i++) {
-                html += '<button class="btn btn-sm ' + (i === currentPage ? 'btn-primary' : 'btn-outline') + '" onclick="window.paginate(' + i + ')">' + i + '</button>';
+                pHtml += '<button class="btn btn-sm ' + (i === currentPage ? 'btn-primary' : 'btn-outline') + '" onclick="window.paginate(' + i + ')">' + i + '</button>';
             }
 
             // Next button
-            html += '<button class="btn btn-outline btn-sm" onclick="window.paginate(' + (currentPage + 1) + ')"'
+            pHtml += '<button class="btn btn-outline btn-sm" onclick="window.paginate(' + (currentPage + 1) + ')"'
                 + (currentPage >= totalPages ? ' disabled style="opacity:0.4;cursor:not-allowed;"' : '') + '>Next</button>';
 
-            html += '</div>';
+            paginationContainer.innerHTML = pHtml;
+            paginationContainer.style.display = 'flex';
+        } else {
+            paginationContainer.style.display = 'none';
         }
-
-        grid.innerHTML = html;
     }
 
     // Global pagination function for onclick handlers

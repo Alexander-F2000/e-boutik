@@ -269,7 +269,7 @@ nav .nav-links a[aria-current="page"] {
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .product-card {
@@ -284,13 +284,6 @@ nav .nav-links a[aria-current="page"] {
   animation: fadeUp 0.5s ease backwards;
   min-width: 0;
 }
-
-.product-card:nth-child(1) { animation-delay: 0s; }
-.product-card:nth-child(2) { animation-delay: 0.08s; }
-.product-card:nth-child(3) { animation-delay: 0.16s; }
-.product-card:nth-child(4) { animation-delay: 0.24s; }
-.product-card:nth-child(5) { animation-delay: 0.32s; }
-.product-card:nth-child(6) { animation-delay: 0.4s; }
 
 .product-card:hover {
   box-shadow: var(--shadow-lg);
@@ -444,6 +437,15 @@ nav .nav-links a[aria-current="page"] {
 
 .product-card:hover .product-image.has-hover {
   opacity: 0;
+}
+
+/* ----- 7b. PAGINATION ----- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
 }
 
 /* ----- 8. BUTTONS ----- */
@@ -1769,7 +1771,7 @@ footer {
   .hero-overlay p { font-size: 0.88rem; }
 
   .container { padding: 1.2rem 1rem; }
-  .product-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .product-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
   .product-card .product-name { font-size: 0.9rem; }
   .product-card .product-price { font-size: 0.88rem; }
   .product-card .product-category { font-size: 0.6rem; }
