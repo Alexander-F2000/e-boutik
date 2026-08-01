@@ -1,4 +1,19 @@
+// ============================================================
+// SECURITE - audit 2026-08-01
+// L'authentification des CLIENTS repose sur un hash SHA-256
+// calcule cote client et des comptes stockes en localStorage.
+// TOUT ceci est falsifiable (n'importe qui peut modifier
+// localStorage ou recalculer un hash). Les mots de passe ne
+// sont jamais vraiment protégés cote client.
+//
+// TODO SECURITE : migrer vers Supabase Auth (email/mot de passe
+// verifies cote serveur) - l'auth actuelle est falsifiable.
+// ============================================================
+
 async function hashPassword(password) {
+    // TODO SECURITE : SHA-256 sans sel calcule cote client est
+    // faible et ne protege rien contre un attaquant local.
+    // Utiliser Supabase Auth (bcrypt/argon2 cote serveur).
     const enc = new TextEncoder().encode(password);
     const buf = await crypto.subtle.digest('SHA-256', enc);
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');

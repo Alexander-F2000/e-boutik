@@ -21,8 +21,7 @@ const ASSETS = [
     '/e-boutik/js/product.js',
     '/e-boutik/js/account.js',
     '/e-boutik/img/favicon.svg',
-    '/e-boutik/img/banner.jpg',
-    '/e-boutik/img/og-image.jpg'
+    '/e-boutik/img/banner.jpg'
 ];
 
 // Install: cache static assets

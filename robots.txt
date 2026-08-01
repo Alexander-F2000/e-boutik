@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://alexander-f2000.github.io/e-boutik/sitemap.xml
+Sitemap: https://Alexander-F2000.github.io/e-boutik/sitemap.xml

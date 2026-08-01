@@ -1,16 +1,41 @@
+// ============================================================
+// SECURITE - audit 2026-08-01
+// L'authentification admin repose actuellement sur un hash
+// SHA-256 calcule cote client. TOUT ce qui tourne dans le
+// navigateur est falsifiable (aucun secret ne peut y rester
+// confidentiel). Ce mecanisme n'est qu'un PALLIATIF.
+//
+// TODO SECURITE : migrer vers Supabase Auth (email/mot de passe
+// verifies cote serveur) - l'auth actuelle est falsifiable.
+// Le bootstrap des comptes admin se fait via Supabase
+// (Dashboard -> table `admins`, ou SQL Editor), plus via l'UI.
+// ============================================================
+
 async function hashPassword(password) {
+    // TODO SECURITE : SHA-256 sans sel est faible et calcule
+    // cote client - migrer vers Supabase Auth.
     const enc = new TextEncoder().encode(password);
     const buf = await crypto.subtle.digest('SHA-256', enc);
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+// Source de verite des comptes admin : table `admins` de Supabase,
+// chargee depuis le serveur. Plus AUCUNE lecture de localStorage
+// (la cle eboutik_admin_creds a ete retiree : elle etait
+// modifiable par n'importe qui via la console).
+let adminCredsFromServer = null;
+
 function getAdminCreds() {
-    try { return JSON.parse(localStorage.getItem('eboutik_admin_creds')) || []; }
-    catch { return []; }
+    return adminCredsFromServer || [];
 }
 
-function saveAdminCreds(creds) {
-    localStorage.setItem('eboutik_admin_creds', JSON.stringify(creds));
+async function loadAdminsFromServer() {
+    try {
+        const admins = await supabaseSelect('admins');
+        if (Array.isArray(admins)) adminCredsFromServer = admins;
+    } catch (e) {
+        console.warn('Supabase admins inaccessible (' + e.message + ') - connexion admin serveur impossible.');
+    }
 }
 
 function getAdminCred(username) {
@@ -18,70 +43,36 @@ function getAdminCred(username) {
 }
 
 function isAdminSessionValid() {
-    const user = sessionStorage.getItem('eboutik_admin');
-    if (!user) return false;
-    const creds = getAdminCreds();
-    return creds.some(function(c) { return c.username === user; });
+    // SECURITE : cette verification reste cote client et donc
+    // falsifiable (sessionStorage est modifiable). TODO SECURITE :
+    // remplacer par une vraie session Supabase Auth.
+    return !!sessionStorage.getItem('eboutik_admin');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
     await syncFromSupabase();
+    await loadAdminsFromServer();
 
     document.getElementById('login-section').style.display = 'block';
-    document.getElementById('register-section').style.display = 'none';
 
     if (isAdminSessionValid()) {
         showDashboard();
     }
 
-    document.getElementById('show-register-link')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('login-section').style.display = 'none';
-        document.getElementById('register-section').style.display = 'block';
-        document.getElementById('register-error').textContent = '';
-    });
+    // NOTE SECURITE (audit 2026-08-01) : l'inscription admin
+    // publique a ete DESACTIVEE. Les comptes admin sont crees
+    // uniquement via Supabase (Dashboard / SQL Editor).
+    // Le login existant reste fonctionnel.
 
-    document.getElementById('show-login-link')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('register-section').style.display = 'none';
-        document.getElementById('login-section').style.display = 'block';
-        document.getElementById('login-error').textContent = '';
-    });
-
-    document.getElementById('register-form')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const user = document.getElementById('reg-user').value.trim();
-        const pass = document.getElementById('reg-pass').value;
-        const confirm = document.getElementById('reg-pass-confirm').value;
-        const error = document.getElementById('register-error');
-
-        if (!user || user.length < 3) { error.textContent = 'Erè: non itilizatè dwe gen 3 karaktè minimòm.'; return; }
-        if (pass.length < 8) { error.textContent = 'Erè: modpas dwe gen 8 karaktè minimòm.'; return; }
-        if (pass !== confirm) { error.textContent = 'Erè: modpas yo pa konfime.'; return; }
-
-        const existing = getAdminCreds();
-        // Verify limit against Supabase too
-        try {
-            const supabaseAdmins = await supabaseSelect('admins');
-            if (supabaseAdmins && supabaseAdmins.length >= 2) {
-                error.textContent = 'Erè: limit 2 kont admin nan Supabase. Kontakte yon admin pou siprime yon kont avan.';
-                return;
-            }
-        } catch (e) { /* If Supabase unreachable, fall back to localStorage check */ }
-        if (existing.length >= 2) { error.textContent = 'Erè: limit 2 kont admin. Kontakte yon admin pou siprime yon kont avan.'; return; }
-        if (getAdminCred(user)) { error.textContent = 'Erè: admin sa a deja gen yon modpas. Kontakte lòt admin an.'; return; }
-
-        const hash = await hashPassword(pass);
-        existing.push({ username: user, password: hash });
-        saveAdminCreds(existing);
-        sessionStorage.setItem('eboutik_admin', 'true');
-        document.getElementById('register-error').textContent = '';
-        document.getElementById('register-section').style.display = 'none';
-        document.getElementById('login-section').style.display = 'none';
-        showDashboard();
-        document.getElementById('admin-user-display').textContent = 'Konekte kòm: ' + user;
-        showNotification('Byenvini ' + user);
-    });
+    // ----------------------------------------------------------
+    // DESACTIVE (audit 2026-08-01) : l'inscription admin publique
+    // permettait a n'importe quel visiteur de creer un compte admin.
+    // Bootstrap manuel uniquement :
+    //   - via Supabase Dashboard -> SQL Editor, ex. :
+    //     INSERT INTO admins (username, password) VALUES
+    //     ('monadmin', '<hash sha256 du mot de passe>');
+    //   - ou via Supabase Auth (recommande, voir TODO SECURITE).
+    // ----------------------------------------------------------
 
     document.getElementById('login-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -112,7 +103,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         sessionStorage.removeItem('eboutik_admin');
         document.getElementById('dashboard-section').style.display = 'none';
         document.getElementById('login-section').style.display = 'block';
-        document.getElementById('register-section').style.display = 'none';
     });
 
     document.querySelectorAll('[data-tab]').forEach(btn => {
@@ -407,7 +397,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function showDashboard() {
     document.getElementById('login-section').style.display = 'none';
-    document.getElementById('register-section').style.display = 'none';
     document.getElementById('dashboard-section').style.display = 'block';
     // Activer tablo debò pa defo
     document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('active'));

@@ -8,4 +8,17 @@ Thumbs.db
 __pycache__/
 *.py[cod]
 
+# ============================================================
+# SÉCURITÉ : fichiers de config locaux (peuvent contenir des secrets)
+# ============================================================
+js/config.js
+.env
+.env.*
+!.env.example
 
+# Logs
+router.log
+*.log
+
+# Uploads (contenu utilisateur, jamais versionné)
+uploads/

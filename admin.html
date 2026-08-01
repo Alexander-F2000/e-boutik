@@ -40,29 +40,12 @@
     </div>
 
     <div class="container">
-        <div id="register-section" class="admin-login" style="display:none;">
-            <div class="login-card">
-                <h1>Kreye kont admin</h1>
-                <p>Kreye yon non itilizatè ak yon modpas. <strong>Limit: 2 kont admin.</strong></p>
-                <form id="register-form">
-                    <div class="form-group">
-                        <label>Non itilizatè</label>
-                        <input type="text" id="reg-user" required placeholder="admin" minlength="3">
-                    </div>
-                    <div class="form-group">
-                        <label>Modpas</label>
-                        <input type="password" id="reg-pass" required placeholder="8 karaktè min." minlength="8">
-                    </div>
-                    <div class="form-group">
-                        <label>Konfime modpas</label>
-                        <input type="password" id="reg-pass-confirm" required placeholder="Rekiper modpas la">
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">Kreye kont</button>
-                    <p class="admin-login-error" id="register-error"></p>
-                    <p class="admin-login-footnote">Deja gen yon kont? <a href="#" id="show-login-link">Konekte</a></p>
-                </form>
-            </div>
-        </div>
+        <!-- ============================================================
+             SÉCURITÉ (audit 2026-08-01) : inscription admin publique DÉSACTIVÉE.
+             Tout visiteur pouvait créer un compte admin. Le bootstrap des
+             comptes admin se fait désormais UNIQUEMENT via Supabase
+             (Dashboard → Authentication/Table admins, ou SQL Editor).
+             ============================================================ -->
 
         <div id="login-section" class="admin-login" style="display:none;">
             <div class="login-card">
@@ -79,7 +62,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary btn-full">Konekte</button>
                     <p class="admin-login-error" id="login-error"></p>
-                    <p class="admin-login-footnote">Premye fwa? <a href="#" id="show-register-link">Kreye yon kont admin</a></p>
+                    <p class="admin-login-footnote">Kont admin yo jere nan Supabase Dashboard. Kontakte yon admin.</p>
                 </form>
             </div>
         </div>
