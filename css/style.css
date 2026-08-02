@@ -1405,7 +1405,7 @@ footer {
 }
 
 .product-detail-qty button {
-  width: clamp(34px, 8vw, 38px); height: clamp(34px, 8vw, 38px);
+  width: clamp(44px, 8vw, 48px); height: clamp(44px, 8vw, 48px);
   border: 1.5px solid var(--border);
   border-radius: 50%;
   background: var(--white);
