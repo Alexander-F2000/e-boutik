@@ -1,37 +1,17 @@
 // ============================================================
-// SECURITE - audit 2026-08-01
-// L'authentification des CLIENTS repose sur un hash SHA-256
-// calcule cote client et des comptes stockes en localStorage.
-// TOUT ceci est falsifiable (n'importe qui peut modifier
-// localStorage ou recalculer un hash). Les mots de passe ne
-// sont jamais vraiment protégés cote client.
+// SECURITE - audit 2026-08-01 - MIGRE vers Supabase Auth
+// L'ancienne auth (hash SHA-256 cote client + localStorage) etait
+// falsifiable : n'importe qui pouvait modifier localStorage ou
+// recalculer un hash. Les mots de passe n'etaient jamais proteges.
 //
-// TODO SECURITE : migrer vers Supabase Auth (email/mot de passe
-// verifies cote serveur) - l'auth actuelle est falsifiable.
+// -> Supabase Auth : email/mot de passe verifies cote serveur
+//    (bcrypt), sessions JWT, la colonne clients.password est
+//    desormais obsolete (source: auth.users). Une ligne `clients`
+//    est creee automatiquement par le trigger on_auth_user_created.
 // ============================================================
 
-async function hashPassword(password) {
-    // TODO SECURITE : SHA-256 sans sel calcule cote client est
-    // faible et ne protege rien contre un attaquant local.
-    // Utiliser Supabase Auth (bcrypt/argon2 cote serveur).
-    const enc = new TextEncoder().encode(password);
-    const buf = await crypto.subtle.digest('SHA-256', enc);
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-function getClientAccounts() {
-    try { return JSON.parse(localStorage.getItem('eboutik_clients')) || []; }
-    catch { return []; }
-}
-
-function saveClientAccounts(accounts) {
-    localStorage.setItem('eboutik_clients', JSON.stringify(accounts));
-}
-
-function getLoggedInClient() {
-    try { return JSON.parse(sessionStorage.getItem('eboutik_client')); }
-    catch { return null; }
-}
+// Client Supabase Auth (cle anon publique, ok cote client)
+const SUPABASE = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 function showAccountLogin() {
     document.getElementById('account-register-section').style.display = 'none';
@@ -63,43 +43,63 @@ function loadClientOrders(email) {
     }).join('');
 }
 
+// Convenience (non-securitaire, pour le pre-remplissage du panier) :
+// seuls name + email sont copies en sessionStorage. Le mot de passe
+// n'y figure JAMAIS et aucune permission n'en depend (la vraie session
+// reste la JWT de Supabase Auth, enforcee par RLS cote serveur).
+function setCartClientMirror(user) {
+    const name = (user && user.user_metadata && user.user_metadata.name) || '';
+    sessionStorage.setItem('eboutik_client', JSON.stringify({ email: (user && user.email) || '', name }));
+}
+
+function clearCartClientMirror() {
+    sessionStorage.removeItem('eboutik_client');
+}
+
+// Affiche le dashboard si une session valide existe
+function showDashboard(user) {
+    document.getElementById('account-login-section').style.display = 'none';
+    document.getElementById('account-register-section').style.display = 'none';
+    document.getElementById('account-dashboard').style.display = 'block';
+    const name = (user && user.user_metadata && user.user_metadata.name) || user.email || '';
+    document.getElementById('account-user-display').textContent = name + ' (' + (user.email || '') + ')';
+    if (user && user.email) loadClientOrders(user.email);
+    setCartClientMirror(user);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     updateCartBadge();
-    const client = getLoggedInClient();
-    if (client) {
-        document.getElementById('account-login-section').style.display = 'none';
-        document.getElementById('account-register-section').style.display = 'none';
-        document.getElementById('account-dashboard').style.display = 'block';
-        document.getElementById('account-user-display').textContent = client.name + ' (' + client.email + ')';
-        loadClientOrders(client.email);
-    } else {
-        document.getElementById('account-login-section').style.display = 'block';
-    }
+
+    // Restaure une session existante (localStorage de supabase-js)
+    SUPABASE.auth.getSession().then(({ data }) => {
+        if (data.session) {
+            showDashboard(data.session.user);
+        } else {
+            document.getElementById('account-login-section').style.display = 'block';
+        }
+    });
 
     document.getElementById('account-login-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('account-login-email').value.trim();
         const pass = document.getElementById('account-login-pass').value;
         const error = document.getElementById('account-login-error');
-        const accounts = getClientAccounts();
-        const hash = await hashPassword(pass);
-        const found = accounts.find(a => a.email === email && a.password === hash);
-        if (found) {
-            sessionStorage.setItem('eboutik_client', JSON.stringify(found));
-            document.getElementById('account-login-section').style.display = 'none';
-            document.getElementById('account-dashboard').style.display = 'block';
-            document.getElementById('account-user-display').textContent = found.name + ' (' + found.email + ')';
-            loadClientOrders(found.email);
-            error.textContent = '';
-            showNotification('Byenvini ' + found.name);
-        } else {
-            const exists = accounts.find(a => a.email === email);
-            if (exists) {
-                error.textContent = 'Erè: modpas pa kòrèk pou ' + email + '.';
-            } else {
-                error.textContent = 'Erè: kont ' + email + ' pa egziste. Kreye yon kont an premye.';
-            }
+        error.textContent = '';
+
+        const { data, error: authError } = await SUPABASE.auth.signInWithPassword({
+            email,
+            password: pass
+        });
+
+        if (authError) {
+            error.textContent = authError.message === 'Invalid login credentials'
+                ? 'Erè: imèl oswa modpas pa kòrèk.'
+                : 'Erè: ' + authError.message;
+            return;
         }
+        const user = data.user;
+        showDashboard(user);
+        showNotification('Byenvini ' + ((user.user_metadata && user.user_metadata.name) || email));
     });
 
     document.getElementById('account-register-form')?.addEventListener('submit', async (e) => {
@@ -108,28 +108,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = document.getElementById('account-reg-name').value.trim();
         const pass = document.getElementById('account-reg-pass').value;
         const error = document.getElementById('account-register-error');
+        error.textContent = '';
         if (!email || !name || !pass) { error.textContent = 'Erè: ranpli tout chan yo.'; return; }
         if (pass.length < 8) { error.textContent = 'Erè: modpas dwe gen 8 karaktè minimòm.'; return; }
-        let accounts = getClientAccounts();
-        if (accounts.find(a => a.email === email)) {
-            error.textContent = 'Erè: imèl ' + email + ' deja enskri.';
+
+        const { data, error: err } = await SUPABASE.auth.signUp({
+            email,
+            password: pass,
+            options: { data: { name } }
+        });
+
+        if (err) {
+            error.textContent = err.message === 'User already registered'
+                ? 'Erè: imèl ' + email + ' deja enskri.'
+                : 'Erè: ' + err.message;
             return;
         }
-        const hash = await hashPassword(pass);
-        const newClient = { email, name, password: hash, createdAt: new Date().toISOString() };
-        accounts.push(newClient);
-        saveClientAccounts(accounts);
-        sessionStorage.setItem('eboutik_client', JSON.stringify(newClient));
-        document.getElementById('account-register-section').style.display = 'none';
-        document.getElementById('account-dashboard').style.display = 'block';
-        document.getElementById('account-user-display').textContent = newClient.name + ' (' + newClient.email + ')';
-        loadClientOrders(newClient.email);
-        error.textContent = '';
-        showNotification('Byenvini ' + name);
+
+        // Confirmation email active par defaut sur projet hebergé :
+        // l'utilisateur doit confirmer avant de pouvoir se connecter.
+        if (data.session) {
+            showDashboard(data.user);
+            showNotification('Byenvini ' + name);
+        } else {
+            document.getElementById('account-register-section').style.display = 'none';
+            document.getElementById('account-login-section').style.display = 'block';
+            document.getElementById('account-login-error').textContent =
+                'Kont kreye! Tcheke ' + email + ' pou konfime imèl ou, epitou konekte.';
+        }
     });
 
-    document.getElementById('account-logout-btn')?.addEventListener('click', () => {
-        sessionStorage.removeItem('eboutik_client');
+    document.getElementById('account-logout-btn')?.addEventListener('click', async () => {
+        await SUPABASE.auth.signOut();
+        clearCartClientMirror();
         document.getElementById('account-dashboard').style.display = 'none';
         document.getElementById('account-login-section').style.display = 'block';
     });
