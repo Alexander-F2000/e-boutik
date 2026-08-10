@@ -57,7 +57,7 @@
     </div>
 
     <div class="container">
-        <h2 class="section-title fade-in">Atik vedette</h2>
+        <h2 class="section-title fade-in" id="featured-title">Atik vedette</h2>
         <div class="product-grid fade-in" id="featured-products"></div>
 
         <h2 class="section-title fade-in" style="margin-top:3.5rem;">Kategori</h2>
@@ -105,7 +105,21 @@
 
             const products = getProducts();
             const grid = document.getElementById('featured-products');
-            grid.innerHTML = products.slice(0, 4).map(p => renderProductCard(p)).join('');
+            const title = document.getElementById('featured-title');
+            const featured = products.filter(p => p.featured).slice(0, 4);
+
+            if (featured.length === 0) {
+                const isAdmin = !!sessionStorage.getItem('eboutik_admin');
+                if (isAdmin) {
+                    grid.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:2rem 0;">Pa gen atik vedette ankò.</p>'
+                        + '<div style="text-align:center;margin-bottom:1rem;"><a class="btn btn-primary" href="admin.html">Deziyen atik vedette</a></div>';
+                } else {
+                    title.style.display = 'none';
+                    grid.style.display = 'none';
+                }
+            } else {
+                grid.innerHTML = featured.map(p => renderProductCard(p)).join('');
+            }
 
             const categories = getCategories();
             const catContainer = document.getElementById('home-categories');
