@@ -36,6 +36,7 @@ const defaultCategoryNames = ['Hommes', 'Femmes', 'Accessoires'];
 function normalizeProduct(p) {
     return {
         ...p,
+        featured: !!p.featured,
         costPrice: p.costPrice || 0,
         wholesalePrice: p.wholesalePrice || 0,
         batchQuantity: p.batchQuantity || 0,
@@ -303,6 +304,7 @@ function renderProductCard(p) {
     const wrapStyle = imgHov ? 'style="background-image:url(\'' + escapeHTML(imgHov) + '\');background-size:cover;background-position:center;"' : '';
     return '<div class="product-card" tabindex="0" role="button" aria-label="' + safeName + '" onclick="window.location.href=\'product.html?id=' + escapeHTML(String(p.id)) + '\'>'
         + '<div class="product-image-wrap" ' + wrapStyle + '>'
+        + (p.featured ? '<span class="product-badge-featured">★ Vedette</span>' : '')
         + '<img class="product-image' + (imgHov ? ' has-hover' : '') + '" src="' + escapeHTML(imgSrc) + '" alt="' + safeName + '" loading="lazy" onerror="if(this.src.startsWith(\'http://\')){this.src=this.src.replace(\'http://\',\'https://\')}else{fallbackImage(this)}">'
         + '<div class="product-actions">'
         + '<button class="add-cart-btn" onclick="event.stopPropagation();showSizePicker(' + prodForJs + ')">Ajoute</button>'

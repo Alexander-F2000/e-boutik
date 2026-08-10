@@ -335,6 +335,22 @@ nav .nav-links a[aria-current="page"] {
   background: linear-gradient(135deg, var(--surface), var(--border-light));
 }
 
+.product-card .product-badge-featured {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  z-index: 2;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  pointer-events: none;
+  box-shadow: var(--shadow-sm);
+}
+
 .product-card .product-info {
   display: flex;
   flex-direction: column;
