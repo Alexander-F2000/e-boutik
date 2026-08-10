@@ -474,7 +474,7 @@ function renderCart() {
             updateCartBadge();
 
             content.innerHTML = '<div class="cart-empty" style="max-width:500px;margin:0 auto;">'
-                + '<h2 style="font-size:1.6rem;">Mesci ' + escapeHTML(name) + '!</h2>'
+                + '<h2 style="font-size:1.6rem;">Mèsi ' + escapeHTML(name) + '!</h2>'
                 + '<p>Kòmand ou an te byen konfime. N ap kontakte ou byento.</p>'
                 + '<div class="order-confirm-details">'
                 + '<p><strong>N° kòmand:</strong> ' + orderId + '</p>'

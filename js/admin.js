@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const result = sellProduct(pid, qty, type);
         if (result.error) { msg.className = 'error'; msg.textContent = result.error; return; }
         msg.className = 'success';
-        msg.textContent = 'Vant konfime! Total: ' + result.totalPrice.toFixed(2) + ' G, Bénéfis: ' + result.profit.toFixed(2) + ' G';
+        msg.textContent = 'Vant konfime! Total: ' + result.totalPrice.toFixed(2) + ' G, Benefis: ' + result.profit.toFixed(2) + ' G';
         document.getElementById('sale-qty').value = 1;
         updateSaleCalc();
         loadStockTab();
@@ -636,7 +636,7 @@ function loadStockTab() {
             + lowStock.map(function(p) { return '<strong>' + escapeHTML(p.name) + '</strong> (' + (p.stock || 0) + ' / ' + p.alertThreshold + ')'; }).join(', ')
             + '</div>';
     } else {
-        alerts.innerHTML = '<div style="background:#e8f5e9;border-radius:var(--radius-sm);padding:.5rem 1rem;font-size:.82rem;color:#2e7d32;">Tout pwodui gen ase stòk</div>';
+        alerts.innerHTML = '<div style="background:#e8f5e9;border-radius:var(--radius-sm);padding:.5rem 1rem;font-size:.82rem;color:#2e7d32;">Stòk la gen ase pwodui ladan l</div>';
     }
     tbody.innerHTML = products.map(function(p) {
         const st = p.stock || 0;
@@ -715,7 +715,7 @@ function updateSaleCalc() {
     document.getElementById('sale-total-display').textContent = totalPrice.toFixed(2) + ' G';
     const profitEl = document.getElementById('sale-profit-display');
     if (profit >= 0) {
-        profitEl.innerHTML = 'Bénéfis estime: <strong style="color:#2e7d32;">' + profit.toFixed(2) + ' G</strong>';
+        profitEl.innerHTML = 'Benefis estime: <strong style="color:#2e7d32;">' + profit.toFixed(2) + ' G</strong>';
     } else {
         profitEl.innerHTML = 'Pèt estime: <strong style="color:#d32f2f;">' + Math.abs(profit).toFixed(2) + ' G</strong>';
     }
@@ -785,7 +785,7 @@ function loadDashboard() {
     document.getElementById('dash-total-products').textContent = products.length;
     document.getElementById('dash-total-clients').textContent = clients.length;
 
-    // ---- Dènye kòmand (5 dènye) ----
+    // ---- Dernières commandes (5 dernières) ----
     const recentEl = document.getElementById('dash-recent-orders');
     const recentOrders = orders.slice().reverse().slice(0, 5);
     if (recentOrders.length === 0) {
@@ -806,7 +806,7 @@ function loadDashboard() {
     const alertsEl = document.getElementById('dash-stock-alerts');
     const lowStock = products.filter(p => (p.stock || 0) <= p.alertThreshold);
     if (lowStock.length === 0) {
-        alertsEl.innerHTML = '<p style="color:#2e7d32;">Tout pwodui gen ase stòk.</p>';
+        alertsEl.innerHTML = '<p style="color:#2e7d32;">Stòk la gen ase pwodui ladan l.</p>';
     } else {
         alertsEl.innerHTML = '<ul style="list-style:none;padding:0;margin:0;">' +
             lowStock.map(function(p) {

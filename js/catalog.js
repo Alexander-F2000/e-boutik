@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Next button
             pHtml += '<button class="btn btn-outline btn-sm" onclick="window.paginate(' + (currentPage + 1) + ')"'
-                + (currentPage >= totalPages ? ' disabled style="opacity:0.4;cursor:not-allowed;"' : '') + '>Next</button>';
+                + (currentPage >= totalPages ? ' disabled style="opacity:0.4;cursor:not-allowed;"' : '') + '>Apre</button>';
 
             paginationContainer.innerHTML = pHtml;
             paginationContainer.style.display = 'flex';
