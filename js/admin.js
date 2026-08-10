@@ -337,7 +337,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 material: document.getElementById('product-material').value.trim(),
                 color: document.getElementById('product-color').value.trim(),
                 image: document.getElementById('product-image').value || '',
-                image_hover: document.getElementById('product-image-hover').value || ''
+                image_hover: document.getElementById('product-image-hover').value || '',
+                featured: document.getElementById('product-featured').checked
             };
 
             if (!data.name) { alert('Tanpri antre non pwodui a.'); return; }
@@ -419,9 +420,10 @@ function loadProducts() {
             + '<td>' + parseFloat(p.price).toFixed(2) + ' G</td>'
             + '<td>' + escapeHTML(p.category || '\u2014') + '</td>'
             + '<td>' + (p.stock || 0) + '</td>'
+            + '<td style="text-align:center;"><button class="btn btn-sm ' + (p.featured ? 'btn-primary' : 'btn-outline') + '" title="Atik vedette" onclick="toggleFeatured(' + p.id + ')">' + (p.featured ? '\u2605' : '\u2606') + '</button></td>'
             + '<td><button class="btn btn-primary btn-sm" onclick="editProduct(' + p.id + ')">Modifye</button> '
             + '<button class="btn btn-danger btn-sm" onclick="deleteProduct(' + p.id + ')">Siprime</button></td></tr>';
-    }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen pwodui</td></tr>';
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-light);padding:2rem;">Pa gen pwodui</td></tr>';
 }
 
 const PLACEHOLDER_DATA = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9IiNmMGYwZjAiLz48cmVjdCB4PSIxNjAiIHk9IjIwMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiByeD0iOCIgZmlsbD0iI2QwZDBkMCIvPjx0ZXh0IHg9IjIwMCIgeT0iMzIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiPmUtYm91dGlrPC90ZXh0Pjwvc3ZnPg==";
@@ -499,6 +501,7 @@ function editProduct(id) {
         document.getElementById('product-brand').value = p.brand || '';
         document.getElementById('product-material').value = p.material || '';
         document.getElementById('product-color').value = p.color || '';
+        document.getElementById('product-featured').checked = !!p.featured;
         let imgVal = p.image || '';
         if (imgVal.startsWith('http://')) imgVal = imgVal.replace('http://', 'https://');
         document.getElementById('product-image').value = imgVal;
@@ -522,6 +525,16 @@ function deleteProduct(id) {
     let products = getProducts().filter(p => p.id != id);
     saveProducts(products);
     loadProducts();
+}
+
+function toggleFeatured(id) {
+    let products = getProducts();
+    const idx = products.findIndex(p => p.id == id);
+    if (idx !== -1) {
+        products[idx] = { ...products[idx], featured: !products[idx].featured };
+        saveProducts(products);
+        loadProducts();
+    }
 }
 
 function loadCategories() {
