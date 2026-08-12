@@ -1301,7 +1301,7 @@ footer {
 /* ----- 21. PRODUCT DETAIL PAGE ----- */
 .product-detail {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: clamp(1.5rem, 4vw, 3rem);
   max-width: min(960px, 100%);
   margin: 0 auto;
@@ -1311,6 +1311,9 @@ footer {
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--surface);
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .product-detail-image img {

@@ -302,7 +302,7 @@ function renderProductCard(p) {
     const safeSizes = escapeHTML(sizes);
     const prodForJs = JSON.stringify(p).replace(/'/g, "&#39;").replace(/</g, '\\u003C').replace(/>/g, '\\u003E');
     const wrapStyle = imgHov ? 'style="background-image:url(\'' + escapeHTML(imgHov) + '\');background-size:cover;background-position:center;"' : '';
-    return '<div class="product-card" tabindex="0" role="button" aria-label="' + safeName + '" onclick="window.location.href=\'product.html?id=' + escapeHTML(String(p.id)) + '\'>'
+    return '<div class="product-card" tabindex="0" role="button" aria-label="' + safeName + '" onclick="window.location.href=\'product.html?id=' + escapeHTML(String(p.id)) + '\'">'
         + '<div class="product-image-wrap" ' + wrapStyle + '>'
         + (p.featured ? '<span class="product-badge-featured">★ Vedette</span>' : '')
         + '<img class="product-image' + (imgHov ? ' has-hover' : '') + '" src="' + escapeHTML(imgSrc) + '" alt="' + safeName + '" loading="lazy" onerror="if(this.src.startsWith(\'http://\')){this.src=this.src.replace(\'http://\',\'https://\')}else{fallbackImage(this)}">'
